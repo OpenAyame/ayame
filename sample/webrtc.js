@@ -10,13 +10,11 @@ const iceServers = [{ 'urls': 'stun:stun.l.google.com:19302' }];
 const peerConnectionConfig = {
   'iceServers': iceServers
 };
-let isOffer = false;
 let isNegotiating = false;
 
 // 接続処理
 function connect() {
   isNegotiating = false;
-
   // 新規に websocket を作成
   if(!ws){
     ws = new WebSocket(wsUrl);
@@ -24,50 +22,50 @@ function connect() {
   // ws のコールバックを定義する
   ws.onopen = (event) => {
     console.log('ws open()');
+    ws.onmessage = (event) => {
+      console.log('ws onmessage() data:', event.data);
+      const message = JSON.parse(event.data);
+      switch(message.type){
+        case 'offer': {
+          console.log('Received offer ...');
+          setOffer(message);
+          break;
+        }
+        case 'answer': {
+          console.log('Received answer ...');
+          setAnswer(message);
+          break;
+        }
+        case 'candidate': {
+          console.log('Received ICE candidate ...');
+          const candidate = new RTCIceCandidate(message.ice);
+          console.log(candidate);
+          addIceCandidate(candidate);
+          break;
+        }
+        case 'close': {
+          console.log('peer is closed ...');
+          disconnect();
+          break;
+        }
+        default: {
+          console.log('Invalid message type: ');
+          break;
+        }
+      }
+    };
+
+    if (!peerConnection) {
+      console.log('make Offer');
+      peerConnection = prepareNewConnection(true);
+    }
+    else {
+      console.warn('peer already exist.');
+    }
   };
   ws.onerror = (error) => {
     console.error('ws onerror() ERROR:', error);
   };
-  ws.onmessage = (event) => {
-    console.log('ws onmessage() data:', event.data);
-    const message = JSON.parse(event.data);
-    switch(message.type){
-      case 'offer': {
-        console.log('Received offer ...');
-        setOffer(message);
-        break;
-      }
-      case 'answer': {
-        console.log('Received answer ...');
-        setAnswer(message);
-        break;
-      }
-      case 'candidate': {
-        console.log('Received ICE candidate ...');
-        const candidate = new RTCIceCandidate(message.ice);
-        console.log(candidate);
-        addIceCandidate(candidate);
-        break;
-      }
-      case 'close': {
-        console.log('peer is closed ...');
-        disconnect();
-        break;
-      }
-      default: {
-        console.log('Invalid message type: ');
-        break;
-      }
-    }
-  };
-
-  if (!peerConnection) {
-    console.log('make Offer');
-    peerConnection = prepareNewConnection(true);
-  }
-  else {
-    console.warn('peer already exist.');
-  }
 }
 
 // 切断処理
@@ -81,6 +79,8 @@ function disconnect(){
       console.log('sending close message');
       if(ws) {
         ws.send(message);
+        ws.close();
+        ws = null;
       }
       else {
         console.error('websocket connection does not exist!');
