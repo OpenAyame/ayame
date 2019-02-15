@@ -27,16 +27,16 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください。
 
-## 詳細を知りたい
-
-Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
-
-## サンプル
+## サンプルを使ってみる
 
 **このリポジトリにあるサンプルと全く同じ仕組みになっています**
 
 - Vue サンプル
     - [shiguredo/ayame\-vue\-sample](https://github.com/shiguredo/ayame-vue-sample)
+
+## 仕組みの詳細を知りたい
+
+Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
 
 
 ## ライセンス
