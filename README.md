@@ -31,6 +31,14 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 
 Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
 
+## サンプル
+
+**このリポジトリにあるサンプルと全く同じ仕組みになっています**
+
+- Vue サンプル
+    - [shiguredo/ayame\-vue\-sample](https://github.com/shiguredo/ayame-vue-sample)
+
+
 ## ライセンス
 
 Apache License 2.0
