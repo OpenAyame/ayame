@@ -33,6 +33,8 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 
 - Vue サンプル
     - [shiguredo/ayame\-vue\-sample](https://github.com/shiguredo/ayame-vue-sample)
+- React サンプル
+    - [shiguredo/ayame\-react\-sample](https://github.com/shiguredo/ayame-react-sample)
 
 ## 仕組みの詳細を知りたい
 
