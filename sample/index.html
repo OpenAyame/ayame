@@ -10,8 +10,16 @@
     <div id="app">
       <div id="title">
         <h2>Ayame P2P Demo</h2>
-        <label for="url">シグナリングサーバのURL:</label>
-        <input type="text" id="url" name="url" required onchange="onChangeWsUrl();" value="ws://localhost:3000/ws">
+      </div>
+      <div id="inputs">
+        <div class="input">
+          <label for="url">シグナリングサーバのURL:</label>
+          <input type="text" id="url" name="url" required onchange="onChangeWsUrl();" value="ws://localhost:3000/ws">
+        </div>
+        <div class="input">
+          <label for="roomId">部屋のID:</label>
+          <input type="text" id="roomId" name="roomId" required onchange="onChangeRoomId();" value="">
+        </div>
       </div>
     <div id="buttons">
       <button type="button" onclick="connect();">接続</button>

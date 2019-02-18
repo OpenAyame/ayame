@@ -2,6 +2,8 @@
 let wsUrl = 'ws://localhost:3000/ws';
 document.getElementById("url").value = wsUrl;
 let ws = null;
+let roomId = null;
+const clientId = randomString(17);
 const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
 let localStream = null;
@@ -14,6 +16,11 @@ let isNegotiating = false;
 
 // 接続処理
 function connect() {
+  roomId = document.getElementById("roomId").value;
+  if (roomId.length < 2 || !roomId){
+    alert("部屋のID を指定してください");
+    return;
+  }
   isNegotiating = false;
   // 新規に websocket を作成
   if(!ws){
@@ -22,6 +29,10 @@ function connect() {
   // ws のコールバックを定義する
   ws.onopen = (event) => {
     console.log('ws open()');
+    ws.send(JSON.stringify({
+      "type": "register",
+      "room_id": roomId
+    }))
     ws.onmessage = (event) => {
       console.log('ws onmessage() data:', event.data);
       const message = JSON.parse(event.data);
@@ -75,7 +86,7 @@ function disconnect(){
       // peer connection を閉じる
       peerConnection.close();
       peerConnection = null;
-      const message = JSON.stringify({ type: 'close' });
+      const message = JSON.stringify({ type: 'close'});
       console.log('sending close message');
       if(ws) {
         ws.send(message);
@@ -98,6 +109,11 @@ function onChangeWsUrl() {
   console.log('ws url changes', wsUrl);
 }
 
+function onChangeRoomId() {
+  roomId = document.getElementById("roomId").value;
+  console.log('room id changes', roomId);
+}
+
 // ICE candaidate受信時にセットする
 function addIceCandidate(candidate) {
   if (peerConnection) {
@@ -112,7 +128,7 @@ function addIceCandidate(candidate) {
 function sendIceCandidate(candidate) {
   if (ws) {
   console.log('---sending ICE candidate ---', candidate);
-  const message = JSON.stringify({ type: 'candidate', ice: candidate });
+  const message = JSON.stringify({ type: 'candidate', ice: candidate});
   console.log('sending candidate=' + message);
     ws.send(message);
   }
@@ -300,6 +316,17 @@ function cleanupVideoElement(element) {
     });
     element.srcObject = null;
   }
+}
+
+// Return a random numerical string.
+function randomString(strLength) {
+  var result = [];
+  strLength = strLength || 5;
+  var charSet = '0123456789';
+  while (strLength--) {
+    result.push(charSet.charAt(Math.floor(Math.random() * charSet.length)));
+  }
+  return result.join('');
 }
 
 startVideo();
