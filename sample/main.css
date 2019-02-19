@@ -30,6 +30,19 @@ button {
   top: 40px;
 }
 
+#inputs{
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  top: 80px;
+}
+
+.input {
+  display: inline-block;
+}
+
 #app {
   text-align: center;
 }
@@ -37,10 +50,9 @@ button {
 #buttons {
   position: absolute;
   z-index: 3;
-  top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
-  top: 120px;
+  top: 140px;
 }
 
 #videos {
