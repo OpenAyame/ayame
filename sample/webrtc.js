@@ -2,7 +2,8 @@
 let wsUrl = 'ws://localhost:3000/ws';
 document.getElementById("url").value = wsUrl;
 let ws = null;
-let roomId = null;
+let roomId = randomString(9);
+document.getElementById("roomId").value = roomId;
 const clientId = randomString(17);
 const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
@@ -13,6 +14,7 @@ const peerConnectionConfig = {
   'iceServers': iceServers
 };
 let isNegotiating = false;
+
 
 // 接続処理
 function connect() {
