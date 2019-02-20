@@ -95,16 +95,10 @@ function disconnect(){
     if(peerConnection.iceConnectionState !== 'closed'){
       // peer connection を閉じる
       peerConnection.close();
-      const message = JSON.stringify({ type: 'close'});
-      console.log('sending close message');
-      if(ws) {
-        ws.send(message);
-        ws.close();
-      }
-      else {
-        console.error('websocket connection does not exist!');
-      }
       cleanupVideoElement(remoteVideo);
+    }
+    if(ws && ws.readyState < 2){
+      ws.close();
     }
     ws = null;
     peerConnection = null;

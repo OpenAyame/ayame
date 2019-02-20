@@ -42,6 +42,17 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
         | getUserMedia()       |                      | getUserMedia() 
         | localStream の取得   |                      | localStream の取得 
         | peer = new PeerConnection()                 | peer = new PeerConnection()
+    -----------------クライアント情報の登録----------------------
+        +--------------------->|                      | room の id と client のid を登録する
+        |   ws message         |                      | 2 人以下で入室可能であれば ayame は accept を返却
+        |   {type: register,   |                      | それ以外の場合 reject を返却
+        |   room_id: room_id,  |                      | TURN などのメタデータも将来的にここで交換する
+        |   client: client_id} |                      |
+        |<---------------------+                      |
+        |  {type: accept }     |<---------------------|
+        |                      |   ws message         | 
+        |                      |    register          |  
+        |                      |--------------------->|
     -----------------------SDP の交換-----------------------
         |                      |                      |
         + peer.createOffer(),  |                      |
@@ -87,12 +98,46 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
 
 WS のメッセージはJSONフォーマットでやり取りします。
 すべてのメッセージはプロパティに `type` を持ちます。
-`type` は以下の4つです。
+`type` は以下の5つです。
 
+- register
+- accept
+- reject
 - offer
 - answer
 - candidate
 - close
+
+#### type: register
+
+クライアントが Ayame Server に room id, client id を登録するメッセージです。
+
+```
+{type: "register", "room_id" "<string>", "client_id": "<string>"}
+```
+
+これを受け取った Ayame Server はそのクライアントが指定した room に入室可能か検査して、可能であれば accept, 不可であれば reject を返却します。
+
+#### type: accept
+
+Ayame Server がregister に込められている情報を検査して入室可能であることをクライアントに知らせるメッセージです。
+
+```
+{type: "accept"}
+```
+
+将来的に、TURN などのメタデータもここで返却される予定です。
+これを受け取ったらクライアントは offer のやり取りを開始します。
+
+#### type: reject
+
+Ayame Server がregister に込められている情報を検査して入室不可能であることをクライアントに知らせるメッセージです。
+
+```
+{type: "reject"}
+```
+
+これを受け取ったらクライアントは peerConnection, websocket を閉じて初期化します。
 
 #### type: offer
 
