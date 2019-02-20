@@ -61,6 +61,21 @@ function connect() {
           disconnect();
           break;
         }
+        case 'reject': {
+          console.log('connection is rejected...');
+          disconnect();
+          break;
+        }
+        case 'accept': {
+          if (!peerConnection) {
+            console.log('make Offer');
+            peerConnection = prepareNewConnection(true);
+          }
+          else {
+            console.warn('peer already exist.');
+          }
+          break;
+        }
         default: {
           console.log('Invalid message type: ');
           break;
@@ -68,13 +83,6 @@ function connect() {
       }
     };
 
-    if (!peerConnection) {
-      console.log('make Offer');
-      peerConnection = prepareNewConnection(true);
-    }
-    else {
-      console.warn('peer already exist.');
-    }
   };
   ws.onerror = (error) => {
     console.error('ws onerror() ERROR:', error);
@@ -87,20 +95,19 @@ function disconnect(){
     if(peerConnection.iceConnectionState !== 'closed'){
       // peer connection を閉じる
       peerConnection.close();
-      peerConnection = null;
       const message = JSON.stringify({ type: 'close'});
       console.log('sending close message');
       if(ws) {
         ws.send(message);
         ws.close();
-        ws = null;
       }
       else {
         console.error('websocket connection does not exist!');
       }
       cleanupVideoElement(remoteVideo);
-      return;
     }
+    ws = null;
+    peerConnection = null;
   }
   console.log('peerConnection is closed.');
 }

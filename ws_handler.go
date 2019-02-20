@@ -28,6 +28,14 @@ type Message struct {
 	RoomId string `json:"room_id"`
 }
 
+type AcceptMessage struct {
+	Type string `json:"type"`
+}
+
+type RejectMessage struct {
+	Type string `json:"type"`
+}
+
 func (c *Client) listen() {
 	defer func() {
 		c.hub.unregister <- &RegisterInfo{

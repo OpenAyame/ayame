@@ -40,6 +40,19 @@ func (h *Hub) run() {
 				h.clients[roomId] = make(map[*Client]bool)
 			}
 			h.clients[roomId][client] = true
+			ok := len(h.clients[roomId]) < 3
+			if !ok {
+				msg := &RejectMessage{
+					Type: "reject",
+				}
+				client.conn.WriteJSON(msg)
+				client.conn.Close()
+				break
+			}
+			msg := &AcceptMessage{
+				Type: "accept",
+			}
+			client.conn.WriteJSON(msg)
 		case registerInfo := <-h.unregister:
 			roomId := registerInfo.roomId
 			client := registerInfo.client
