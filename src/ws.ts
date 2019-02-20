@@ -21,12 +21,14 @@ pubsubWs.on("connection", (ws: Client) => {
       // 3 人目は入れない処理をする
       if (currentClientCount > 2) {
         console.log("over member count", currentClientCount);
-        ws.send(JSON.stringify({"type": "close"}));
+        ws.send(JSON.stringify({"type": "reject"}));
         ws.close();
+      } else {
+        ws.roomId = roomId;
+        roomClients.push(ws);
+        clients.set(roomId, roomClients);
+        ws.send(JSON.stringify({"type": "accept"}));
       }
-      ws.roomId = roomId;
-      roomClients.push(ws);
-      clients.set(roomId, roomClients);
     }
     else {
       if (ws.roomId) {
@@ -47,12 +49,5 @@ pubsubWs.on("connection", (ws: Client) => {
   });
   ws.on("pong", (bytes) => {
     // pong はスルーする
-  });
-  ws.on("close", (bytes) => {
-    console.log("onclose----", bytes);
-    // close させる
-    pubsubWs.clients.forEach((client) => {
-      client.close();
-    });
   });
 });
