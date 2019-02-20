@@ -21,6 +21,14 @@ type Hub struct {
 	unregister chan *RegisterInfo
 }
 
+type AcceptMessage struct {
+	Type string `json:"type"`
+}
+
+type RejectMessage struct {
+	Type string `json:"type"`
+}
+
 func newHub() *Hub {
 	return &Hub{
 		broadcast:  make(chan *Broadcast),
