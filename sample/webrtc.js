@@ -97,6 +97,9 @@ function disconnect(){
       peerConnection.close();
       cleanupVideoElement(remoteVideo);
     }
+    if(ws && ws.readyState < 2){
+      ws.close();
+    }
     ws = null;
     peerConnection = null;
   }
