@@ -4,52 +4,43 @@
 ディレクトリ構成は以下のようになります。
 
 ```
-$ ./nodejs/
+$ ./
 .
-├── public/
+├── sample/
 │   ├── index.html
 │   ├── main.css
 │   └── webrtc.js
-├── src/
-│   ├── server.ts
-│   └── ws.ts
-├── yarn.lock
-└── package.json
+├── .doc/
+│   ├── USE.md
+│   └── DETAIL.md
+├── go.mod
+├── go.sum
+├── ws_handler.go
+├── client.go
+├── hub.go
+└── main.go
 ```
 
 
-## node, yarn のインストール
+## Go のインストール
 
 推奨バージョンは 2019/2/12 時点で以下のようになります。
 ```
-node 11.9.0
-yarn 1.13.0
+go 1.11.5
 ```
 
-### node
-
-https://nodejs.org/ja/download/ から node (最新版 11.9.0 を推奨します) をインストールしてください。
-
-### yarn
-
-https://yarnpkg.com/lang/ja/docs/install から yarn をインストールしてください。(1.13.0)
-
-Mac の場合 homebrew 経由でのインストールが可能です。
-
-## 依存パッケージのインストール
-
-yarn を利用します。
+## ビルドする
 
 ```
-$ yarn install
+$ go build
 ```
 
-## サーバーを起動する
+## サーバを起動する
 
-依存パッケージのインストールに成功したら、以下のコマンドで Ayame サーバーを起動することができます。
+ビルドに成功したら、以下のコマンドで Ayame サーバーを起動することができます。
 
 ```
-$ yarn start:sample
+$ ./ayame
 ```
 
 起動したら、 http://localhost:3000 にアクセスすることでデモ画面にアクセスできます。
@@ -64,15 +55,6 @@ $ yarn start:sample
 
 切断するときは「切断する」を選択してください。
 
-
-## デモ無しでサーバを起動する
-
-```
-$ yarn start
-```
-
-このオプションで起動した場合、http://localhost:3000 にアクセスしても、デモ画面は表示されません。
-あくまでシグナリングサーバの機能のみ用いたい場合に、こちらのオプションで起動します。
 
 ### ローカルで wss/https を試したい場合
 
