@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="#">
+    <title>Ayame P2P Demo(ES6 Version)</title>
+    <link rel="stylesheet" href="./main.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="title">
+        <h2>Ayame P2P Demo</h2>
+      </div>
+      <div id="inputs">
+        <div class="input">
+          <label for="url">シグナリングサーバのURL:</label>
+          <input type="text" id="url" name="url" required onchange="onChangeWsUrl();" value="ws://localhost:3000/ws">
+        </div>
+        <div class="input">
+          <label for="roomId">部屋のID:</label>
+          <input type="text" id="roomId" name="roomId" required onchange="onChangeRoomId();" value="">
+        </div>
+      </div>
+    <div id="buttons">
+      <button type="button" onclick="connect();">接続</button>
+      <button type="button" onclick="disconnect();">切断</button>
+    </div>
+    <div id="videos">
+    <video id="local-video" muted autoplay></video>
+    <video id="remote-video" autoplay></video>
+    </div>
+    </div>
+    <script type='text/javascript' src='./webrtc.js'></script>
+  </body>
+</html>
