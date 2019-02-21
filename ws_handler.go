@@ -103,7 +103,6 @@ func wsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	// TODO(kdxu): 3人以上はキックする
 	uuid := uuid.NewV4().String()
 	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256), uuid: uuid}
 	log.Printf("[WS] connected")
