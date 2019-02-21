@@ -27,7 +27,7 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください。
 
-## サンプルを使ってみる
+## サンプルを使ってみたい
 
 **このリポジトリにあるサンプルと全く同じ仕組みになっています**
 
@@ -40,6 +40,11 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 
 Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
 
+## Node.js (TypeScript) バージョン
+
+**今後のメンテナンス保証はありません**
+
+[shiguredo/ayame\-nodejs](https://github.com/shiguredo/ayame-nodejs)
 
 ## ライセンス
 
