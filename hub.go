@@ -70,7 +70,7 @@ func (h *Hub) run() {
 			}
 		case broadcast := <-h.broadcast:
 			for client := range h.clients[broadcast.roomId] {
-				if client.uuid != broadcast.client.uuid {
+				if client.clientId != broadcast.client.clientId {
 					select {
 					case client.send <- broadcast.messages:
 					default:
