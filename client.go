@@ -6,10 +6,10 @@ import (
 )
 
 type Client struct {
-	hub    *Hub
-	conn   *websocket.Conn
-	uuid   string
-	roomId string
-	send   chan []byte
+	hub      *Hub
+	conn     *websocket.Conn
+	roomId   string
+	clientId string
+	send     chan []byte
 	sync.Mutex
 }

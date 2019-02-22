@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
-	uuid "github.com/satori/go.uuid"
 	"log"
 	"net/http"
 	"time"
@@ -24,8 +23,9 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
-	Type   string `json:"type"`
-	RoomId string `json:"room_id"`
+	Type     string `json:"type"`
+	RoomId   string `json:"room_id"`
+	ClientId string `json:"client_id"`
 }
 
 func (c *Client) listen() {
@@ -47,6 +47,7 @@ func (c *Client) listen() {
 			c.Lock()
 			defer c.Unlock()
 			c.roomId = msg.RoomId
+			c.clientId = msg.ClientId
 			c.hub.register <- &RegisterInfo{
 				client: c,
 				roomId: msg.RoomId,
@@ -103,9 +104,7 @@ func wsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	// TODO(kdxu): 3人以上はキックする
-	uuid := uuid.NewV4().String()
-	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256), uuid: uuid}
+	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
 	log.Printf("[WS] connected")
 	go client.listen()
 	go client.broadcast()

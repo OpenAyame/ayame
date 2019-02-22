@@ -33,7 +33,8 @@ function connect() {
     console.log('ws open()');
     ws.send(JSON.stringify({
       "type": "register",
-      "room_id": roomId
+      "room_id": roomId,
+      "client_id": clientId
     }))
     ws.onmessage = (event) => {
       console.log('ws onmessage() data:', event.data);
