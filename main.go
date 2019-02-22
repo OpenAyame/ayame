@@ -19,5 +19,5 @@ func main() {
 	})
 	flag.Parse()
 	log.SetFlags(0)
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	log.Print(http.ListenAndServe(*addr, nil))
 }
