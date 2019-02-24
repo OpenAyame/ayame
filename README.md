@@ -86,4 +86,4 @@ https://discord.gg/mDesh2E
 
 **時雨堂では有料サポートは提供しておりません**
 
-- [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料サポートを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
+- [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
