@@ -21,7 +21,7 @@ func main() {
 		}
 	}
 	log.SetFlags(0)
-	log.Printf("Ayame Signaling Server\n version %s\n running on http://%s (Press Ctrl+C quit)\n", AyameVersion, *addr)
+	log.Printf("WebRTC Signaling Server Ayame\n version %s\n running on http://%s (Press Ctrl+C quit)\n", AyameVersion, *addr)
 	hub := newHub()
 	go hub.run()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
