@@ -2,6 +2,10 @@
 
 ## develop
 
+- [ADD] @kdxu ayame 起動時に少し説明を出す
+- [ADD] @kdxu `ayame version` でバージョンを表示するようにする
+
+
 ## 19.02.1
 
 - [FIX] @kdxu uuid を使わず、client_id で持ち回すよう修正する
