@@ -32,7 +32,7 @@ go 1.12
 ## ビルドする
 
 ```
-$ go build
+$ GO111MODULE=on go get -u && go build
 ```
 
 ## サーバを起動する
