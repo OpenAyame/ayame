@@ -13,6 +13,8 @@ var AyameVersion = "19.02.1"
 func main() {
 	flag.Parse()
 	args := flag.Args()
+	log.SetFlags(0)
+	log.Printf("WebRTC Signaling Server Ayame\n version %s\n running on http://%s (Press Ctrl+C quit)\n", AyameVersion, *addr)
 	// 引数の処理
 	if len(args) > 0 {
 		if args[0] == "version" {
@@ -20,8 +22,6 @@ func main() {
 			return
 		}
 	}
-	log.SetFlags(0)
-	log.Printf("WebRTC Signaling Server Ayame\n version %s\n running on http://%s (Press Ctrl+C quit)\n", AyameVersion, *addr)
 	hub := newHub()
 	go hub.run()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
