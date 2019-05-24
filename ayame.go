@@ -28,7 +28,7 @@ func init() {
 	logDir := flag.String("logDir", ".", "ayame log dir")
 	logName := flag.String("logName", "ayame.log", "ayame log name")
 	logLevel := flag.String("logLevel", "info", "ayame log name")
-	overWsPingPong := flag.Bool("overWsPingPong", true, "with over-WS Ping-Pong")
+	overWsPingPong := flag.Bool("overWsPingPong", false, "with over-WS Ping-Pong")
 	addr := flag.String("addr", "localhost:3000", " http service address")
 	flag.Parse()
 	Options = &AyameOptions{
