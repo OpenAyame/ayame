@@ -3,18 +3,45 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	logrus "github.com/sirupsen/logrus"
 	"net/http"
 )
 
-var addr = flag.String("addr", "localhost:3000", " http service address")
 var AyameVersion = "19.02.1"
+
+type AyameOptions struct {
+	LogDir   string
+	LogName  string
+	LogLevel string
+	Addr     string
+}
+
+var (
+	// 起動時のオプション
+	Options *AyameOptions
+	logger  *logrus.Logger
+)
+
+// 初期化処理
+func init() {
+	logDir := flag.String("logDir", ".", "ayame log dir")
+	logName := flag.String("logName", "ayame.log", "ayame log name")
+	logLevel := flag.String("logLevel", "info", "ayame log name")
+	addr := flag.String("addr", "localhost:3000", " http service address")
+	flag.Parse()
+	Options = &AyameOptions{
+		LogDir:   *logDir,
+		LogName:  *logName,
+		LogLevel: *logLevel,
+		Addr:     *addr,
+	}
+}
 
 func main() {
 	flag.Parse()
 	args := flag.Args()
-	log.SetFlags(0)
-	log.Printf("WebRTC Signaling Server Ayame\n version %s\n running on http://%s (Press Ctrl+C quit)\n", AyameVersion, *addr)
+	logger = setupLogger()
+	logger.Printf("WebRTC Signaling Server Ayame\n version %s\n running on http://%s (Press Ctrl+C quit)\n", AyameVersion, Options.Addr)
 	// 引数の処理
 	if len(args) > 0 {
 		if args[0] == "version" {
@@ -30,5 +57,5 @@ func main() {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		wsHandler(hub, w, r)
 	})
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	logger.Fatal(http.ListenAndServe(Options.Addr, nil))
 }

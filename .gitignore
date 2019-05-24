@@ -1,2 +1,5 @@
 # ayame binary
 ayame
+# log file
+*.log
+*.log.*

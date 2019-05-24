@@ -3,12 +3,12 @@ package main
 import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
-	"log"
 	"net/http"
 	"time"
 )
 
 const (
+	writeWait  = 10 * time.Second
 	pongWait   = 60 * time.Second
 	pingPeriod = (pongWait * 9) / 10
 )
@@ -37,13 +37,14 @@ func (c *Client) listen() {
 		c.conn.Close()
 	}()
 
+	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		_, message, err := c.conn.ReadMessage()
 		msg := &Message{}
 		json.Unmarshal(message, &msg)
 		if msg.Type == "register" && msg.RoomId != "" {
-			log.Printf("register: %v", msg)
+			logger.Printf("register: %v", msg)
 			c.Lock()
 			defer c.Unlock()
 			c.roomId = msg.RoomId
@@ -53,15 +54,15 @@ func (c *Client) listen() {
 				roomId: msg.RoomId,
 			}
 		} else {
-			log.Printf("onmessage: %v", string(message))
-			log.Printf("client roomId: %s", c.roomId)
+			logger.Printf("onmessage: %v", string(message))
+			logger.Printf("client roomId: %s", c.roomId)
 			if c.roomId == "" {
-				log.Printf("client does not registered: %v", c)
+				logger.Printf("client does not registered: %v", c)
 				return
 			}
 			if err != nil {
 				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-					log.Printf("error: %v", err)
+					logger.Printf("error: %v", err)
 				}
 				break
 			}
@@ -84,16 +85,21 @@ func (c *Client) broadcast() {
 	for {
 		select {
 		case message, ok := <-c.send:
+			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-
 			w, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
 				return
 			}
 			w.Write(message)
+		case <-ticker.C:
+			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				return
+			}
 		}
 	}
 }
@@ -101,11 +107,11 @@ func (c *Client) broadcast() {
 func wsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println(err)
+		logger.Println(err)
 		return
 	}
 	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
-	log.Printf("[WS] connected")
+	logger.Printf("[WS] connected")
 	go client.listen()
 	go client.broadcast()
 }
