@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/gorilla/websocket"
 	"net/http"
@@ -8,8 +9,10 @@ import (
 )
 
 const (
-	writeWait  = 10 * time.Second
-	pongWait   = 60 * time.Second
+	writeWait = 10 * time.Second
+
+	pongWait = 10 * time.Second
+
 	pingPeriod = (pongWait * 9) / 10
 )
 
@@ -28,8 +31,9 @@ type Message struct {
 	ClientId string `json:"client_id"`
 }
 
-func (c *Client) listen() {
+func (c *Client) listen(cancel context.CancelFunc) {
 	defer func() {
+		cancel()
 		c.hub.unregister <- &RegisterInfo{
 			client: c,
 			roomId: c.roomId,
@@ -43,40 +47,42 @@ func (c *Client) listen() {
 		_, message, err := c.conn.ReadMessage()
 		msg := &Message{}
 		json.Unmarshal(message, &msg)
-		if msg.Type == "register" && msg.RoomId != "" {
-			logger.Printf("register: %v", msg)
-			c.Lock()
-			defer c.Unlock()
-			c.roomId = msg.RoomId
-			c.clientId = msg.ClientId
-			c.hub.register <- &RegisterInfo{
-				client: c,
-				roomId: msg.RoomId,
-			}
+		if msg.Type == "pong" {
+			logger.Printf("recv ping over WS")
+			c.conn.SetReadDeadline(time.Now().Add(pongWait))
 		} else {
-			logger.Printf("onmessage: %v", string(message))
-			logger.Printf("client roomId: %s", c.roomId)
-			if c.roomId == "" {
-				logger.Printf("client does not registered: %v", c)
-				return
-			}
-			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-					logger.Printf("error: %v", err)
+			if msg.Type == "register" && msg.RoomId != "" {
+				logger.Printf("register: %v", msg)
+				c.hub.register <- &RegisterInfo{
+					clientId: msg.ClientId,
+					client:   c,
+					roomId:   msg.RoomId,
 				}
-				break
+			} else {
+				logger.Printf("onmessage: %v", string(message))
+				logger.Printf("client roomId: %s", c.roomId)
+				if c.roomId == "" {
+					logger.Printf("client does not registered: %v", c)
+					return
+				}
+				if err != nil {
+					if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+						logger.Printf("error: %v", err)
+					}
+					break
+				}
+				broadcast := &Broadcast{
+					client:   c,
+					roomId:   c.roomId,
+					messages: message,
+				}
+				c.hub.broadcast <- broadcast
 			}
-			broadcast := &Broadcast{
-				client:   c,
-				roomId:   c.roomId,
-				messages: message,
-			}
-			c.hub.broadcast <- broadcast
 		}
 	}
 }
 
-func (c *Client) broadcast() {
+func (c *Client) broadcast(ctx context.Context) {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -84,6 +90,11 @@ func (c *Client) broadcast() {
 	}()
 	for {
 		select {
+		case <-ctx.Done():
+			// channel がすでに close していた場合
+			// ループを抜ける
+			c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+			return
 		case message, ok := <-c.send:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
@@ -97,8 +108,17 @@ func (c *Client) broadcast() {
 			w.Write(message)
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-				return
+			// over Ws で ping-pong を設定している場合
+			if Options.OverWsPingPong {
+				logger.Info("send ping over WS")
+				pingMsg := &Message{Type: "ping"}
+				if err := c.SendJSON(pingMsg); err != nil {
+					return
+				}
+			} else {
+				if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+					return
+				}
 			}
 		}
 	}
@@ -112,6 +132,8 @@ func wsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	}
 	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
 	logger.Printf("[WS] connected")
-	go client.listen()
-	go client.broadcast()
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	go client.listen(cancel)
+	go client.broadcast(ctx)
 }

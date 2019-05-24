@@ -39,7 +39,15 @@ function connect() {
     ws.onmessage = (event) => {
       console.log('ws onmessage() data:', event.data);
       const message = JSON.parse(event.data);
+      console.log(message.type)
       switch(message.type){
+        case 'ping': {
+          console.log('Received Ping, Send Pong.');
+          ws.send(JSON.stringify({
+            "type": "pong"
+          }))
+          break;
+        }
         case 'offer': {
           console.log('Received offer ...');
           setOffer(message);
@@ -87,6 +95,9 @@ function connect() {
   };
   ws.onerror = (error) => {
     console.error('ws onerror() ERROR:', error);
+  };
+  ws.onclose = (event) => {
+    disconnect();
   };
 }
 
