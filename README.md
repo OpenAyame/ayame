@@ -1,6 +1,6 @@
 # WebRTC Signaling Server Ayame
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/ayame.svg)](https://github.com/shiguredo/ayame)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/OpenAyame/ayame.svg)](https://github.com/OpenAyame/ayame)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## WebRTC Signaling Server Ayame について
@@ -17,7 +17,7 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 詳細については下記をご確認ください。
 
-[OpenAyame プロジェクト](https://gist.github.com/voluntas/90cc9686a11de2f1acca845c6278a824)
+[OpenAyame プロジェクト](http://bit.ly/OpenAyame)
 
 ## 注意
 
@@ -34,9 +34,9 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 **このリポジトリにあるサンプルと全く同じ仕組みになっています**
 
 - Vue サンプル
-    - [shiguredo/ayame\-vue\-sample](https://github.com/shiguredo/ayame-vue-sample)
+    - [OpenAyame/ayame\-vue\-sample](https://github.com/OpenAyame/ayame-vue-sample)
 - React サンプル
-    - [shiguredo/ayame\-react\-sample](https://github.com/shiguredo/ayame-react-sample)
+    - [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
 ## 仕組みの詳細を知りたい
 
@@ -44,9 +44,9 @@ Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みく�
 
 ## Node.js (TypeScript) バージョン
 
-**今後のメンテナンス保証はありません**
+**今後のメンテナンスはありません**
 
-[shiguredo/ayame\-nodejs](https://github.com/shiguredo/ayame-nodejs)
+[OpenAyame/ayame\-nodejs](https://github.com/OpenAyame/ayame-nodejs)
 
 ## ライセンス
 
@@ -74,7 +74,7 @@ WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお�
 
 ### バグ報告
 
-https://github.com/shiguredo/ayame/issues
+https://github.com/OpenAyame/ayame/issues
 
 ### Discord
 
@@ -87,3 +87,4 @@ https://discord.gg/mDesh2E
 **時雨堂では有料サポートは提供しておりません**
 
 - [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
+
