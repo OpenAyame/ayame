@@ -7,6 +7,9 @@ document.getElementById("roomId").value = roomId;
 const clientId = randomString(17);
 const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
+const connectButton = document.getElementById('connect-button');
+const disconnectButton = document.getElementById('disconnect-button');
+disconnectButton.disabled = true;
 let localStream = null;
 let peerConnection = null;
 const iceServers = [{ 'urls': 'stun:stun.l.google.com:19302' }];
@@ -76,6 +79,8 @@ function connect() {
           break;
         }
         case 'accept': {
+          connectButton.disabled = true;
+          disconnectButton.disabled = false;
           if (!peerConnection) {
             console.log('make Offer');
             peerConnection = prepareNewConnection(true);
@@ -103,20 +108,21 @@ function connect() {
 
 // 切断処理
 function disconnect(){
+  connectButton.disabled = false;
+  disconnectButton.disabled = true;
   if (peerConnection) {
     if(peerConnection.iceConnectionState !== 'closed'){
       // peer connection を閉じる
       peerConnection.close();
       cleanupVideoElement(remoteVideo);
     }
-    if(ws && ws.readyState < 2){
-      ws.close();
-    }
-    ws = null;
-    isNegotiating = false;
-    localStream = null;
-    peerConnection = null;
   }
+  if(ws && ws.readyState < 2){
+    ws.close();
+  }
+  ws = null;
+  isNegotiating = false;
+  peerConnection = null;
   console.log('peerConnection is closed.');
 }
 
@@ -209,7 +215,7 @@ function prepareNewConnection(isOffer) {
       try {
         isNegotiating = true;
         if(isOffer){
-          const offer = await peerConnection.createOffer({
+          const offer = await peer.createOffer({
             'offerToReceiveAudio': true,
             'offerToReceiveVideo': true
           })
@@ -219,7 +225,7 @@ function prepareNewConnection(isOffer) {
           sendSdp(peer.localDescription);
           isNegotiating = false;
       }
-    } catch(error){
+      } catch(error){
       console.error('setLocalDescription(offer) ERROR: ', error);
     }
   }
@@ -233,11 +239,9 @@ function prepareNewConnection(isOffer) {
         break;
       case 'closed':
       case 'failed':
-        if (peerConnection) {
-          disconnect();
-        }
-        break;
       case 'disconnected':
+        cleanupVideoElement(remoteVideo);
+        disconnect();
         break;
     }
   };
@@ -258,7 +262,6 @@ function prepareNewConnection(isOffer) {
   } else {
     console.warn('no local stream, but continue.');
   }
-
 
   if (isUnifiedPlan(peer)) {
     console.log('peer is unified plan');
@@ -308,9 +311,6 @@ async function makeAnswer() {
 
 // Offer SDP を生成する
 async function setOffer(sessionDescription) {
-  if (peerConnection) {
-    console.error('peerConnection already exist!');
-  }
   peerConnection = prepareNewConnection(false);
   try{
     await peerConnection.setRemoteDescription(sessionDescription);

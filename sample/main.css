@@ -21,6 +21,10 @@ button {
   width: 8em;
 }
 
+button:disabled {
+  background-color: #aaa;
+}
+
 #title{
   position: absolute;
   z-index: 3;
