@@ -48,6 +48,12 @@ Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みく�
 
 [OpenAyame/ayame\-nodejs](https://github.com/OpenAyame/ayame-nodejs)
 
+
+## 関連プロダクト
+
+[hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
+
+
 ## ライセンス
 
 Apache License 2.0
