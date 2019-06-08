@@ -44,7 +44,8 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 	logger = setupLogger()
-	logger.Printf("WebRTC Signaling Server Ayame\n version %s\n running on http://%s (Press Ctrl+C quit)\n", AyameVersion, Options.Addr)
+	logger.Infof("WebRTC Signaling Server Ayame. version=%s", AyameVersion)
+	logger.Infof("running on http://%s (Press Ctrl+C quit)", Options.Addr)
 	// 引数の処理
 	if len(args) > 0 {
 		if args[0] == "version" {
