@@ -29,7 +29,12 @@ function connect() {
     alert("部屋のID を指定してください");
     return;
   }
-  localStorage.setItem(roomStorageKey, JSON.stringify([roomId, ...roomIds]));
+  let newRoomIds = [];
+  if(roomIds.length > 0 && roomId === roomIds[0]) newRoomIds = [...roomIds];
+  else {
+    newRoomIds = [roomId, ...roomIds];
+  }
+  localStorage.setItem(roomStorageKey, JSON.stringify(newRoomIds));
   recentRoomDiv.style.display = 'none';
   isNegotiating = false;
   // 新規に websocket を作成
