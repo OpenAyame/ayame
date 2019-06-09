@@ -4,17 +4,21 @@ import (
 	"flag"
 	"fmt"
 	logrus "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 var AyameVersion = "19.02.1"
 
 type AyameOptions struct {
-	LogDir         string
-	LogName        string
-	LogLevel       string
-	Url            string
-	OverWsPingPong bool
+	LogDir         string `yaml:"log_dir"`
+	LogName        string `yaml:"log_name"`
+	LogLevel       string `yaml:"log_level"`
+	Addr           string `yaml:"addr"`
+	Port           int    `yaml:"port"`
+	OverWsPingPong bool   `yaml:"over_ws_ping_pong"`
 }
 
 var (
@@ -25,28 +29,25 @@ var (
 
 // 初期化処理
 func init() {
-	logDir := flag.String("logDir", ".", "ayame log dir")
-	logName := flag.String("logName", "ayame.log", "ayame log name")
-	logLevel := flag.String("logLevel", "info", "ayame log name")
-	overWsPingPong := flag.Bool("overWsPingPong", false, "with over-WS Ping-Pong")
-	addr := flag.String("addr", "localhost", " http service address")
-	port := flag.String("port", "3000", " http service port")
-	flag.Parse()
-	Options = &AyameOptions{
-		LogDir:         *logDir,
-		LogName:        *logName,
-		LogLevel:       *logLevel,
-		Url:            fmt.Sprintf("%s:%s", *addr, *port),
-		OverWsPingPong: *overWsPingPong,
+	configFilePath := flag.String("c", "./config.yaml", "ayame の設定ファイルへのパス(yaml)")
+	// yaml ファイルを読み込み
+	buf, err := ioutil.ReadFile(*configFilePath)
+	if err != nil {
+		// 読み込めない場合 Fatal で終了
+		log.Fatal("cannot open config file, err=", err)
+	}
+	// yaml をパース
+	err = yaml.Unmarshal(buf, &Options)
+	if err != nil {
+		// パースに失敗した場合 Fatal で終了
+		log.Fatal("cannot parse config file, err=", err)
 	}
 }
 
 func main() {
+	logger = setupLogger()
 	flag.Parse()
 	args := flag.Args()
-	logger = setupLogger()
-	logger.Infof("WebRTC Signaling Server Ayame. version=%s", AyameVersion)
-	logger.Infof("running on http://%s (Press Ctrl+C quit)", Options.Url)
 	// 引数の処理
 	if len(args) > 0 {
 		if args[0] == "version" {
@@ -54,6 +55,9 @@ func main() {
 			return
 		}
 	}
+	url := fmt.Sprintf("%s:%d", Options.Addr, Options.Port)
+	logger.Infof("WebRTC Signaling Server Ayame. version=%s", AyameVersion)
+	logger.Infof("running on http://%s (Press Ctrl+C quit)", url)
 	hub := newHub()
 	go hub.run()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -62,5 +66,5 @@ func main() {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		wsHandler(hub, w, r)
 	})
-	logger.Fatal(http.ListenAndServe(Options.Url, nil))
+	logger.Fatal(http.ListenAndServe(url, nil))
 }
