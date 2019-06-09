@@ -63,6 +63,22 @@ $ ./ayame
 
 ## コマンド
 
+
+```
+$ ./ayame version
+time="2019-06-10T00:21:51+09:00" level=info msg="Setup log finished."
+time="2019-06-10T00:21:51+09:00" level=info msg="WebRTC Signaling Server Ayame. version=19.02.1"
+time="2019-06-10T00:21:51+09:00" level=info msg="running on http://localhost:3000 (Press Ctrl+C quit)"
+WebRTC Signaling Server Ayame version 19.02.1⏎
+```
+
+```
+$ ./ayame -addr localhost:3001
+time="2019-06-10T00:23:16+09:00" level=info msg="Setup log finished."
+time="2019-06-10T00:23:16+09:00" level=info msg="WebRTC Signaling Server Ayame. version=19.02.1"
+time="2019-06-10T00:23:16+09:00" level=info msg="running on http://localhost:3001 (Press Ctrl+C quit)"
+```
+
 ```
 $ ./ayame -help
 Usage of ./ayame:
@@ -100,8 +116,6 @@ ws.onmessage = (event) => {
         }
         ...
 ```
-
-
 
 
 ### ローカルで wss/https を試したい場合
