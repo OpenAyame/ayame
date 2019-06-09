@@ -61,6 +61,48 @@ $ ./ayame
 
 切断するときは「切断する」を選択してください。
 
+## コマンド
+
+```
+$ ./ayame -help
+Usage of ./ayame:
+  -addr string
+    	 http service address (default "localhost:3000")
+  -logDir string
+    	ayame log dir (default ".")
+  -logLevel string
+    	ayame log name (default "info")
+  -logName string
+    	ayame log name (default "ayame.log")
+  -overWsPingPong
+    	with over-WS Ping-Pong
+```
+
+### `overWsPingPong` オプションについて
+
+- `true` にした場合、 ayame はクライアントに対して(WebSocket の ping frame の代わりに) ** 9 ** 秒おきに JSON 形式で `{"type": "ping"}` メッセージを送信します。
+- これに対してクライアントは ** 10 ** 秒以内に JSON 形式で `{"type": "pong"}` を返すことで ping-pong を実現します。
+
+クライアント(javascript) のサンプルコードを以下に示します。
+
+```javascript
+ws = new WebSocket(signalingUrl);
+ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log(message.type)
+      switch(message.type){
+        case 'ping': {
+          console.log('Received Ping, Send Pong.');
+          ws.send(JSON.stringify({
+            "type": "pong"
+          }))
+          break;
+        }
+        ...
+```
+
+
+
 
 ### ローカルで wss/https を試したい場合
 
