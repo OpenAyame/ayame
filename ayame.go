@@ -45,7 +45,6 @@ func init() {
 }
 
 func main() {
-	logger = setupLogger()
 	flag.Parse()
 	args := flag.Args()
 	// 引数の処理
@@ -55,6 +54,7 @@ func main() {
 			return
 		}
 	}
+	logger = setupLogger()
 	url := fmt.Sprintf("%s:%d", Options.Addr, Options.Port)
 	logger.Infof("WebRTC Signaling Server Ayame. version=%s", AyameVersion)
 	logger.Infof("running on http://%s (Press Ctrl+C quit)", url)
