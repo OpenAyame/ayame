@@ -13,7 +13,7 @@ type AyameOptions struct {
 	LogDir         string
 	LogName        string
 	LogLevel       string
-	Addr           string
+	Url            string
 	OverWsPingPong bool
 }
 
@@ -29,13 +29,14 @@ func init() {
 	logName := flag.String("logName", "ayame.log", "ayame log name")
 	logLevel := flag.String("logLevel", "info", "ayame log name")
 	overWsPingPong := flag.Bool("overWsPingPong", false, "with over-WS Ping-Pong")
-	addr := flag.String("addr", "localhost:3000", " http service address")
+	addr := flag.String("addr", "localhost", " http service address")
+	port := flag.String("port", "3000", " http service port")
 	flag.Parse()
 	Options = &AyameOptions{
 		LogDir:         *logDir,
 		LogName:        *logName,
 		LogLevel:       *logLevel,
-		Addr:           *addr,
+		Url:            fmt.Sprintf("%s:%s", *addr, *port),
 		OverWsPingPong: *overWsPingPong,
 	}
 }
@@ -45,7 +46,7 @@ func main() {
 	args := flag.Args()
 	logger = setupLogger()
 	logger.Infof("WebRTC Signaling Server Ayame. version=%s", AyameVersion)
-	logger.Infof("running on http://%s (Press Ctrl+C quit)", Options.Addr)
+	logger.Infof("running on http://%s (Press Ctrl+C quit)", Options.Url)
 	// 引数の処理
 	if len(args) > 0 {
 		if args[0] == "version" {
@@ -61,5 +62,5 @@ func main() {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		wsHandler(hub, w, r)
 	})
-	logger.Fatal(http.ListenAndServe(Options.Addr, nil))
+	logger.Fatal(http.ListenAndServe(Options.Url, nil))
 }
