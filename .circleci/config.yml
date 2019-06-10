@@ -25,11 +25,11 @@ jobs:
             fi
       - add_ssh_keys
       - run:
-        name: create release
-        command: |
-          tag=$(semantics --output-tag)
-          if [ "$tag" ]; then
-          ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag ayame-linux-${tag} ayame-darwin-${tag}
-          else
-          echo "The commit message(s) did not indicate a major/minor/patch version."
-          fi
+          name: create release
+          command: |
+            tag=$(semantics --output-tag)
+            if [ "$tag" ]; then
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag ayame-linux-${tag} ayame-darwin-${tag}
+            else
+            echo "The commit message(s) did not indicate a major/minor/patch version."
+            fi
