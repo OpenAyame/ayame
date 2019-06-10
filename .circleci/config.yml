@@ -19,6 +19,7 @@ jobs:
       - run:
           name: run build
           command: |
+            go mod download
             go build -v
   deploy:
     docker:
