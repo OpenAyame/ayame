@@ -13,14 +13,22 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "ON"
     working_directory: /go/src/github.com/OpenAyame/ayame
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v1-{{ checksum "go.sum" }}
       - run:
           name: run build
           command: |
-            go mod download
             go build -v
+      - save_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
   deploy:
     docker:
       - image: circleci/golang:1.12
