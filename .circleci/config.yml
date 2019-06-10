@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.12
+    working_directory: /go/src/github.com/OpenAyame/ayame
+    steps:
+      - checkout
+      - run:
+          name: install ghr and semantics
+          command: |
+            go get -u github.com/tcnksm/ghr
+            go get -u github.com/stevenmatthewt/semantics
+      - run:
+          name: run tests
+          command: |
+            go fmt ./...
+      - run:
+          name: run build
+          command: |
+            tag=$(semantics --output-tag)
+            if [ "$tag" ]; then
+            GO111MODULE=on GOOS=linux GOARCH=amd64 go build -ldflags '-s -w -X main.AyameVersion=${tag}' -o ayame-linux-${tag}
+            GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -ldflags '-s -w -X main.AyameVersion=${tag}' -o ayame-darwin-${tag}
+            fi
+      - add_ssh_keys
+      - run:
+        name: create release
+        command: |
+          tag=$(semantics --output-tag)
+          if [ "$tag" ]; then
+          ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag ayame-linux-${tag} ayame-darwin-${tag}
+          else
+          echo "The commit message(s) did not indicate a major/minor/patch version."
+          fi
