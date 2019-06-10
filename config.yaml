@@ -1,0 +1,6 @@
+log_dir: .
+log_name: ayame.log
+log_level: info
+addr: localhost
+port: 3000
+over_ws_ping_pong: false

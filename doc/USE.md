@@ -66,37 +66,26 @@ $ ./ayame
 
 ```
 $ ./ayame version
-time="2019-06-10T00:21:51+09:00" level=info msg="Setup log finished."
-time="2019-06-10T00:21:51+09:00" level=info msg="WebRTC Signaling Server Ayame. version=19.02.1"
-time="2019-06-10T00:21:51+09:00" level=info msg="running on http://localhost:3000 (Press Ctrl+C quit)"
 WebRTC Signaling Server Ayame version 19.02.1⏎
 ```
 
 ```
-$ ./ayame -addr localhost:3001
+$ ./ayame -c ./config.yaml
 time="2019-06-10T00:23:16+09:00" level=info msg="Setup log finished."
 time="2019-06-10T00:23:16+09:00" level=info msg="WebRTC Signaling Server Ayame. version=19.02.1"
-time="2019-06-10T00:23:16+09:00" level=info msg="running on http://localhost:3001 (Press Ctrl+C quit)"
+time="2019-06-10T00:23:16+09:00" level=info msg="running on http://localhost:3000 (Press Ctrl+C quit)"
 ```
 
 ```
 $ ./ayame -help
 Usage of ./ayame:
-  -addr string
-    	 http service address (default "localhost:3000")
-  -logDir string
-    	ayame log dir (default ".")
-  -logLevel string
-    	ayame log name (default "info")
-  -logName string
-    	ayame log name (default "ayame.log")
-  -overWsPingPong
-    	with over-WS Ping-Pong
+  -c string
+    	ayame の設定ファイルへのパス(yaml) (default "./config.yaml")
 ```
 
-### `overWsPingPong` オプションについて
+## `over_ws_ping_pong` オプションについて
 
-- `true` にした場合、 ayame はクライアントに対して(WebSocket の ping frame の代わりに) ** 9 ** 秒おきに JSON 形式で `{"type": "ping"}` メッセージを送信します。
+- `config.yaml` にて `over_ws_ping_pong: true` に設定した場合、 ayame はクライアントに対して(WebSocket の ping frame の代わりに) ** 9 ** 秒おきに JSON 形式で `{"type": "ping"}` メッセージを送信します。
 - これに対してクライアントは ** 10 ** 秒以内に JSON 形式で `{"type": "pong"}` を返すことで ping-pong を実現します。
 
 クライアント(javascript) のサンプルコードを以下に示します。
