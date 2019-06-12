@@ -19,6 +19,13 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 [OpenAyame プロジェクト](https://gist.github.com/voluntas/90cc9686a11de2f1acca845c6278a824)
 
+## 開発について
+
+Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
+そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
+
+まずは Discord にてご連絡ください。
+
 ## 注意
 
 - Ayame は P2P にしか対応していません
