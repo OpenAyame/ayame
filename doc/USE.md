@@ -35,6 +35,12 @@ go 1.12
 $ go build
 ```
 
+`make` でもビルド出来ます。
+
+```
+$ make
+```
+
 ## サーバを起動する
 
 ビルドに成功したら、以下のコマンドで Ayame サーバーを起動することができます。
@@ -54,6 +60,51 @@ $ ./ayame
 ※ あくまで Peer 2 Peer なので、最大 2 クライアントまでの接続しかできません。
 
 切断するときは「切断する」を選択してください。
+
+## コマンド
+
+
+```
+$ ./ayame version
+WebRTC Signaling Server Ayame version 19.02.1⏎
+```
+
+```
+$ ./ayame -c ./config.yaml
+time="2019-06-10T00:23:16+09:00" level=info msg="Setup log finished."
+time="2019-06-10T00:23:16+09:00" level=info msg="WebRTC Signaling Server Ayame. version=19.02.1"
+time="2019-06-10T00:23:16+09:00" level=info msg="running on http://localhost:3000 (Press Ctrl+C quit)"
+```
+
+```
+$ ./ayame -help
+Usage of ./ayame:
+  -c string
+    	ayame の設定ファイルへのパス(yaml) (default "./config.yaml")
+```
+
+## `over_ws_ping_pong` オプションについて
+
+- `config.yaml` にて `over_ws_ping_pong: true` に設定した場合、 ayame はクライアントに対して(WebSocket の ping frame の代わりに) ** 9 ** 秒おきに JSON 形式で `{"type": "ping"}` メッセージを送信します。
+- これに対してクライアントは ** 10 ** 秒以内に JSON 形式で `{"type": "pong"}` を返すことで ping-pong を実現します。
+
+クライアント(javascript) のサンプルコードを以下に示します。
+
+```javascript
+ws = new WebSocket(signalingUrl);
+ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log(message.type)
+      switch(message.type){
+        case 'ping': {
+          console.log('Received Ping, Send Pong.');
+          ws.send(JSON.stringify({
+            "type": "pong"
+          }))
+          break;
+        }
+        ...
+```
 
 
 ### ローカルで wss/https を試したい場合

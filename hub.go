@@ -7,8 +7,9 @@ type Broadcast struct {
 }
 
 type RegisterInfo struct {
-	roomId string
-	client *Client
+	roomId   string
+	clientId string
+	client   *Client
 }
 
 type Hub struct {
@@ -42,8 +43,10 @@ func (h *Hub) run() {
 	for {
 		select {
 		case registerInfo := <-h.register:
-			roomId := registerInfo.roomId
 			client := registerInfo.client
+			clientId := registerInfo.clientId
+			roomId := registerInfo.roomId
+			client = client.Setup(roomId, clientId)
 			if h.clients[roomId] == nil {
 				h.clients[roomId] = make(map[*Client]bool)
 			}
@@ -53,14 +56,14 @@ func (h *Hub) run() {
 				msg := &RejectMessage{
 					Type: "reject",
 				}
-				client.conn.WriteJSON(msg)
+				client.SendJSON(msg)
 				client.conn.Close()
 				break
 			}
 			msg := &AcceptMessage{
 				Type: "accept",
 			}
-			client.conn.WriteJSON(msg)
+			client.SendJSON(msg)
 		case registerInfo := <-h.unregister:
 			roomId := registerInfo.roomId
 			client := registerInfo.client

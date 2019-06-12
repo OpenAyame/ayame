@@ -1,7 +1,8 @@
 # WebRTC Signaling Server Ayame
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/ayame.svg)](https://github.com/shiguredo/ayame)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/OpenAyame/ayame.svg)](https://github.com/OpenAyame/ayame)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![CircleCI](https://circleci.com/gh/OpenAyame/ayame.svg?style=svg)](https://circleci.com/gh/OpenAyame/ayame)
 
 ## WebRTC Signaling Server Ayame について
 
@@ -17,7 +18,7 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 詳細については下記をご確認ください。
 
-[OpenAyame プロジェクト](https://gist.github.com/voluntas/90cc9686a11de2f1acca845c6278a824)
+[OpenAyame プロジェクト](http://bit.ly/OpenAyame)
 
 ## 開発について
 
@@ -41,9 +42,9 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 **このリポジトリにあるサンプルと全く同じ仕組みになっています**
 
 - Vue サンプル
-    - [shiguredo/ayame\-vue\-sample](https://github.com/shiguredo/ayame-vue-sample)
+    - [OpenAyame/ayame\-vue\-sample](https://github.com/OpenAyame/ayame-vue-sample)
 - React サンプル
-    - [shiguredo/ayame\-react\-sample](https://github.com/shiguredo/ayame-react-sample)
+    - [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
 ## 仕組みの詳細を知りたい
 
@@ -51,9 +52,15 @@ Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みく�
 
 ## Node.js (TypeScript) バージョン
 
-**今後のメンテナンス保証はありません**
+**今後のメンテナンスはありません**
 
-[shiguredo/ayame\-nodejs](https://github.com/shiguredo/ayame-nodejs)
+[OpenAyame/ayame\-nodejs](https://github.com/OpenAyame/ayame-nodejs)
+
+
+## 関連プロダクト
+
+[hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
+
 
 ## ライセンス
 
@@ -81,7 +88,7 @@ WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお�
 
 ### バグ報告
 
-https://github.com/shiguredo/ayame/issues
+https://github.com/OpenAyame/ayame/issues
 
 ### Discord
 
@@ -94,3 +101,4 @@ https://discord.gg/mDesh2E
 **時雨堂では有料サポートは提供しておりません**
 
 - [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
+

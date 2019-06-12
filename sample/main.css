@@ -8,6 +8,15 @@ body {
   width: 100%;
 }
 
+a {
+  color: #4285F4;
+}
+
+a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 button {
   background-color: #4285F4;
   border: none;
@@ -19,6 +28,10 @@ button {
   margin: 0 5px 20px 5px;
   padding: 0.5em 0.7em 0.5em 0.7em;
   width: 8em;
+}
+
+button:disabled {
+  background-color: #aaa;
 }
 
 #title{
@@ -84,4 +97,22 @@ button {
   max-width: 17%;
   position: absolute;
   transition: opacity 1s;
+}
+
+#recent-rooms {
+  position: absolute;
+  top: 250px;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+#recent-item-list {
+  list-style-type: none;
+  padding: 0 15px;
+}
+
+p {
+  color: #eee;
+  font-weight: 300;
+  line-height: 1.6em;
 }
