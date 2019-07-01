@@ -31,6 +31,10 @@ type Message struct {
 	ClientId string `json:"client_id"`
 }
 
+type PingMessage struct {
+	Type string `json:"type"`
+}
+
 func (c *Client) listen(cancel context.CancelFunc) {
 	defer func() {
 		cancel()
@@ -111,7 +115,7 @@ func (c *Client) broadcast(ctx context.Context) {
 			// over Ws で ping-pong を設定している場合
 			if Options.OverWsPingPong {
 				logger.Info("send ping over WS")
-				pingMsg := &Message{Type: "ping"}
+				pingMsg := &PingMessage{Type: "ping"}
 				if err := c.SendJSON(pingMsg); err != nil {
 					return
 				}
