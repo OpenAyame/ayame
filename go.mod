@@ -1,4 +1,4 @@
-module github.com/shiguredo/ayame
+module github.com/OpenAyame/ayame
 
 require (
 	cloud.google.com/go v0.40.0 // indirect
