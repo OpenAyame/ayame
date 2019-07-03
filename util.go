@@ -5,17 +5,22 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 // JSON HTTP Request をするだけのラッパー
-func PostRequest(url string, reqBody interface{}) ([]byte, error) {
+func PostRequest(reqUrl string, reqBody interface{}) ([]byte, error) {
+	_, err := url.ParseRequestURI(reqUrl)
+	if err != nil {
+		return nil, err
+	}
 	reqJson, err := json.Marshal(reqBody)
 	if err != nil {
 		return nil, err
 	}
 	req, err := http.NewRequest(
 		"POST",
-		url,
+		reqUrl,
 		bytes.NewBuffer([]byte(reqJson)),
 	)
 	if err != nil {

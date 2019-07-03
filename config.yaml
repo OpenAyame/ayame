@@ -5,4 +5,3 @@ addr: localhost
 port: 3000
 over_ws_ping_pong: true # json 形式で ping-pong するか
 auth_webhook_url: http://127.0.0.1:8000/authn/webhook # 認証ウェブフックURL
-use_two_authn: true # 多段認証をするかどうか
