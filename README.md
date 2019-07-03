@@ -20,6 +20,13 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 [OpenAyame プロジェクト](http://bit.ly/OpenAyame)
 
+## 開発について
+
+Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
+そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
+
+まずは Discord にてご連絡ください。
+
 ## 注意
 
 - Ayame は P2P にしか対応していません
@@ -30,30 +37,39 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください。
 
-## サンプルを使ってみたい
+## SDK を使ってみる
 
-**このリポジトリにあるサンプルと全く同じ仕組みになっています**
+簡単に Ayame を利用できる Web SDK を用意しています。
 
-- Vue サンプル
-    - [OpenAyame/ayame\-vue\-sample](https://github.com/OpenAyame/ayame-vue-sample)
-- React サンプル
-    - [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
+[OpenAyame/ayame\-web\-sdk: Web SDK for WebRTC Signaling Server Ayame](https://github.com/OpenAyame/ayame-web-sdk)
+
+```javascript
+const conn = Ayame.connection('wss://example.com:3000/ws', 'test-room');
+const startConn = async () => {
+    const mediaStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+    const stream = await conn.connect(mediaStream);
+    conn.on('disconnect', (e) => console.log(e));
+    conn.on('addstream', (e) => {
+        document.querySelector('#remote-video').srcObject = e.stream;
+    });
+    document.querySelector('#local-video').srcObject = stream;
+};
+startConn();
+```
+
+## React サンプルを使ってみる
+
+**このリポジトリにあるサンプルと全く同じ動作になっています**
+
+[OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
 ## 仕組みの詳細を知りたい
 
 Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
 
-## Node.js (TypeScript) バージョン
-
-**今後のメンテナンスはありません**
-
-[OpenAyame/ayame\-nodejs](https://github.com/OpenAyame/ayame-nodejs)
-
-
 ## 関連プロダクト
 
 [hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
-
 
 ## ライセンス
 
