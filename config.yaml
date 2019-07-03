@@ -4,5 +4,4 @@ log_level: info
 addr: localhost
 port: 3000
 over_ws_ping_pong: true
-use_auth_webhook: true
 auth_webhook_url: http://127.0.0.1:8000/auth/webhook

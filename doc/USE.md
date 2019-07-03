@@ -107,9 +107,9 @@ ws.onmessage = (event) => {
 ```
 
 
-## `use_auth_webhook` オプションについて
+## `auth_webhook_url` オプションについて
 
-`config.yaml` にて `use_auth_webhook: true` に設定した場合、 ayame は client が {"type": "register" } メッセージを送信してきた際に `config.yaml` に指定した `auth_webhook_url` に対して認証リクエストをJSON 形式で POST します。
+`config.yaml` にて `auth_webhook_url` を指定している場合、 ayame は client が {"type": "register" } メッセージを送信してきた際に `config.yaml` に指定した `auth_webhook_url` に対して認証リクエストをJSON 形式で POST します。
 
 
 このとき、{"type": "register" } のメッセージに
