@@ -7,7 +7,7 @@ import (
 
 // webhook リクエスト
 type WebhookRequest struct {
-	Key      string `json:key`
+	Key      string `json:"key"`
 	Metadata string `json:"authn_metadata"`
 }
 
