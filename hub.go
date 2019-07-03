@@ -10,6 +10,8 @@ type RegisterInfo struct {
 	roomId   string
 	clientId string
 	client   *Client
+	metadata string
+	key      string
 }
 
 type Hub struct {
@@ -59,8 +61,9 @@ func (h *Hub) run() {
 				client.conn.Close()
 				break
 			}
+			// auth webhook を用いる場合
 			if Options.UseAuthWebhook {
-				_, err := authWebhookRequest()
+				_, err := authWebhookRequest(registerInfo.key, registerInfo.metadata)
 				if err != nil {
 					msg := &RejectMessage{
 						Type: "reject",
