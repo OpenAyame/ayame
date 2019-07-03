@@ -107,6 +107,27 @@ ws.onmessage = (event) => {
 ```
 
 
+## `use_auth_webhook` オプションについて
+
+`config.yaml` にて `use_auth_webhook: true` に設定した場合、 ayame は client が {"type": "register" } メッセージを送信してきた際に `config.yaml` に指定した `auth_webhook_url` に対して認証リクエストをJSON 形式で POST します。
+
+
+このとき、{"type": "register" } のメッセージに
+
+- `"metadata"`(string)
+- `"key"`(string)
+
+を含めていると、そのデータを ayame はそのまま指定した `auth_webhook_url` に JSON 形式で送信します。
+
+
+また、 auth webhook の返り値は JSON 形式で、以下のように想定されています。
+
+- `allowed`: boolean。認証の可否
+- `reason`: string。認証不可の際の理由
+
+`allowed` が false の場合 client の ayame への WebSocket 接続は切断されます。
+
+
 ### ローカルで wss/https を試したい場合
 
 [ngrok \- secure introspectable tunnels to localhost](https://ngrok.com/) の使用を推奨しています。

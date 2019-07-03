@@ -29,8 +29,9 @@ type Message struct {
 	Type     string `json:"type"`
 	RoomId   string `json:"room_id"`
 	ClientId string `json:"client_id"`
+	Metadata string `json:"metatata"`
+	Key      string `json:"key"`
 }
-
 type PingMessage struct {
 	Type string `json:"type"`
 }
@@ -61,9 +62,11 @@ func (c *Client) listen(cancel context.CancelFunc) {
 					clientId: msg.ClientId,
 					client:   c,
 					roomId:   msg.RoomId,
+					key:      msg.Key,
+					metadata: msg.Metadata,
 				}
 			} else {
-				logger.Printf("onmessage: %v", string(message))
+				logger.Printf("onmessage: %s", message)
 				logger.Printf("client roomId: %s", c.roomId)
 				if c.roomId == "" {
 					logger.Printf("client does not registered: %v", c)

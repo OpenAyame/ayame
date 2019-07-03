@@ -10,6 +10,8 @@ type RegisterInfo struct {
 	roomId   string
 	clientId string
 	client   *Client
+	metadata string
+	key      string
 }
 
 type Hub struct {
@@ -50,8 +52,7 @@ func (h *Hub) run() {
 			if h.clients[roomId] == nil {
 				h.clients[roomId] = make(map[*Client]bool)
 			}
-			h.clients[roomId][client] = true
-			ok := len(h.clients[roomId]) < 3
+			ok := len(h.clients[roomId]) < 2
 			if !ok {
 				msg := &RejectMessage{
 					Type: "reject",
@@ -60,9 +61,22 @@ func (h *Hub) run() {
 				client.conn.Close()
 				break
 			}
+			// auth webhook を用いる場合
+			if Options.UseAuthWebhook {
+				_, err := authWebhookRequest(registerInfo.key, registerInfo.metadata)
+				if err != nil {
+					msg := &RejectMessage{
+						Type: "reject",
+					}
+					client.SendJSON(msg)
+					client.conn.Close()
+					break
+				}
+			}
 			msg := &AcceptMessage{
 				Type: "accept",
 			}
+			h.clients[roomId][client] = true
 			client.SendJSON(msg)
 		case registerInfo := <-h.unregister:
 			roomId := registerInfo.roomId
