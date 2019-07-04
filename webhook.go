@@ -52,6 +52,7 @@ func AuthWebhookRequest(key string, roomId string, metadata interface{}, host st
 			logger.Info("two authn webhook not allowed, resp=", &twoAuthnResp)
 			return nil, errors.New("Not Allowed")
 		}
+		logger.Info("two authn webhook allowed, resp=", &twoAuthnResp)
 		return twoAuthnResp.AuthzMetadata, nil
 	}
 	logger.Info("auth webhook allowed, resp=", whResp)
