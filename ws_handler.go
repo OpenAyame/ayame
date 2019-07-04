@@ -26,11 +26,11 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
-	Type     string `json:"type"`
-	RoomId   string `json:"room_id"`
-	ClientId string `json:"client_id"`
-	Metadata string `json:"metatata"`
-	Key      string `json:"key"`
+	Type     string      `json:"type"`
+	RoomId   string      `json:"room_id"`
+	ClientId string      `json:"client_id"`
+	Metadata interface{} `json:"authn_metadata"`
+	Key      string      `json:"key"`
 }
 type PingMessage struct {
 	Type string `json:"type"`
@@ -137,7 +137,13 @@ func wsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		logger.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
+	origin := r.Header.Get("Origin")
+	host, err := TrimOriginToHost(origin)
+	if err != nil {
+		logger.Println(err)
+		return
+	}
+	client := &Client{hub: hub, conn: c, host: *host, send: make(chan []byte, 256)}
 	logger.Printf("[WS] connected")
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)

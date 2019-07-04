@@ -10,7 +10,7 @@ type RegisterInfo struct {
 	roomId   string
 	clientId string
 	client   *Client
-	metadata string
+	metadata interface{}
 	key      string
 }
 
@@ -26,6 +26,11 @@ type Hub struct {
 
 type AcceptMessage struct {
 	Type string `json:"type"`
+}
+
+type AcceptMetadataMessage struct {
+	Type     string      `json:"type"`
+	Metadata interface{} `json:"authz_metadata"`
 }
 
 type RejectMessage struct {
@@ -63,7 +68,7 @@ func (h *Hub) run() {
 			}
 			// auth webhook を用いる場合
 			if Options.AuthWebhookUrl != "" {
-				_, err := authWebhookRequest(registerInfo.key, registerInfo.metadata)
+				metadata, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
 				if err != nil {
 					msg := &RejectMessage{
 						Type: "reject",
@@ -72,12 +77,27 @@ func (h *Hub) run() {
 					client.conn.Close()
 					break
 				}
+				if metadata != nil {
+					msg := &AcceptMetadataMessage{
+						Type:     "accept",
+						Metadata: metadata,
+					}
+					h.clients[roomId][client] = true
+					client.SendJSON(msg)
+				} else {
+					msg := &AcceptMessage{
+						Type: "accept",
+					}
+					h.clients[roomId][client] = true
+					client.SendJSON(msg)
+				}
+			} else {
+				msg := &AcceptMessage{
+					Type: "accept",
+				}
+				h.clients[roomId][client] = true
+				client.SendJSON(msg)
 			}
-			msg := &AcceptMessage{
-				Type: "accept",
-			}
-			h.clients[roomId][client] = true
-			client.SendJSON(msg)
 		case registerInfo := <-h.unregister:
 			roomId := registerInfo.roomId
 			client := registerInfo.client
