@@ -7,8 +7,11 @@ type Broadcast struct {
 }
 
 type RegisterInfo struct {
-	roomId string
-	client *Client
+	roomId   string
+	clientId string
+	client   *Client
+	metadata interface{}
+	key      string
 }
 
 type Hub struct {
@@ -29,6 +32,11 @@ type RejectMessage struct {
 	Type string `json:"type"`
 }
 
+type AcceptMetadataMessage struct {
+	Type     string      `json:"type"`
+	Metadata interface{} `json:"authzMetadata"`
+}
+
 func newHub() *Hub {
 	return &Hub{
 		broadcast:  make(chan *Broadcast),
@@ -42,25 +50,54 @@ func (h *Hub) run() {
 	for {
 		select {
 		case registerInfo := <-h.register:
-			roomId := registerInfo.roomId
 			client := registerInfo.client
+			clientId := registerInfo.clientId
+			roomId := registerInfo.roomId
+			client = client.Setup(roomId, clientId)
 			if h.clients[roomId] == nil {
 				h.clients[roomId] = make(map[*Client]bool)
 			}
-			h.clients[roomId][client] = true
-			ok := len(h.clients[roomId]) < 3
+			ok := len(h.clients[roomId]) < 2
 			if !ok {
 				msg := &RejectMessage{
 					Type: "reject",
 				}
-				client.conn.WriteJSON(msg)
+				client.SendJSON(msg)
 				client.conn.Close()
 				break
 			}
-			msg := &AcceptMessage{
-				Type: "accept",
+			// auth webhook を用いる場合
+			if Options.AuthWebhookUrl != "" {
+				metadata, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
+				if err != nil {
+					msg := &RejectMessage{
+						Type: "reject",
+					}
+					client.SendJSON(msg)
+					client.conn.Close()
+					break
+				}
+				if metadata != nil {
+					msg := &AcceptMetadataMessage{
+						Type:     "accept",
+						Metadata: metadata,
+					}
+					h.clients[roomId][client] = true
+					client.SendJSON(msg)
+				} else {
+					msg := &AcceptMessage{
+						Type: "accept",
+					}
+					h.clients[roomId][client] = true
+					client.SendJSON(msg)
+				}
+			} else {
+				msg := &AcceptMessage{
+					Type: "accept",
+				}
+				h.clients[roomId][client] = true
+				client.SendJSON(msg)
 			}
-			client.conn.WriteJSON(msg)
 		case registerInfo := <-h.unregister:
 			roomId := registerInfo.roomId
 			client := registerInfo.client

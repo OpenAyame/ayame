@@ -1,13 +1,16 @@
 # WebRTC Signaling Server Ayame
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/ayame.svg)](https://github.com/shiguredo/ayame)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/OpenAyame/ayame.svg)](https://github.com/OpenAyame/ayame)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![CircleCI](https://circleci.com/gh/OpenAyame/ayame.svg?style=svg)](https://circleci.com/gh/OpenAyame/ayame)
 
 ## WebRTC Signaling Server Ayame について
 
 WebRTC Signaling Server Ayame は WebRTC 向けのシグナリングサーバです。
 
-WebRTC の P2P でのみ動作します。また動作を 1 対 1 に制限することでコードを小さく保っています。
+WebRTC の P2P でのみ動作します。また動作を 1 ルームを最大 2 名に制限することでコードを小さく保っています。
+
+AppRTC 互換のルーム機能を持っており、ルーム数はサーバスペックに依存しますが 1 万までは処理できるようにできてます。
 
 ## OpenAyame プロジェクトについて
 
@@ -15,36 +18,58 @@ OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソ
 
 詳細については下記をご確認ください。
 
-[OpenAyame プロジェクト](https://gist.github.com/voluntas/90cc9686a11de2f1acca845c6278a824)
+[OpenAyame プロジェクト](http://bit.ly/OpenAyame)
+
+## 開発について
+
+Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
+そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
+
+まずは Discord にてご連絡ください。
 
 ## 注意
 
 - Ayame は P2P にしか対応していません
-- Ayame は 1 対 1 にしか対応していません
+- Ayame は 1 ルーム最大 2 名までしか対応していません
 - サンプルが利用している STUN サーバは Google のものを利用しています
 
 ## 使ってみる
 
 Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください。
 
-## サンプルを使ってみたい
+## SDK を使ってみる
 
-**このリポジトリにあるサンプルと全く同じ仕組みになっています**
+簡単に Ayame を利用できる Web SDK を用意しています。
 
-- Vue サンプル
-    - [shiguredo/ayame\-vue\-sample](https://github.com/shiguredo/ayame-vue-sample)
-- React サンプル
-    - [shiguredo/ayame\-react\-sample](https://github.com/shiguredo/ayame-react-sample)
+[OpenAyame/ayame\-web\-sdk: Web SDK for WebRTC Signaling Server Ayame](https://github.com/OpenAyame/ayame-web-sdk)
+
+```javascript
+const conn = Ayame.connection('wss://example.com:3000/ws', 'test-room');
+const startConn = async () => {
+    const mediaStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+    const stream = await conn.connect(mediaStream);
+    conn.on('disconnect', (e) => console.log(e));
+    conn.on('addstream', (e) => {
+        document.querySelector('#remote-video').srcObject = e.stream;
+    });
+    document.querySelector('#local-video').srcObject = stream;
+};
+startConn();
+```
+
+## React サンプルを使ってみる
+
+**このリポジトリにあるサンプルと全く同じ動作になっています**
+
+[OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
 ## 仕組みの詳細を知りたい
 
 Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
 
-## Node.js (TypeScript) バージョン
+## 関連プロダクト
 
-**今後のメンテナンス保証はありません**
-
-[shiguredo/ayame\-nodejs](https://github.com/shiguredo/ayame-nodejs)
+[hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
 
 ## ライセンス
 
@@ -72,7 +97,7 @@ WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお�
 
 ### バグ報告
 
-https://github.com/shiguredo/ayame/issues
+https://github.com/OpenAyame/ayame/issues
 
 ### Discord
 
@@ -84,4 +109,5 @@ https://discord.gg/mDesh2E
 
 **時雨堂では有料サポートは提供しておりません**
 
-- [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料サポートを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
+- [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
+

@@ -1,12 +1,18 @@
 // シグナリングサーバのURLを指定する
 let wsUrl = 'ws://localhost:3000/ws';
-document.getElementById("url").value = wsUrl;
-let ws = null;
-let roomId = randomString(9);
-document.getElementById("roomId").value = roomId;
+const roomStorageKey = "OPEN-AYAME-SAMPLE-ROOM-IDS";
+const roomInput = document.getElementById("roomId");
+const recentRoomDiv = document.getElementById("recent-rooms");
 const clientId = randomString(17);
 const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
+const connectButton = document.getElementById('connect-button');
+const disconnectButton = document.getElementById('disconnect-button');
+document.getElementById("url").value = wsUrl;
+let ws = null;
+let roomId = randomString(9);
+roomInput.value = roomId;
+let roomIds = [];
 let localStream = null;
 let peerConnection = null;
 const iceServers = [{ 'urls': 'stun:stun.l.google.com:19302' }];
@@ -14,7 +20,7 @@ const peerConnectionConfig = {
   'iceServers': iceServers
 };
 let isNegotiating = false;
-
+disconnectButton.disabled = true;
 
 // 接続処理
 function connect() {
@@ -23,6 +29,13 @@ function connect() {
     alert("部屋のID を指定してください");
     return;
   }
+  let newRoomIds = [];
+  if(roomIds.length > 0 && roomId === roomIds[0]) newRoomIds = [...roomIds];
+  else {
+    newRoomIds = [roomId, ...roomIds];
+  }
+  localStorage.setItem(roomStorageKey, JSON.stringify(newRoomIds));
+  recentRoomDiv.style.display = 'none';
   isNegotiating = false;
   // 新規に websocket を作成
   if(!ws){
@@ -33,13 +46,22 @@ function connect() {
     console.log('ws open()');
     ws.send(JSON.stringify({
       "type": "register",
-      "room_id": roomId,
-      "client_id": clientId
+      "roomId": roomId,
+      "clientId": clientId,
+      "authnMetadata": { "hoge": "fuga" }
     }))
     ws.onmessage = (event) => {
       console.log('ws onmessage() data:', event.data);
       const message = JSON.parse(event.data);
+      console.log(message.type)
       switch(message.type){
+        case 'ping': {
+          console.log('Received Ping, Send Pong.');
+          ws.send(JSON.stringify({
+            "type": "pong"
+          }))
+          break;
+        }
         case 'offer': {
           console.log('Received offer ...');
           setOffer(message);
@@ -68,6 +90,8 @@ function connect() {
           break;
         }
         case 'accept': {
+          connectButton.disabled = true;
+          disconnectButton.disabled = false;
           if (!peerConnection) {
             console.log('make Offer');
             peerConnection = prepareNewConnection(true);
@@ -88,22 +112,30 @@ function connect() {
   ws.onerror = (error) => {
     console.error('ws onerror() ERROR:', error);
   };
+  ws.onclose = (event) => {
+    disconnect();
+  };
 }
 
 // 切断処理
 function disconnect(){
+  connectButton.disabled = false;
+  disconnectButton.disabled = true;
   if (peerConnection) {
     if(peerConnection.iceConnectionState !== 'closed'){
       // peer connection を閉じる
       peerConnection.close();
       cleanupVideoElement(remoteVideo);
     }
-    if(ws && ws.readyState < 2){
-      ws.close();
-    }
-    ws = null;
-    peerConnection = null;
   }
+  if(ws && ws.readyState < 2){
+    ws.close();
+  }
+  ws = null;
+  isNegotiating = false;
+  peerConnection = null;
+  recentRoomDiv.style.display = 'block';
+  loadLocalRoomIds();
   console.log('peerConnection is closed.');
 }
 
@@ -114,7 +146,7 @@ function onChangeWsUrl() {
 }
 
 function onChangeRoomId() {
-  roomId = document.getElementById("roomId").value;
+  roomId = roomInput;
   console.log('room id changes', roomId);
 }
 
@@ -196,7 +228,7 @@ function prepareNewConnection(isOffer) {
       try {
         isNegotiating = true;
         if(isOffer){
-          const offer = await peerConnection.createOffer({
+          const offer = await peer.createOffer({
             'offerToReceiveAudio': true,
             'offerToReceiveVideo': true
           })
@@ -206,7 +238,7 @@ function prepareNewConnection(isOffer) {
           sendSdp(peer.localDescription);
           isNegotiating = false;
       }
-    } catch(error){
+      } catch(error){
       console.error('setLocalDescription(offer) ERROR: ', error);
     }
   }
@@ -220,11 +252,9 @@ function prepareNewConnection(isOffer) {
         break;
       case 'closed':
       case 'failed':
-        if (peerConnection) {
-          disconnect();
-        }
-        break;
       case 'disconnected':
+        cleanupVideoElement(remoteVideo);
+        disconnect();
         break;
     }
   };
@@ -246,7 +276,18 @@ function prepareNewConnection(isOffer) {
     console.warn('no local stream, but continue.');
   }
 
+  if (isUnifiedPlan(peer)) {
+    console.log('peer is unified plan');
+    peer.addTransceiver('video', {direction: 'recvonly'});
+    peer.addTransceiver('audio', {direction: 'recvonly'});
+  }
   return peer;
+}
+
+
+function isUnifiedPlan(peer) {
+  const config = peer.getConfiguration();
+  return ('addTransceiver' in peer) && (!('sdpSemantics' in config) || config.sdpSemantics === "unified-plan");
 }
 
 // sdp を ws で送る
@@ -283,9 +324,6 @@ async function makeAnswer() {
 
 // Offer SDP を生成する
 async function setOffer(sessionDescription) {
-  if (peerConnection) {
-    console.error('peerConnection already exist!');
-  }
   peerConnection = prepareNewConnection(false);
   try{
     await peerConnection.setRemoteDescription(sessionDescription);
@@ -334,3 +372,31 @@ function randomString(strLength) {
 }
 
 startVideo();
+
+
+// ここからルームID の取得の処理
+
+function setRoomId(r) {
+  roomId = r;
+  roomInput.value = roomId;
+}
+
+function loadLocalRoomIds() {
+  const roomUl = document.getElementById('recent-item-list');
+  const itemJSON = localStorage.getItem(roomStorageKey);
+  if (itemJSON) {
+    roomIds = JSON.parse(itemJSON).slice(0, 7);
+  }
+  const fragment = document.createDocumentFragment();
+  roomUl.innerHTML = '';
+  roomIds.forEach(r => {
+    const roomLi = document.createElement('li');
+    roomLi.id = 'recent-items-' + roomId;
+    roomLi.innerHTML = `<a onclick="setRoomId(${r})">${r}</a>`;
+    fragment.appendChild(roomLi);
+  });
+
+  roomUl.appendChild(fragment);
+}
+
+loadLocalRoomIds();

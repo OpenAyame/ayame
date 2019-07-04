@@ -24,15 +24,21 @@ $ ./
 
 ## Go のインストール
 
-推奨バージョンは 2019/2/12 時点で以下のようになります。
+推奨バージョンは以下のようになります。
 ```
-go 1.11.5
+go 1.12
 ```
 
 ## ビルドする
 
 ```
 $ go build
+```
+
+`make` でもビルド出来ます。
+
+```
+$ make
 ```
 
 ## サーバを起動する
@@ -55,6 +61,117 @@ $ ./ayame
 
 切断するときは「切断する」を選択してください。
 
+## コマンド
+
+
+```
+$ ./ayame version
+WebRTC Signaling Server Ayame version 19.02.1⏎
+```
+
+```
+$ ./ayame -c ./config.yaml
+time="2019-06-10T00:23:16+09:00" level=info msg="Setup log finished."
+time="2019-06-10T00:23:16+09:00" level=info msg="WebRTC Signaling Server Ayame. version=19.02.1"
+time="2019-06-10T00:23:16+09:00" level=info msg="running on http://localhost:3000 (Press Ctrl+C quit)"
+```
+
+```
+$ ./ayame -help
+Usage of ./ayame:
+  -c string
+    	ayame の設定ファイルへのパス(yaml) (default "./config.yaml")
+```
+
+## `over_ws_ping_pong` オプションについて
+
+- `config.yaml` にて `over_ws_ping_pong: true` に設定した場合、 ayame はクライアントに対して(WebSocket の ping frame の代わりに) ** 9 ** 秒おきに JSON 形式で `{"type": "ping"}` メッセージを送信します。
+- これに対してクライアントは ** 10 ** 秒以内に JSON 形式で `{"type": "pong"}` を返すことで ping-pong を実現します。
+
+クライアント(javascript) のサンプルコードを以下に示します。
+
+```javascript
+ws = new WebSocket(signalingUrl);
+ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log(message.type)
+      switch(message.type){
+        case 'ping': {
+          console.log('Received Ping, Send Pong.');
+          ws.send(JSON.stringify({
+            "type": "pong"
+          }))
+          break;
+        }
+        ...
+```
+
+
+## `register` メッセージについて
+
+クライアントは ayame への接続可否を問い合わせるために WebSocket に接続した際に、まず `"type": "register"` のJSON メッセージを WS で送信する必要があります。
+register で送信できるプロパティは以下になります。
+
+
+- `"type"`: (string): 必須。 `"register"` を指定する。
+- `"clientId"`: (string): 必須
+- `"roomId": (string): 必須
+- `"key"`(string): Optional
+- `"authnMetadata"`(Object): Optional
+    - 多段ウェブフック認証の際に利用することができます。多段ウェブフック認証については後述します。
+
+
+## `auth_webhook_url` オプションについて
+
+`config.yaml` にて `auth_webhook_url` を指定している場合、 ayame は client が {"type": "register" } メッセージを送信してきた際に `config.yaml` に指定した `auth_webhook_url` に対して認証リクエストをJSON 形式で POST します。
+
+
+このとき、{"type": "register" } のメッセージに
+
+- `"key"`(string)
+- `"room_id"`: (string)
+
+を含めていると、そのデータを ayame はそのまま指定した `auth_webhook_url` に JSON 形式で送信します。
+
+
+また、 auth webhook の返り値は JSON 形式で、以下のように想定されています。
+
+- `allowed`: boolean。認証の可否 (必須)
+- `reason`: string。認証不可の際の理由 (`allowed` が false の場合のみ必須)
+- `auth_webhook_url`: 多段認証用の webhook url。(optional、多段認証をしない場合不要)
+    - 多段認証については次の項で説明します。
+
+`allowed` が false の場合 client の ayame への WebSocket 接続は切断されます。
+
+この auth_webhook はシグナリング key とroom ID の結びつきを確認する想定のものです。
+
+
+### 多段ウェブフック認証について
+
+`auth_webhook_url` を指定して、その `auth_webhook_url` からの返り値の JSON プロパティに `auth_webhook_url` が指定してある場合、
+ayame は通常の認証 wehbook での認証後:wその URL に対してさらに認証リクエストを POST します。
+この `auth_webhook_url` へのリクエスト、レスポンスは以下のように想定されています。
+
+#### リクエスト
+
+- `host`: string。クライアントの host。
+- `authn_metadata`(Object)
+    - register 時に `authn_metadata` をプロパティとして指定していると、その値がそのまま付与されます。
+
+
+#### レスポンス
+
+- `allowed`: boolean。認証の可否 (必須)
+- `reason`: string。認証不可の際の理由 (`allowed` が false の場合のみ)
+- `authzMetadata`(Object, Optional)
+    - 任意に払い出せるメタデータ。 client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる。
+
+
+```
+{"allowed": true, "authzMetadata": {"username": "kdxu", "owner": "true"}}
+```
+
+この多段 auth_webhook は利用者が指定した認証ウェブフック URL を利用するためのものとして想定しています。
 
 ### ローカルで wss/https を試したい場合
 
