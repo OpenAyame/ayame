@@ -107,6 +107,20 @@ ws.onmessage = (event) => {
 ```
 
 
+## `register` メッセージについて
+
+クライアントは ayame への接続可否を問い合わせるために WebSocket に接続した際に、まず `"type": "register"` のJSON メッセージを WS で送信する必要があります。
+register で送信できるプロパティは以下になります。
+
+
+- `"type"`: (string): 必須。 `"register"` を指定する。
+- `"client_id"`: (string): 必須
+- `"room_id": (string): 必須
+- `"key"`(string): Optional
+- `"authn_metadata"`(Object): Optional
+    - 多段ウェブフック認証の際に利用することができます。多段ウェブフック認証については後述します。
+
+
 ## `auth_webhook_url` オプションについて
 
 `config.yaml` にて `auth_webhook_url` を指定している場合、 ayame は client が {"type": "register" } メッセージを送信してきた際に `config.yaml` に指定した `auth_webhook_url` に対して認証リクエストをJSON 形式で POST します。
@@ -114,19 +128,50 @@ ws.onmessage = (event) => {
 
 このとき、{"type": "register" } のメッセージに
 
-- `"metadata"`(string)
 - `"key"`(string)
+- `"room_id": (string)
 
 を含めていると、そのデータを ayame はそのまま指定した `auth_webhook_url` に JSON 形式で送信します。
 
 
 また、 auth webhook の返り値は JSON 形式で、以下のように想定されています。
 
-- `allowed`: boolean。認証の可否
-- `reason`: string。認証不可の際の理由
+- `allowed`: boolean。認証の可否 (必須)
+- `reason`: string。認証不可の際の理由 (`allowed` が false の場合のみ必須)
+- `auth_webhook_url`: 多段認証用の webhook url。(optional、多段認証をしない場合不要)
+    - 多段認証については次の項で説明します。
 
 `allowed` が false の場合 client の ayame への WebSocket 接続は切断されます。
 
+この auth_webhook はシグナリング key とroom ID の結びつきを確認する想定のものです。
+
+
+### 多段ウェブフック認証について
+
+`auth_webhook_url` を指定して、その `auth_webhook_url` からの返り値の JSON プロパティに `auth_webhook_url` が指定してある場合、
+ayame はその `auth_webhook_url` に対してさらに認証リクエストを POST します。
+この `auth_webhook_url` へのリクエスト、レスポンスは以下のように想定されています。
+
+#### リクエスト
+
+- `host`: string。クライアントの host。
+- `authn_metadata`(Object)
+    - register 時に `authn_metadata` をプロパティとして指定していると、その値がそのまま付与されます。
+
+
+#### レスポンス
+
+- `allowed`: boolean。認証の可否 (必須)
+- `reason`: string。認証不可の際の理由 (`allowed` が false の場合のみ)
+- `authz_metadata`(Object, Optional)
+    - 任意に払い出せるメタデータ。 client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる。
+
+
+```
+{"allowed": true, "authz_metadata": {"username": "kdxu", "owner": "true"}}
+```
+
+この多段 auth_webhook は利用者が指定した認証ウェブフック URL を利用するためのものとして想定しています。
 
 ### ローカルで wss/https を試したい場合
 

@@ -3,5 +3,5 @@ log_name: ayame.log
 log_level: info
 addr: localhost
 port: 3000
-over_ws_ping_pong: true
-auth_webhook_url: http://127.0.0.1:8000/auth/webhook
+over_ws_ping_pong: true # json 形式で ping-pong するか
+auth_webhook_url: http://127.0.0.1:8000/auth/webhook # 認証ウェブフックURL

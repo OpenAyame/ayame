@@ -47,7 +47,8 @@ function connect() {
     ws.send(JSON.stringify({
       "type": "register",
       "room_id": roomId,
-      "client_id": clientId
+      "client_id": clientId,
+      "authn_metadata": { "hoge": "fuga" }
     }))
     ws.onmessage = (event) => {
       console.log('ws onmessage() data:', event.data);
