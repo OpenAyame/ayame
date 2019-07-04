@@ -114,10 +114,10 @@ register で送信できるプロパティは以下になります。
 
 
 - `"type"`: (string): 必須。 `"register"` を指定する。
-- `"client_id"`: (string): 必須
-- `"room_id": (string): 必須
+- `"clientId"`: (string): 必須
+- `"roomId": (string): 必須
 - `"key"`(string): Optional
-- `"authn_metadata"`(Object): Optional
+- `"authnMetadata"`(Object): Optional
     - 多段ウェブフック認証の際に利用することができます。多段ウェブフック認証については後述します。
 
 
@@ -129,7 +129,7 @@ register で送信できるプロパティは以下になります。
 このとき、{"type": "register" } のメッセージに
 
 - `"key"`(string)
-- `"room_id": (string)
+- `"room_id"`: (string)
 
 を含めていると、そのデータを ayame はそのまま指定した `auth_webhook_url` に JSON 形式で送信します。
 
@@ -149,7 +149,7 @@ register で送信できるプロパティは以下になります。
 ### 多段ウェブフック認証について
 
 `auth_webhook_url` を指定して、その `auth_webhook_url` からの返り値の JSON プロパティに `auth_webhook_url` が指定してある場合、
-ayame はその `auth_webhook_url` に対してさらに認証リクエストを POST します。
+ayame は通常の認証 wehbook での認証後:wその URL に対してさらに認証リクエストを POST します。
 この `auth_webhook_url` へのリクエスト、レスポンスは以下のように想定されています。
 
 #### リクエスト
@@ -163,12 +163,12 @@ ayame はその `auth_webhook_url` に対してさらに認証リクエストを
 
 - `allowed`: boolean。認証の可否 (必須)
 - `reason`: string。認証不可の際の理由 (`allowed` が false の場合のみ)
-- `authz_metadata`(Object, Optional)
+- `authzMetadata`(Object, Optional)
     - 任意に払い出せるメタデータ。 client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる。
 
 
 ```
-{"allowed": true, "authz_metadata": {"username": "kdxu", "owner": "true"}}
+{"allowed": true, "authzMetadata": {"username": "kdxu", "owner": "true"}}
 ```
 
 この多段 auth_webhook は利用者が指定した認証ウェブフック URL を利用するためのものとして想定しています。

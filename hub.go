@@ -28,13 +28,13 @@ type AcceptMessage struct {
 	Type string `json:"type"`
 }
 
-type AcceptMetadataMessage struct {
-	Type     string      `json:"type"`
-	Metadata interface{} `json:"authz_metadata"`
-}
-
 type RejectMessage struct {
 	Type string `json:"type"`
+}
+
+type AcceptMetadataMessage struct {
+	Type     string      `json:"type"`
+	Metadata interface{} `json:"authzMetadata"`
 }
 
 func newHub() *Hub {
