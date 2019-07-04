@@ -2,6 +2,8 @@
 
 ## develop
 
+## 19.07.0
+
 - [UPDATE] @kdxu -overWsPingPong オプションで over WS の ping-pong にも対応できるようにした
 - [FIX] @kdxu サンプルを unified plan に対応する
 - [ADD] @kdxu ayame 起動時に少し説明を出す
