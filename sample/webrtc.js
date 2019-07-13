@@ -1,5 +1,8 @@
 // シグナリングサーバのURLを指定する
-let wsUrl = 'ws://localhost:3000/ws';
+const isSSL = location.protocol === 'https:';
+const wsProtocol = isSSL ? 'wss://' : 'ws://';
+let wsUrl = wsProtocol + location.host + '/ws';
+document.getElementById("url").value = wsUrl;
 const roomStorageKey = "OPEN-AYAME-SAMPLE-ROOM-IDS";
 const roomInput = document.getElementById("roomId");
 const recentRoomDiv = document.getElementById("recent-rooms");
@@ -8,7 +11,6 @@ const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
 const connectButton = document.getElementById('connect-button');
 const disconnectButton = document.getElementById('disconnect-button');
-document.getElementById("url").value = wsUrl;
 let ws = null;
 let roomId = randomString(9);
 roomInput.value = roomId;
