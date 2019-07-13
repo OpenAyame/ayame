@@ -20,6 +20,7 @@ type AyameOptions struct {
 	Port           int    `yaml:"port"`
 	OverWsPingPong bool   `yaml:"over_ws_ping_pong"`
 	AuthWebhookUrl string `yaml:"auth_webhook_url"`
+	AllowOrigin    string `yaml:"allow_origin"`
 }
 
 var (
