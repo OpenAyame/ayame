@@ -252,9 +252,7 @@ function prepareNewConnection(isOffer) {
       case 'connected':
         isNegotiating = false;
         break;
-      case 'closed':
       case 'failed':
-      case 'disconnected':
         cleanupVideoElement(remoteVideo);
         disconnect();
         break;
