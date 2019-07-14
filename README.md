@@ -63,6 +63,16 @@ startConn();
 
 [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
+## wss://ayame.shiguredo.jp/ws を使ってみる
+
+Ayame を起動するのが面倒な人は時雨堂が公開している Ayame のサービス版を利用することもできます。
+
+```
+wss://ayame.shiguredo.jp/ws
+```
+
+認証などは現時点ではかけていませんので、ルーム ID は他の人から推測されない値を使うようにしてください。
+
 ## 仕組みの詳細を知りたい
 
 Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
