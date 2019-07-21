@@ -65,7 +65,7 @@ startConn();
 
 ## WebRTC Signaling Server Ayame as a Service (仮) を使ってみる
 
-Ayame を起動するのが面倒な人は時雨堂が Ayame をホスティングしているサービスを利用することもできます。
+面倒な人向けに、時雨堂が Ayame をホスティングしているサービスを利用することもできます。
 
 ```
 wss://ayame.shiguredo.jp/ws
