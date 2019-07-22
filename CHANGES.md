@@ -1,6 +1,7 @@
 # リリースノート
 
 ## develop
+- [CHANGE] @kdxu サンプルを ayame-web-sdk を用いたものに置き換える
 
 ## 19.07.0
 
