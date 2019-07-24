@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-var AyameVersion = "19.02.1"
+var AyameVersion = "19.07.0"
 
 type AyameOptions struct {
 	LogDir         string `yaml:"log_dir"`
@@ -20,6 +20,7 @@ type AyameOptions struct {
 	Port           int    `yaml:"port"`
 	OverWsPingPong bool   `yaml:"over_ws_ping_pong"`
 	AuthWebhookUrl string `yaml:"auth_webhook_url"`
+	AllowOrigin    string `yaml:"allow_origin"`
 }
 
 var (

@@ -29,7 +29,8 @@ type AcceptMessage struct {
 }
 
 type RejectMessage struct {
-	Type string `json:"type"`
+	Type   string `json:"type"`
+	Reason string `json:"reason"`
 }
 
 type AcceptMetadataMessage struct {
@@ -60,7 +61,8 @@ func (h *Hub) run() {
 			ok := len(h.clients[roomId]) < 2
 			if !ok {
 				msg := &RejectMessage{
-					Type: "reject",
+					Type:   "reject",
+					Reason: "TOO-MANY-USERS",
 				}
 				client.SendJSON(msg)
 				client.conn.Close()
@@ -71,7 +73,8 @@ func (h *Hub) run() {
 				metadata, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
 				if err != nil {
 					msg := &RejectMessage{
-						Type: "reject",
+						Type:   "reject",
+						Reason: "AUTH-WEBHOOK-ERROR",
 					}
 					client.SendJSON(msg)
 					client.conn.Close()

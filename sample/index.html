@@ -26,15 +26,16 @@
         <ul id="recent-item-list">
         </ul>
       </div>
-    <div id="buttons">
-      <button id="connect-button" type="button" onclick="connect();">接続</button>
-      <button id="disconnect-button" type="button" onclick="disconnect();">切断</button>
+      <div id="buttons">
+        <button id="connect-button" type="button" onclick="connect();">接続</button>
+        <button id="disconnect-button" type="button" onclick="disconnect();">切断</button>
+      </div>
+      <div id="videos">
+        <video id="local-video" muted autoplay></video>
+        <video id="remote-video" autoplay></video>
+      </div>
     </div>
-    <div id="videos">
-    <video id="local-video" muted autoplay></video>
-    <video id="remote-video" autoplay></video>
-    </div>
-    </div>
-    <script type='text/javascript' src='./webrtc.js'></script>
+    <script src="https://unpkg.com/@open-ayame/ayame-web-sdk@19.07.1/dist/ayame.min.js"></script>
+    <script type='text/javascript' src='./main.js'></script>
   </body>
 </html>

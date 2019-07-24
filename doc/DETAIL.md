@@ -46,8 +46,8 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
         +--------------------->|                      | room の id と client のid を登録する
         |   ws message         |                      | 2 人以下で入室可能であれば ayame は accept を返却
         |   {type: register,   |                      | それ以外の場合 reject を返却
-        |   room_id: room_id,  |                      | TURN などのメタデータも将来的にここで交換する
-        |   client: client_id} |                      |
+        |   roomId: roomId,  |                      | TURN などのメタデータも将来的にここで交換する
+        |   client: clientId} |                      |
         |<---------------------+                      |
         |  {type: accept }     |<---------------------|
         |                      |   ws message         | 
@@ -113,7 +113,7 @@ WS のメッセージはJSONフォーマットでやり取りします。
 クライアントが Ayame Server に room id, client id を登録するメッセージです。
 
 ```
-{type: "register", "room_id" "<string>", "client_id": "<string>"}
+{type: "register", "roomId" "<string>", "clientId": "<string>"}
 ```
 
 これを受け取った Ayame Server はそのクライアントが指定した room に入室可能か検査して、可能であれば accept, 不可であれば reject を返却します。
