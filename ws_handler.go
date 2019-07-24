@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/gorilla/websocket"
+	"github.com/ryanuber/go-glob"
 	"net/http"
 	"time"
 )
@@ -47,12 +48,36 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		c.conn.Close()
 	}()
 
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		if Options.AllowOrigin == "" {
+			return true
+		}
+		origin := r.Header.Get("Origin")
+		// origin を trim
+		host, err := TrimOriginToHost(origin)
+		if err != nil {
+			logger.Warn("Invalid Origin Header, header=", origin)
+		}
+		// config.yaml で指定した Allow Origin と一致するかで検査する
+		logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, Options.AllowOrigin)
+		if &Options.AllowOrigin == host {
+			return true
+		}
+		if glob.Glob(Options.AllowOrigin, *host) {
+			return true
+		}
+		return false
+	}
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		_, message, err := c.conn.ReadMessage()
 		msg := &Message{}
 		json.Unmarshal(message, &msg)
+		if msg.Type == "" {
+			logger.Warnf("Invalid Signaling Type")
+			break
+		}
 		if msg.Type == "pong" {
 			logger.Printf("recv ping over WS")
 			c.conn.SetReadDeadline(time.Now().Add(pongWait))

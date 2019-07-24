@@ -2,6 +2,9 @@
 
 ## develop
 
+## 19.07.1
+- [CHANGE] @kdxu サンプルを ayame-web-sdk を用いたものに置き換える
+
 ## 19.07.0
 
 - [UPDATE] @kdxu -overWsPingPong オプションで over WS の ping-pong にも対応できるようにした
