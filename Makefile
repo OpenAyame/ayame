@@ -1,4 +1,4 @@
-VERSION=19.07.0
+VERSION=19.07.1
 
 ayame: *.go
 	GO111MODULE=on go build -ldflags '-X main.AyameVersion=${VERSION}' -o $@
