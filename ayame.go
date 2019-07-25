@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-var AyameVersion = "19.07.0"
+var AyameVersion = "19.07.1"
 
 type AyameOptions struct {
 	LogDir         string `yaml:"log_dir"`
