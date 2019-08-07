@@ -8,7 +8,7 @@ port: 3000
 over_ws_ping_pong: true
 
 # 認証ウェブフックURLを用いるときに設定します
-# auth_webhook_url: http://127.0.0.1:8000/auth/webhook
+# auth_webhook_url: http://127.0.0.1:3001/auth/webhook
 
 # ws でOriginを指定したいときに設定します
 # allow_origin: *.example.com

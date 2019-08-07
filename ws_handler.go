@@ -27,11 +27,11 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
-	Type     string      `json:"type"`
-	RoomId   string      `json:"roomId"`
-	ClientId string      `json:"clientId"`
-	Metadata interface{} `json:"authnMetadata"`
-	Key      string      `json:"key"`
+	Type     string       `json:"type"`
+	RoomId   string       `json:"roomId"`
+	ClientId string       `json:"clientId"`
+	Metadata *interface{} `json:"authnMetadata,omitempty"`
+	Key      *string      `json:"key,omitempty"`
 }
 
 type PingMessage struct {

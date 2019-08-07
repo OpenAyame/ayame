@@ -10,8 +10,8 @@ type RegisterInfo struct {
 	roomId   string
 	clientId string
 	client   *Client
-	metadata interface{}
-	key      string
+	metadata *interface{}
+	key      *string
 }
 
 type Hub struct {
@@ -25,7 +25,8 @@ type Hub struct {
 }
 
 type AcceptMessage struct {
-	Type string `json:"type"`
+	Type       string        `json:"type"`
+	IceServers []interface{} `json:"iceServers,omitempty"`
 }
 
 type RejectMessage struct {
@@ -34,8 +35,9 @@ type RejectMessage struct {
 }
 
 type AcceptMetadataMessage struct {
-	Type     string      `json:"type"`
-	Metadata interface{} `json:"authzMetadata"`
+	Type       string        `json:"type"`
+	Metadata   interface{}   `json:"authzMetadata"`
+	IceServers []interface{} `json:"iceServers,omitempty"`
 }
 
 func newHub() *Hub {
@@ -70,7 +72,7 @@ func (h *Hub) run() {
 			}
 			// auth webhook を用いる場合
 			if Options.AuthWebhookUrl != "" {
-				metadata, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
+				resp, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
 				if err != nil {
 					msg := &RejectMessage{
 						Type:   "reject",
@@ -80,16 +82,18 @@ func (h *Hub) run() {
 					client.conn.Close()
 					break
 				}
-				if metadata != nil {
+				if resp.AuthzMetadata != nil {
 					msg := &AcceptMetadataMessage{
-						Type:     "accept",
-						Metadata: metadata,
+						Type:       "accept",
+						Metadata:   resp.AuthzMetadata,
+						IceServers: resp.IceServers,
 					}
 					h.clients[roomId][client] = true
 					client.SendJSON(msg)
 				} else {
 					msg := &AcceptMessage{
-						Type: "accept",
+						Type:       "accept",
+						IceServers: resp.IceServers,
 					}
 					h.clients[roomId][client] = true
 					client.SendJSON(msg)
