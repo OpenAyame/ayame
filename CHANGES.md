@@ -10,6 +10,8 @@
     - バグ修正
 
 ## develop
+- [UPDATE] ayame register 時に key も送信できるようにする
+- [UPDATE] auth webhook の返り値に iceServers があれば返却するようにする
 
 ## 19.07.1
 - [CHANGE] @kdxu サンプルを ayame-web-sdk を用いたものに置き換える
