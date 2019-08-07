@@ -78,6 +78,9 @@ func (h *Hub) run() {
 						Type:   "reject",
 						Reason: "AUTH-WEBHOOK-ERROR",
 					}
+					if resp != nil {
+						msg.Reason = resp.Reason
+					}
 					client.SendJSON(msg)
 					client.conn.Close()
 					break
