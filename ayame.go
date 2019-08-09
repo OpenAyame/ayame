@@ -65,6 +65,10 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./sample/"+r.URL.Path[1:])
 	})
+	// /ws エンドポイントは将来的に /signaling に統一するが、互換性のために残しておく
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		signalingHandler(hub, w, r)
+	})
 	http.HandleFunc("/signaling", func(w http.ResponseWriter, r *http.Request) {
 		signalingHandler(hub, w, r)
 	})

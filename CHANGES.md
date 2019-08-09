@@ -10,7 +10,7 @@
     - バグ修正
 
 ## develop
-- [CHANGE] `/ws` エンドポイントを `/signaling` エンドポイントに変更する
+- [UPDATE] `/ws` エンドポイントと同様のものを `/signaling` エンドポイントとして追加する
 - [UPDATE] ayame register 時に key も送信できるようにする
 - [UPDATE] auth webhook の返り値に iceServers があれば返却するようにする
 
