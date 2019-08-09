@@ -36,7 +36,7 @@ type RejectMessage struct {
 
 type AcceptMetadataMessage struct {
 	Type       string        `json:"type"`
-	Metadata   interface{}   `json:"authzMetadata"`
+	Metadata   interface{}   `json:"authzMetadata,omitempty"`
 	IceServers []interface{} `json:"iceServers,omitempty"`
 }
 
@@ -85,22 +85,15 @@ func (h *Hub) run() {
 					client.conn.Close()
 					break
 				}
-				if resp.AuthzMetadata != nil {
-					msg := &AcceptMetadataMessage{
-						Type:       "accept",
-						Metadata:   resp.AuthzMetadata,
-						IceServers: resp.IceServers,
-					}
-					h.clients[roomId][client] = true
-					client.SendJSON(msg)
-				} else {
-					msg := &AcceptMessage{
-						Type:       "accept",
-						IceServers: resp.IceServers,
-					}
-					h.clients[roomId][client] = true
-					client.SendJSON(msg)
+				msg := &AcceptMetadataMessage{
+					Type:       "accept",
+					IceServers: resp.IceServers,
 				}
+				if resp.AuthzMetadata != nil {
+					msg.Metadata = resp.AuthzMetadata
+				}
+				h.clients[roomId][client] = true
+				client.SendJSON(msg)
 			} else {
 				msg := &AcceptMessage{
 					Type: "accept",
