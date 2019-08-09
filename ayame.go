@@ -65,8 +65,8 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./sample/"+r.URL.Path[1:])
 	})
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		wsHandler(hub, w, r)
+	http.HandleFunc("/signaling", func(w http.ResponseWriter, r *http.Request) {
+		signalingHandler(hub, w, r)
 	})
 	logger.Fatal(http.ListenAndServe(url, nil))
 }
