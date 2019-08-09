@@ -8,7 +8,7 @@
 
 ### シグナリングについて
 
-Ayame Server の `ws://localhost:3000/ws` がクライアントからの WebSocket 接続を確立し、管理するエンドポイントとなります。
+Ayame Server の `ws://localhost:3000/signaling` がクライアントからの WebSocket 接続を確立し、管理するエンドポイントとなります。
 
 このエンドポイントに WebSocket で接続すると、Ayame Server は接続したクライアントを保持します。
 

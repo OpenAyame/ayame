@@ -44,7 +44,7 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 [OpenAyame/ayame\-web\-sdk: Web SDK for WebRTC Signaling Server Ayame](https://github.com/OpenAyame/ayame-web-sdk)
 
 ```javascript
-const conn = Ayame.connection('wss://example.com:3000/ws', 'test-room');
+const conn = Ayame.connection('wss://example.com:3000/signaling', 'test-room');
 const startConn = async () => {
     const mediaStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
     const stream = await conn.connect(mediaStream);
