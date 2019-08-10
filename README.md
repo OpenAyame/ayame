@@ -63,19 +63,19 @@ startConn();
 
 [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
-## WebRTC Signaling Server Ayame as a Service (仮) を使ってみる
+## WebRTC シグナリングサービス Ayame Lite を使ってみる
 
-面倒な人向けに、時雨堂が Ayame をホスティングしているサービスを利用することもできます。
+Ayame を利用したシグナリングサービスを提供しています。
 
 ```
-wss://ayame.shiguredo.jp/ws
+wss://ayame-lite.shiguredo.jp/signaling
 ```
 
 認証などは現時点ではかけていませんので、ルーム ID は他の人から推測されない値を使うようにしてください。
 
 詳細については以下をお読みください。
 
-[WebRTC Signaling Server Ayame as a Service \(仮\)](https://gist.github.com/voluntas/396167bd197ba005ae5a9e8c5e60f7cd)
+[WebRTC シグナリングサービス Ayame Lite 開発ログ](https://gist.github.com/voluntas/396167bd197ba005ae5a9e8c5e60f7cd)
 
 ## 仕組みの詳細を知りたい
 
