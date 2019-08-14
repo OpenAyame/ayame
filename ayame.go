@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 var AyameVersion = "19.07.1"
@@ -62,6 +63,7 @@ func main() {
 	logger.Infof("running on http://%s (Press Ctrl+C quit)", url)
 	hub := newHub()
 	go hub.run()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./sample/"+r.URL.Path[1:])
 	})
@@ -72,5 +74,11 @@ func main() {
 	http.HandleFunc("/signaling", func(w http.ResponseWriter, r *http.Request) {
 		signalingHandler(hub, w, r)
 	})
-	logger.Fatal(http.ListenAndServe(url, nil))
+	// timeout は暫定的に 10 sec
+	timeout := 10 * time.Second
+	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: timeout}
+	err := server.ListenAndServe()
+	if err != nil {
+		logger.Fatal(err)
+	}
 }
