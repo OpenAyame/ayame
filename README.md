@@ -52,7 +52,7 @@ const startConn = async () => {
     conn.on('addstream', (e) => {
         document.querySelector('#remote-video').srcObject = e.stream;
     });
-    document.querySelector('#local-video').srcObject = stream;
+    document.querySelector('#local-video').srcObject = mediaStream;
 };
 startConn();
 ```
