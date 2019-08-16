@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var AyameVersion = "19.07.1"
+var AyameVersion = "19.08.0"
 
 type AyameOptions struct {
 	LogDir         string `yaml:"log_dir"`
