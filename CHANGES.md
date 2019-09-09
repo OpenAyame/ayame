@@ -13,6 +13,7 @@
 ## develop
 
 - [ADD] CI の go を 1.13 に上げる
+- [UPDATE] @kdxu 推奨の go version を 1.13 にあげる
 
 ## 19.08.0
 
