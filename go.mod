@@ -31,3 +31,5 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 	honnef.co/go/tools v0.0.0-20190607181801-497c8f037f5a // indirect
 )
+
+go 1.13
