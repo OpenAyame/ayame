@@ -2,6 +2,7 @@
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/OpenAyame/ayame.svg)](https://github.com/OpenAyame/ayame)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Actions Status](https://github.com/OpenAyame/ayame/workflows/go-test/badge.svg)](https://github.com/OpenAyame/ayame/actions)
 
 ## WebRTC Signaling Server Ayame について
 
