@@ -27,6 +27,7 @@ func PostRequest(reqUrl string, reqBody interface{}) ([]byte, error) {
 		logger.Info("post request error, error=", err)
 		return nil, err
 	}
+	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
