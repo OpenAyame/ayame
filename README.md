@@ -14,18 +14,12 @@ AppRTC 互換のルーム機能を持っており、ルーム数はサーバス�
 
 ## OpenAyame プロジェクトについて
 
-OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソースとして公開し、継続的に開発を行うことで、 WebRTC を学びやすくするプロジェクトです。
+OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公開し、
+継続的に開発を行うことで WebRTC をより身近に、使いやすくするプロジェクトです。
 
 詳細については下記をご確認ください。
 
 [OpenAyame プロジェクト](http://bit.ly/OpenAyame)
-
-## 開発について
-
-Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
-そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
-
-まずは Discord にてご連絡ください。
 
 ## 注意
 
@@ -60,15 +54,15 @@ Ayame は Web SDK と Android SDK を提供しています。現在 iOS SDK を�
 
 [React Native 用 WebRTC ライブラリ](https://github.com/shiguredo/react-native-webrtc-kit) を利用しています。
 
-## WebRTC シグナリングサービス Ayame Lite を使ってみる
-
-Ayame を利用した無料で TURN サーバまで利用可能なシグナリングサービスを提供しています。
-
-[Ayame Lite (オープンベータ)](https://ayame-lite.shiguredo.jp/beta)
-
 ## 仕組みの詳細を知りたい
 
 Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
+
+## WebRTC シグナリングサービス Ayame Lite を使ってみる
+
+Ayame を利用した無料で TURN サーバまで利用可能なシグナリングサービスを時雨堂が提供しています。
+
+[WebRTC シグナリングサービス Ayame Lite)](https://ayame-lite.shiguredo.jp/beta)
 
 ## 関連プロダクト
 
@@ -94,27 +88,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## サポートについて
+## 開発について
 
-### 要望や PR について
+Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
+そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
 
-まずは Discord へお願いします。
+まずは Discord にてご連絡ください。
 
-### バグ報告
+## バグ報告
 
 WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。
 
 https://github.com/OpenAyame/ayame/issues
 
-### Discord
+## Discord
 
 ベストエフォートで運用しています。
 
 https://discord.gg/mDesh2E
 
-### 有料サポートについて
+### サポートについて
 
-**時雨堂では有料サポートは提供しておりません**
-
-- [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
-
+- コアコミッターである @kdxu が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
