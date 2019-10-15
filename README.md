@@ -39,29 +39,26 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 
 ## SDK を使ってみる
 
-簡単に Ayame を利用できる Web SDK を用意しています。
+Ayame は Web SDK と Android SDK を提供しています。現在 iOS SDK を開発中です。
 
-[OpenAyame/ayame\-web\-sdk: Web SDK for WebRTC Signaling Server Ayame](https://github.com/OpenAyame/ayame-web-sdk)
-
-```javascript
-const conn = Ayame.connection('wss://example.com:3000/signaling', 'test-room');
-const startConn = async () => {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
-    await conn.connect(mediaStream);
-    conn.on('disconnect', (e) => console.log(e));
-    conn.on('addstream', (e) => {
-        document.querySelector('#remote-video').srcObject = e.stream;
-    });
-    document.querySelector('#local-video').srcObject = mediaStream;
-};
-startConn();
-```
+- [Ayame Web SDK](https://github.com/OpenAyame/ayame-web-sdk)
+    - [Ayame Web SDK サンプル](https://github.com/OpenAyame/ayame-web-sdk-samples)
+- [Ayame Android SDK](https://github.com/OpenAyame/ayame-android-sdk)
+    - [Ayame Android SDK サンプル](https://github.com/OpenAyame/ayame-android-sdk-samples)
+- [Ayame iOS SDK](https://github.com/OpenAyame/ayame-ios-sdk)
+    - 開発中です
 
 ## React サンプルを使ってみる
 
 **このリポジトリにあるサンプルと全く同じ動作になっています**
 
 [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
+
+## React Native サンプルを使ってみる
+
+[Ayame React Native サンプル](https://github.com/OpenAyame/ayame-react-native-sample)
+
+[React Native 用 WebRTC ライブラリ](https://github.com/shiguredo/react-native-webrtc-kit) を利用しています。
 
 ## WebRTC シグナリングサービス Ayame Lite を使ってみる
 
