@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	logrus "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
+
+	logrus "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
 var AyameVersion = "19.08.0"
@@ -20,7 +21,7 @@ type AyameOptions struct {
 	Addr           string `yaml:"addr"`
 	Port           int    `yaml:"port"`
 	OverWsPingPong bool   `yaml:"over_ws_ping_pong"`
-	AuthWebhookUrl string `yaml:"auth_webhook_url"`
+	AuthWebhookURL string `yaml:"auth_webhook_url"`
 	AllowOrigin    string `yaml:"allow_origin"`
 }
 

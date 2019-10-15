@@ -14,14 +14,14 @@ func PostRequest(reqUrl string, reqBody interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	reqJson, err := json.Marshal(reqBody)
+	reqJSON, err := json.Marshal(reqBody)
 	if err != nil {
 		return nil, err
 	}
 	req, err := http.NewRequest(
 		"POST",
 		reqUrl,
-		bytes.NewBuffer([]byte(reqJson)),
+		bytes.NewBuffer([]byte(reqJSON)),
 	)
 	if err != nil {
 		logger.Info("post request error, error=", err)

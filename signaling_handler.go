@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/gorilla/websocket"
-	"github.com/ryanuber/go-glob"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/ryanuber/go-glob"
 )
 
 const (
@@ -28,8 +29,8 @@ var upgrader = websocket.Upgrader{
 
 type Message struct {
 	Type     string       `json:"type"`
-	RoomId   string       `json:"roomId"`
-	ClientId string       `json:"clientId"`
+	RoomID   string       `json:"roomId"`
+	ClientID string       `json:"clientId"`
 	Metadata *interface{} `json:"authnMetadata,omitempty"`
 	Key      *string      `json:"key,omitempty"`
 }
@@ -43,7 +44,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		cancel()
 		c.hub.unregister <- &RegisterInfo{
 			client: c,
-			roomId: c.roomId,
+			roomID: c.roomID,
 		}
 		c.conn.Close()
 	}()
@@ -82,19 +83,19 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			logger.Printf("recv ping over WS")
 			c.conn.SetReadDeadline(time.Now().Add(pongWait))
 		} else {
-			if msg.Type == "register" && msg.RoomId != "" {
+			if msg.Type == "register" && msg.RoomID != "" {
 				logger.Printf("register: %v", msg)
 				c.hub.register <- &RegisterInfo{
-					clientId: msg.ClientId,
+					clientID: msg.ClientID,
 					client:   c,
-					roomId:   msg.RoomId,
+					roomID:   msg.RoomID,
 					key:      msg.Key,
 					metadata: msg.Metadata,
 				}
 			} else {
 				logger.Printf("onmessage: %s", message)
-				logger.Printf("client roomId: %s", c.roomId)
-				if c.roomId == "" {
+				logger.Printf("client roomId: %s", c.roomID)
+				if c.roomID == "" {
 					logger.Printf("client does not registered: %v", c)
 					return
 				}
@@ -106,7 +107,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				}
 				broadcast := &Broadcast{
 					client:   c,
-					roomId:   c.roomId,
+					roomId:   c.roomID,
 					messages: message,
 				}
 				c.hub.broadcast <- broadcast

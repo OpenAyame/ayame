@@ -7,8 +7,8 @@ type Broadcast struct {
 }
 
 type RegisterInfo struct {
-	roomId   string
-	clientId string
+	roomID   string
+	clientID string
 	client   *Client
 	metadata *interface{}
 	key      *string
@@ -16,7 +16,7 @@ type RegisterInfo struct {
 
 type Room struct {
 	clients map[*Client]bool
-	roomId  string
+	roomID  string
 }
 
 type Hub struct {
@@ -43,14 +43,14 @@ func (h *Hub) run() {
 		select {
 		case registerInfo := <-h.register:
 			client := registerInfo.client
-			clientId := registerInfo.clientId
-			roomId := registerInfo.roomId
+			clientId := registerInfo.clientID
+			roomId := registerInfo.roomID
 			client = client.Setup(roomId, clientId)
 			room := h.rooms[roomId]
 			if _, ok := h.rooms[roomId]; !ok {
 				room = &Room{
 					clients: make(map[*Client]bool),
-					roomId:  roomId,
+					roomID:  roomId,
 				}
 				h.rooms[roomId] = room
 			}
@@ -65,7 +65,7 @@ func (h *Hub) run() {
 				break
 			}
 			// auth webhook を用いる場合
-			if Options.AuthWebhookUrl != "" {
+			if Options.AuthWebhookURL != "" {
 				resp, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
 				if err != nil {
 					msg := &RejectMessage{
@@ -97,9 +97,9 @@ func (h *Hub) run() {
 				client.SendJSON(msg)
 			}
 		case registerInfo := <-h.unregister:
-			roomId := registerInfo.roomId
+			roomID := registerInfo.roomID
 			client := registerInfo.client
-			if room, ok := h.rooms[roomId]; ok {
+			if room, ok := h.rooms[roomID]; ok {
 				if _, ok := room.clients[client]; ok {
 					delete(room.clients, client)
 					close(client.send)
@@ -108,7 +108,7 @@ func (h *Hub) run() {
 		case broadcast := <-h.broadcast:
 			if room, ok := h.rooms[broadcast.roomId]; ok {
 				for client := range room.clients {
-					if client.clientId != broadcast.client.clientId {
+					if client.clientID != broadcast.client.clientID {
 						select {
 						case client.send <- broadcast.messages:
 						default:
