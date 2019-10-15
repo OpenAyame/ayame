@@ -62,17 +62,9 @@ Ayame は Web SDK と Android SDK を提供しています。現在 iOS SDK を�
 
 ## WebRTC シグナリングサービス Ayame Lite を使ってみる
 
-Ayame を利用したシグナリングサービスを提供しています。
+Ayame を利用した無料で TURN サーバまで利用可能なシグナリングサービスを提供しています。
 
-```
-wss://ayame-lite.shiguredo.jp/signaling
-```
-
-認証などは現時点ではかけていませんので、ルーム ID は他の人から推測されない値を使うようにしてください。
-
-詳細については以下をお読みください。
-
-[WebRTC シグナリングサービス Ayame Lite 開発ログ](https://gist.github.com/voluntas/396167bd197ba005ae5a9e8c5e60f7cd)
+[Ayame Lite (オープンベータ)](https://ayame-lite.shiguredo.jp/beta)
 
 ## 仕組みの詳細を知りたい
 
@@ -87,7 +79,7 @@ Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みく�
 Apache License 2.0
 
 ```
-Copyright 2019, Shiguredo Inc, kdxu
+Copyright 2019, Shiguredo Inc, Kyoko Kadowaki (kdxu)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -104,9 +96,13 @@ limitations under the License.
 
 ## サポートについて
 
-WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。それ以外については Discord へお願いします。
+### 要望や PR について
+
+まずは Discord へお願いします。
 
 ### バグ報告
+
+WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。
 
 https://github.com/OpenAyame/ayame/issues
 
