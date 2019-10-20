@@ -140,6 +140,7 @@ func (c *Client) broadcast(ctx context.Context) {
 				return
 			}
 			w.Write(message)
+			w.Close()
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			// over Ws で ping-pong を設定している場合
