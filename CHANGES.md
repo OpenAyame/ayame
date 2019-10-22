@@ -14,6 +14,7 @@
 
 - [ADD] CI の go を 1.13 に上げる
 - [UPDATE] @kdxu 推奨の go version を 1.13 にあげる
+- [UPDATE] @kdxu 先に入室しているユーザーがいる場合 isExistUser をaccept時にtrue にして返す
 
 ## 19.08.0
 

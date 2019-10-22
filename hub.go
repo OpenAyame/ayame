@@ -79,9 +79,11 @@ func (h *Hub) run() {
 					client.conn.Close()
 					break
 				}
+				isExistUser := len(room.clients) > 0
 				msg := &AcceptMetadataMessage{
-					Type:       "accept",
-					IceServers: resp.IceServers,
+					Type:        "accept",
+					IceServers:  resp.IceServers,
+					IsExistUser: isExistUser,
 				}
 				if resp.AuthzMetadata != nil {
 					msg.Metadata = resp.AuthzMetadata
@@ -90,8 +92,10 @@ func (h *Hub) run() {
 				room.clients[client] = true
 				client.SendJSON(msg)
 			} else {
+				isExistUser := len(room.clients) > 0
 				msg := &AcceptMessage{
-					Type: "accept",
+					Type:        "accept",
+					IsExistUser: isExistUser,
 				}
 				room.clients[client] = true
 				client.SendJSON(msg)
