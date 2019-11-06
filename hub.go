@@ -1,5 +1,9 @@
 package main
 
+import (
+	"sync"
+)
+
 type Broadcast struct {
 	client   *Client
 	roomId   string
@@ -17,6 +21,20 @@ type RegisterInfo struct {
 type Room struct {
 	clients map[*Client]bool
 	roomID  string
+	sync.Mutex
+}
+
+func (r *Room) newClient(client *Client) {
+	r.Lock()
+	defer r.Unlock()
+	r.clients[client] = true
+}
+
+func (r *Room) deleteClient(client *Client) {
+	r.Lock()
+	defer r.Unlock()
+	close(client.send)
+	delete(r.clients, client)
 }
 
 type Hub struct {
@@ -88,8 +106,7 @@ func (h *Hub) run() {
 				if resp.AuthzMetadata != nil {
 					msg.Metadata = resp.AuthzMetadata
 				}
-
-				room.clients[client] = true
+				room.newClient(client)
 				client.SendJSON(msg)
 			} else {
 				isExistUser := len(room.clients) > 0
@@ -97,7 +114,7 @@ func (h *Hub) run() {
 					Type:        "accept",
 					IsExistUser: isExistUser,
 				}
-				room.clients[client] = true
+				room.newClient(client)
 				client.SendJSON(msg)
 			}
 		case registerInfo := <-h.unregister:
@@ -105,8 +122,7 @@ func (h *Hub) run() {
 			client := registerInfo.client
 			if room, ok := h.rooms[roomID]; ok {
 				if _, ok := room.clients[client]; ok {
-					delete(room.clients, client)
-					close(client.send)
+					room.deleteClient(client)
 				}
 			}
 		case broadcast := <-h.broadcast:
@@ -116,8 +132,7 @@ func (h *Hub) run() {
 						select {
 						case client.send <- broadcast.messages:
 						default:
-							close(client.send)
-							delete(room.clients, client)
+							room.deleteClient(client)
 						}
 					}
 				}
