@@ -63,6 +63,15 @@ func (h *Hub) run() {
 			client := registerInfo.client
 			clientId := registerInfo.clientID
 			roomId := registerInfo.roomID
+			if len(roomId) == 0 || len(clientId) == 0 {
+				msg := &RejectMessage{
+					Type:   "reject",
+					Reason: "INVALID-ROOM-ID-OR-CLIENT-ID",
+				}
+				client.SendJSON(msg)
+				client.conn.Close()
+				break
+			}
 			client = client.Setup(roomId, clientId)
 			room := h.rooms[roomId]
 			if _, ok := h.rooms[roomId]; !ok {

@@ -19,8 +19,8 @@ const (
 )
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+	ReadBufferSize:  1024 * 4,
+	WriteBufferSize: 1024 * 4,
 	// クロスオリジンを一旦許可する
 	CheckOrigin: func(r *http.Request) bool {
 		return true
