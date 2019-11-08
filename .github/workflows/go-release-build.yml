@@ -19,12 +19,12 @@ jobs:
     - name: Build
       run: go build -v .
     - name: install gox and ghr and semantics
-    - run: |
+      run: |
         go get -u github.com/mitchellh/gox
         go get -u github.com/tcnksm/ghr
         go get -u github.com/stevenmatthewt/semantics
     - name: cross compile
-    - run: |
+      run: |
          gox -os="linux darwin windows" -arch="amd64" -output="dist/ayame_{{.OS}}_{{.Arch}}"
          cd dist/ && gzip *
     - name: create release
