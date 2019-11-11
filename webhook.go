@@ -26,9 +26,12 @@ type TwoAuthnRequest struct {
 	AuthnMetadata interface{} `json:"authn_metadata"`
 }
 
-func AuthWebhookRequest(key *string, roomId string, metadata interface{}, host string) (*WebhookResponse, error) {
-	webhookReq := &WebhookRequest{Key: key, RoomID: roomId}
+func AuthWebhookRequest(key *string, roomID string, metadata interface{}, host string) (*WebhookResponse, error) {
+	webhookReq := &WebhookRequest{Key: key, RoomID: roomID}
 	respBytes, err := PostRequest(Options.AuthWebhookURL, webhookReq)
+	if err != nil {
+		return nil, err
+	}
 	whResp := WebhookResponse{}
 	err = json.Unmarshal(respBytes, &whResp)
 	if err != nil {
@@ -40,6 +43,9 @@ func AuthWebhookRequest(key *string, roomId string, metadata interface{}, host s
 	}
 	if whResp.WebhookURL != nil {
 		respBytes, err := PostRequest(*whResp.WebhookURL, &TwoAuthnRequest{Host: &host, AuthnMetadata: metadata})
+		if err != nil {
+			return &whResp, err
+		}
 		twoAuthnResp := WebhookResponse{IceServers: whResp.IceServers}
 		err = json.Unmarshal(respBytes, &twoAuthnResp)
 		if err != nil {

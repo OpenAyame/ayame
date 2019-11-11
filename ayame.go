@@ -26,7 +26,7 @@ type AyameOptions struct {
 }
 
 var (
-	// 起動時のオプション
+	// Options は Ayame の起動時のオプション
 	Options *AyameOptions
 	logger  *logrus.Logger
 )

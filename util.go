@@ -9,8 +9,8 @@ import (
 )
 
 // JSON HTTP Request をするだけのラッパー
-func PostRequest(reqUrl string, reqBody interface{}) ([]byte, error) {
-	_, err := url.ParseRequestURI(reqUrl)
+func PostRequest(reqURL string, reqBody interface{}) ([]byte, error) {
+	_, err := url.ParseRequestURI(reqURL)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +20,7 @@ func PostRequest(reqUrl string, reqBody interface{}) ([]byte, error) {
 	}
 	req, err := http.NewRequest(
 		"POST",
-		reqUrl,
+		reqURL,
 		bytes.NewBuffer([]byte(reqJSON)),
 	)
 	if err != nil {

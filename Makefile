@@ -14,8 +14,12 @@ linux-build:
 check:
 	GO111MODULE=on go test ./...
 
-fmt:
-	go fmt ./...
-
 clean:
 	rm -rf ayame
+
+.PHONY: lint
+lint:
+	golangci-lint run ./...
+
+fmt:
+	golangci-lint run ./... --fix

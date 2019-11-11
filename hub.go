@@ -6,7 +6,7 @@ import (
 
 type Broadcast struct {
 	client   *Client
-	roomId   string
+	roomID   string
 	messages []byte
 }
 
@@ -61,25 +61,28 @@ func (h *Hub) run() {
 		select {
 		case registerInfo := <-h.register:
 			client := registerInfo.client
-			clientId := registerInfo.clientID
-			roomId := registerInfo.roomID
-			if len(roomId) == 0 || len(clientId) == 0 {
+			clientID := registerInfo.clientID
+			roomID := registerInfo.roomID
+			if len(roomID) == 0 || len(clientID) == 0 {
 				msg := &RejectMessage{
 					Type:   "reject",
 					Reason: "INVALID-ROOM-ID-OR-CLIENT-ID",
 				}
-				client.SendJSON(msg)
+				err := client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
+				}
 				client.conn.Close()
 				break
 			}
-			client = client.Setup(roomId, clientId)
-			room := h.rooms[roomId]
-			if _, ok := h.rooms[roomId]; !ok {
+			client = client.Setup(roomID, clientID)
+			room := h.rooms[roomID]
+			if _, ok := h.rooms[roomID]; !ok {
 				room = &Room{
 					clients: make(map[*Client]bool),
-					roomID:  roomId,
+					roomID:  roomID,
 				}
-				h.rooms[roomId] = room
+				h.rooms[roomID] = room
 			}
 			ok := len(room.clients) < 2
 			if !ok {
@@ -87,13 +90,16 @@ func (h *Hub) run() {
 					Type:   "reject",
 					Reason: "TOO-MANY-USERS",
 				}
-				client.SendJSON(msg)
+				err := client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
+				}
 				client.conn.Close()
 				break
 			}
 			// auth webhook を用いる場合
 			if Options.AuthWebhookURL != "" {
-				resp, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
+				resp, err := AuthWebhookRequest(registerInfo.key, roomID, registerInfo.metadata, client.host)
 				if err != nil {
 					msg := &RejectMessage{
 						Type:   "reject",
@@ -102,7 +108,10 @@ func (h *Hub) run() {
 					if resp != nil {
 						msg.Reason = resp.Reason
 					}
-					client.SendJSON(msg)
+					err = client.SendJSON(msg)
+					if err != nil {
+						logger.Warnf("failed to send msg=%v", msg)
+					}
 					client.conn.Close()
 					break
 				}
@@ -116,7 +125,10 @@ func (h *Hub) run() {
 					msg.Metadata = resp.AuthzMetadata
 				}
 				room.newClient(client)
-				client.SendJSON(msg)
+				err = client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
+				}
 			} else {
 				isExistUser := len(room.clients) > 0
 				msg := &AcceptMessage{
@@ -124,7 +136,10 @@ func (h *Hub) run() {
 					IsExistUser: isExistUser,
 				}
 				room.newClient(client)
-				client.SendJSON(msg)
+				err := client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
+				}
 			}
 		case registerInfo := <-h.unregister:
 			roomID := registerInfo.roomID
@@ -135,7 +150,7 @@ func (h *Hub) run() {
 				}
 			}
 		case broadcast := <-h.broadcast:
-			if room, ok := h.rooms[broadcast.roomId]; ok {
+			if room, ok := h.rooms[broadcast.roomID]; ok {
 				for client := range room.clients {
 					if client.clientID != broadcast.client.clientID {
 						select {
