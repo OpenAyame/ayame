@@ -10,6 +10,7 @@
     - バグ修正
 
 ## develop
+- [FIX] @kdxu -c での config ファイル指定が効いていなかったのを修正する
 
 ## 19.07.1
 - [CHANGE] @kdxu サンプルを ayame-web-sdk を用いたものに置き換える
