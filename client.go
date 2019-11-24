@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
 	"sync"
+
+	"github.com/gorilla/websocket"
 )
 
 type Client struct {
 	hub      *Hub
 	conn     *websocket.Conn
 	host     string
-	roomId   string
-	clientId string
+	roomID   string
+	clientID string
 	send     chan []byte
 	sync.Mutex
 }
@@ -22,10 +23,10 @@ func (c *Client) SendJSON(v interface{}) error {
 	return c.conn.WriteJSON(v)
 }
 
-func (c *Client) Setup(roomId string, clientId string) *Client {
+func (c *Client) Setup(roomID string, clientID string) *Client {
 	c.Lock()
 	defer c.Unlock()
-	c.roomId = roomId
-	c.clientId = clientId
+	c.roomID = roomID
+	c.clientID = clientID
 	return c
 }

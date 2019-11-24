@@ -1,4 +1,4 @@
-VERSION=19.07.1
+VERSION=19.08.0
 
 ayame: *.go
 	GO111MODULE=on go build -ldflags '-X main.AyameVersion=${VERSION}' -o $@
@@ -14,8 +14,12 @@ linux-build:
 check:
 	GO111MODULE=on go test ./...
 
-fmt:
-	go fmt ./...
-
 clean:
 	rm -rf ayame
+
+.PHONY: lint
+lint:
+	golangci-lint run ./...
+
+fmt:
+	golangci-lint run ./... --fix

@@ -3,14 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
-	logrus "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
+
+	logrus "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
-var AyameVersion = "19.07.1"
+var AyameVersion = "19.08.0"
 
 type AyameOptions struct {
 	LogDir         string `yaml:"log_dir"`
@@ -19,12 +21,12 @@ type AyameOptions struct {
 	Addr           string `yaml:"addr"`
 	Port           int    `yaml:"port"`
 	OverWsPingPong bool   `yaml:"over_ws_ping_pong"`
-	AuthWebhookUrl string `yaml:"auth_webhook_url"`
+	AuthWebhookURL string `yaml:"auth_webhook_url"`
 	AllowOrigin    string `yaml:"allow_origin"`
 }
 
 var (
-	// 起動時のオプション
+	// Options は Ayame の起動時のオプション
 	Options *AyameOptions
 	logger  *logrus.Logger
 )
@@ -62,11 +64,22 @@ func main() {
 	logger.Infof("running on http://%s (Press Ctrl+C quit)", url)
 	hub := newHub()
 	go hub.run()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./sample/"+r.URL.Path[1:])
 	})
+	// /ws エンドポイントは将来的に /signaling に統一するが、互換性のために残しておく
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		wsHandler(hub, w, r)
+		signalingHandler(hub, w, r)
 	})
-	logger.Fatal(http.ListenAndServe(url, nil))
+	http.HandleFunc("/signaling", func(w http.ResponseWriter, r *http.Request) {
+		signalingHandler(hub, w, r)
+	})
+	// timeout は暫定的に 10 sec
+	timeout := 10 * time.Second
+	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: timeout}
+	err := server.ListenAndServe()
+	if err != nil {
+		logger.Fatal(err)
+	}
 }

@@ -2,7 +2,7 @@
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/OpenAyame/ayame.svg)](https://github.com/OpenAyame/ayame)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![CircleCI](https://circleci.com/gh/OpenAyame/ayame.svg?style=svg)](https://circleci.com/gh/OpenAyame/ayame)
+[![Actions Status](https://github.com/OpenAyame/ayame/workflows/Go%20Build%20&%20Format/badge.svg)](https://github.com/OpenAyame/ayame/actions)
 
 ## WebRTC Signaling Server Ayame について
 
@@ -14,18 +14,12 @@ AppRTC 互換のルーム機能を持っており、ルーム数はサーバス�
 
 ## OpenAyame プロジェクトについて
 
-OpenAyame プロジェクトは WebRTC Signaling Server Ayame をオープンソースとして公開し、継続的に開発を行うことで、 WebRTC を学びやすくするプロジェクトです。
+OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公開し、
+継続的に開発を行うことで WebRTC をより身近に、使いやすくするプロジェクトです。
 
 詳細については下記をご確認ください。
 
 [OpenAyame プロジェクト](http://bit.ly/OpenAyame)
-
-## 開発について
-
-Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
-そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
-
-まずは Discord にてご連絡ください。
 
 ## 注意
 
@@ -39,23 +33,14 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 
 ## SDK を使ってみる
 
-簡単に Ayame を利用できる Web SDK を用意しています。
+Ayame は Web SDK と Android SDK を提供しています。現在 iOS SDK を開発中です。
 
-[OpenAyame/ayame\-web\-sdk: Web SDK for WebRTC Signaling Server Ayame](https://github.com/OpenAyame/ayame-web-sdk)
-
-```javascript
-const conn = Ayame.connection('wss://example.com:3000/ws', 'test-room');
-const startConn = async () => {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
-    const stream = await conn.connect(mediaStream);
-    conn.on('disconnect', (e) => console.log(e));
-    conn.on('addstream', (e) => {
-        document.querySelector('#remote-video').srcObject = e.stream;
-    });
-    document.querySelector('#local-video').srcObject = stream;
-};
-startConn();
-```
+- [Ayame Web SDK](https://github.com/OpenAyame/ayame-web-sdk)
+    - [Ayame Web SDK サンプル](https://github.com/OpenAyame/ayame-web-sdk-samples)
+- [Ayame Android SDK](https://github.com/OpenAyame/ayame-android-sdk)
+    - [Ayame Android SDK サンプル](https://github.com/OpenAyame/ayame-android-sdk-samples)
+- [Ayame iOS SDK](https://github.com/OpenAyame/ayame-ios-sdk)
+    - 開発中です
 
 ## React サンプルを使ってみる
 
@@ -63,23 +48,21 @@ startConn();
 
 [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
-## WebRTC Signaling Server Ayame as a Service (仮) を使ってみる
+## React Native サンプルを使ってみる
 
-面倒な人向けに、時雨堂が Ayame をホスティングしているサービスを利用することもできます。
+[Ayame React Native サンプル](https://github.com/OpenAyame/ayame-react-native-sample)
 
-```
-wss://ayame.shiguredo.jp/ws
-```
-
-認証などは現時点ではかけていませんので、ルーム ID は他の人から推測されない値を使うようにしてください。
-
-詳細については以下をお読みください。
-
-[WebRTC Signaling Server Ayame as a Service \(仮\)](https://gist.github.com/voluntas/396167bd197ba005ae5a9e8c5e60f7cd)
+[React Native 用 WebRTC ライブラリ](https://github.com/shiguredo/react-native-webrtc-kit) を利用しています。
 
 ## 仕組みの詳細を知りたい
 
 Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
+
+## WebRTC シグナリングサービス Ayame Lite を使ってみる
+
+Ayame を利用した無料で TURN サーバまで利用可能なシグナリングサービスを時雨堂が提供しています。
+
+[WebRTC シグナリングサービス Ayame Lite)](https://ayame-lite.shiguredo.jp/beta)
 
 ## 関連プロダクト
 
@@ -90,7 +73,7 @@ Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みく�
 Apache License 2.0
 
 ```
-Copyright 2019, Shiguredo Inc, kdxu
+Copyright 2019, Shiguredo Inc, Kyoko Kadowaki (kdxu)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -105,23 +88,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## サポートについて
+## 開発について
 
-WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。それ以外については Discord へお願いします。
+Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
+そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
 
-### バグ報告
+まずは Discord にてご連絡ください。
+
+## バグ報告
+
+WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。
 
 https://github.com/OpenAyame/ayame/issues
 
-### Discord
+## Discord
 
 ベストエフォートで運用しています。
 
 https://discord.gg/mDesh2E
 
-### 有料サポートについて
+### サポートについて
 
-**時雨堂では有料サポートは提供しておりません**
-
-- [kdxu \(Kyoko KADOWAKI\)](https://github.com/kdxu) が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
-
+- コアコミッターである @kdxu が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。

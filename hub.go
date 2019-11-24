@@ -1,21 +1,44 @@
 package main
 
+import (
+	"sync"
+)
+
 type Broadcast struct {
 	client   *Client
-	roomId   string
+	roomID   string
 	messages []byte
 }
 
 type RegisterInfo struct {
-	roomId   string
-	clientId string
+	roomID   string
+	clientID string
 	client   *Client
-	metadata interface{}
-	key      string
+	metadata *interface{}
+	key      *string
+}
+
+type Room struct {
+	clients map[*Client]bool
+	roomID  string
+	sync.Mutex
+}
+
+func (r *Room) newClient(client *Client) {
+	r.Lock()
+	defer r.Unlock()
+	r.clients[client] = true
+}
+
+func (r *Room) deleteClient(client *Client) {
+	r.Lock()
+	defer r.Unlock()
+	close(client.send)
+	delete(r.clients, client)
 }
 
 type Hub struct {
-	clients map[string]map[*Client]bool
+	rooms map[string]*Room
 
 	broadcast chan *Broadcast
 
@@ -24,26 +47,12 @@ type Hub struct {
 	unregister chan *RegisterInfo
 }
 
-type AcceptMessage struct {
-	Type string `json:"type"`
-}
-
-type RejectMessage struct {
-	Type   string `json:"type"`
-	Reason string `json:"reason"`
-}
-
-type AcceptMetadataMessage struct {
-	Type     string      `json:"type"`
-	Metadata interface{} `json:"authzMetadata"`
-}
-
 func newHub() *Hub {
 	return &Hub{
 		broadcast:  make(chan *Broadcast),
 		register:   make(chan *RegisterInfo),
 		unregister: make(chan *RegisterInfo),
-		clients:    make(map[string]map[*Client]bool),
+		rooms:      make(map[string]*Room),
 	}
 }
 
@@ -52,70 +61,103 @@ func (h *Hub) run() {
 		select {
 		case registerInfo := <-h.register:
 			client := registerInfo.client
-			clientId := registerInfo.clientId
-			roomId := registerInfo.roomId
-			client = client.Setup(roomId, clientId)
-			if h.clients[roomId] == nil {
-				h.clients[roomId] = make(map[*Client]bool)
+			clientID := registerInfo.clientID
+			roomID := registerInfo.roomID
+			if len(roomID) == 0 || len(clientID) == 0 {
+				msg := &RejectMessage{
+					Type:   "reject",
+					Reason: "INVALID-ROOM-ID-OR-CLIENT-ID",
+				}
+				err := client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
+				}
+				client.conn.Close()
+				break
 			}
-			ok := len(h.clients[roomId]) < 2
+			client = client.Setup(roomID, clientID)
+			room := h.rooms[roomID]
+			if _, ok := h.rooms[roomID]; !ok {
+				room = &Room{
+					clients: make(map[*Client]bool),
+					roomID:  roomID,
+				}
+				h.rooms[roomID] = room
+			}
+			ok := len(room.clients) < 2
 			if !ok {
 				msg := &RejectMessage{
 					Type:   "reject",
 					Reason: "TOO-MANY-USERS",
 				}
-				client.SendJSON(msg)
+				err := client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
+				}
 				client.conn.Close()
 				break
 			}
 			// auth webhook を用いる場合
-			if Options.AuthWebhookUrl != "" {
-				metadata, err := AuthWebhookRequest(registerInfo.key, roomId, registerInfo.metadata, client.host)
+			if Options.AuthWebhookURL != "" {
+				resp, err := AuthWebhookRequest(registerInfo.key, roomID, registerInfo.metadata, client.host)
 				if err != nil {
 					msg := &RejectMessage{
 						Type:   "reject",
 						Reason: "AUTH-WEBHOOK-ERROR",
 					}
-					client.SendJSON(msg)
+					if resp != nil {
+						msg.Reason = resp.Reason
+					}
+					err = client.SendJSON(msg)
+					if err != nil {
+						logger.Warnf("failed to send msg=%v", msg)
+					}
 					client.conn.Close()
 					break
 				}
-				if metadata != nil {
-					msg := &AcceptMetadataMessage{
-						Type:     "accept",
-						Metadata: metadata,
-					}
-					h.clients[roomId][client] = true
-					client.SendJSON(msg)
-				} else {
-					msg := &AcceptMessage{
-						Type: "accept",
-					}
-					h.clients[roomId][client] = true
-					client.SendJSON(msg)
+				isExistUser := len(room.clients) > 0
+				msg := &AcceptMetadataMessage{
+					Type:        "accept",
+					IceServers:  resp.IceServers,
+					IsExistUser: isExistUser,
+				}
+				if resp.AuthzMetadata != nil {
+					msg.Metadata = resp.AuthzMetadata
+				}
+				room.newClient(client)
+				err = client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
 				}
 			} else {
+				isExistUser := len(room.clients) > 0
 				msg := &AcceptMessage{
-					Type: "accept",
+					Type:        "accept",
+					IsExistUser: isExistUser,
 				}
-				h.clients[roomId][client] = true
-				client.SendJSON(msg)
+				room.newClient(client)
+				err := client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("failed to send msg=%v", msg)
+				}
 			}
 		case registerInfo := <-h.unregister:
-			roomId := registerInfo.roomId
+			roomID := registerInfo.roomID
 			client := registerInfo.client
-			if _, ok := h.clients[roomId][client]; ok {
-				delete(h.clients[roomId], client)
-				close(client.send)
+			if room, ok := h.rooms[roomID]; ok {
+				if _, ok := room.clients[client]; ok {
+					room.deleteClient(client)
+				}
 			}
 		case broadcast := <-h.broadcast:
-			for client := range h.clients[broadcast.roomId] {
-				if client.clientId != broadcast.client.clientId {
-					select {
-					case client.send <- broadcast.messages:
-					default:
-						close(client.send)
-						delete(h.clients[broadcast.roomId], client)
+			if room, ok := h.rooms[broadcast.roomID]; ok {
+				for client := range room.clients {
+					if client.clientID != broadcast.client.clientID {
+						select {
+						case client.send <- broadcast.messages:
+						default:
+							room.deleteClient(client)
+						}
 					}
 				}
 			}

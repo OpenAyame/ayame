@@ -7,15 +7,17 @@ import (
 
 // webhook リクエスト
 type WebhookRequest struct {
-	Key    string `json:"key"`
-	RoomId string `json:"room_id"`
+	Key    *string `json:"key,omitempty"`
+	RoomID string  `json:"room_id"`
 }
 
 // webhook レスポンス
 type WebhookResponse struct {
-	Allowed    *bool  `json:"allowed"`
-	WebhookUrl string `json:"auth_webhook_url"`
-	Reason     string `json:"reason"`
+	Allowed       bool          `json:"allowed"`
+	IceServers    []interface{} `json:"iceServers,omitempty"`
+	WebhookURL    *string       `json:"auth_webhook_url,omitempty"`
+	Reason        string        `json:"reason"`
+	AuthzMetadata interface{}   `json:"authz_metadata"`
 }
 
 // TODO(kdxu): 送信するデータを吟味する
@@ -24,37 +26,38 @@ type TwoAuthnRequest struct {
 	AuthnMetadata interface{} `json:"authn_metadata"`
 }
 
-type TwoAuthnResponse struct {
-	Allowed       *bool       `json:"allowed"`
-	AuthzMetadata interface{} `json:"authz_metadata"`
-}
-
-func AuthWebhookRequest(key string, roomId string, metadata interface{}, host string) (interface{}, error) {
-	webhookReq := &WebhookRequest{Key: key, RoomId: roomId}
-	respBytes, err := PostRequest(Options.AuthWebhookUrl, webhookReq)
+func AuthWebhookRequest(key *string, roomID string, metadata interface{}, host string) (*WebhookResponse, error) {
+	webhookReq := &WebhookRequest{Key: key, RoomID: roomID}
+	respBytes, err := PostRequest(Options.AuthWebhookURL, webhookReq)
+	if err != nil {
+		return nil, err
+	}
 	whResp := WebhookResponse{}
 	err = json.Unmarshal(respBytes, &whResp)
 	if err != nil {
 		return nil, err
 	}
-	if !*whResp.Allowed {
+	if !whResp.Allowed {
 		logger.Info("authn webhook not allowed, resp=", &whResp)
-		return nil, errors.New("Not Allowed")
+		return &whResp, errors.New("Not Allowed")
 	}
-	if whResp.WebhookUrl != "" {
-		respBytes, err := PostRequest(whResp.WebhookUrl, &TwoAuthnRequest{Host: &host, AuthnMetadata: metadata})
-		twoAuthnResp := TwoAuthnResponse{}
+	if whResp.WebhookURL != nil {
+		respBytes, err := PostRequest(*whResp.WebhookURL, &TwoAuthnRequest{Host: &host, AuthnMetadata: metadata})
+		if err != nil {
+			return &whResp, err
+		}
+		twoAuthnResp := WebhookResponse{IceServers: whResp.IceServers}
 		err = json.Unmarshal(respBytes, &twoAuthnResp)
 		if err != nil {
-			return nil, err
+			return &whResp, err
 		}
-		if !*twoAuthnResp.Allowed {
+		if !twoAuthnResp.Allowed {
 			logger.Info("two authn webhook not allowed, resp=", &twoAuthnResp)
-			return nil, errors.New("Not Allowed")
+			return &twoAuthnResp, errors.New("Not Allowed")
 		}
 		logger.Info("two authn webhook allowed, resp=", &twoAuthnResp)
-		return twoAuthnResp.AuthzMetadata, nil
+		return &twoAuthnResp, nil
 	}
 	logger.Info("auth webhook allowed, resp=", whResp)
-	return nil, nil
+	return &whResp, nil
 }

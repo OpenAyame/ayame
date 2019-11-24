@@ -1,9 +1,9 @@
 // シグナリングサーバのURLを指定する
 const isSSL = location.protocol === 'https:';
 const wsProtocol = isSSL ? 'wss://' : 'ws://';
-let wsUrl = wsProtocol + location.host + '/ws';
+let wsUrl = wsProtocol + location.host + '/signaling';
 if (!location.host) {
-  wsUrl = 'wss://ayame.shiguredo.jp/ws';
+  wsUrl = 'wss://ayame.shiguredo.jp/signaling';
 }
 document.getElementById("url").value = wsUrl;
 const roomStorageKey = "OPEN-AYAME-SAMPLE-ROOM-IDS";

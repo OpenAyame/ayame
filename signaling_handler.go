@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/gorilla/websocket"
-	"github.com/ryanuber/go-glob"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/ryanuber/go-glob"
 )
 
 const (
@@ -18,8 +19,8 @@ const (
 )
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+	ReadBufferSize:  1024 * 4,
+	WriteBufferSize: 1024 * 4,
 	// クロスオリジンを一旦許可する
 	CheckOrigin: func(r *http.Request) bool {
 		return true
@@ -27,11 +28,11 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
-	Type     string      `json:"type"`
-	RoomId   string      `json:"roomId"`
-	ClientId string      `json:"clientId"`
-	Metadata interface{} `json:"authnMetadata"`
-	Key      string      `json:"key"`
+	Type     string       `json:"type"`
+	RoomID   string       `json:"roomId"`
+	ClientID string       `json:"clientId"`
+	Metadata *interface{} `json:"authnMetadata,omitempty"`
+	Key      *string      `json:"key,omitempty"`
 }
 
 type PingMessage struct {
@@ -43,7 +44,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		cancel()
 		c.hub.unregister <- &RegisterInfo{
 			client: c,
-			roomId: c.roomId,
+			roomID: c.roomID,
 		}
 		c.conn.Close()
 	}()
@@ -68,33 +69,53 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		}
 		return false
 	}
-	c.conn.SetReadDeadline(time.Now().Add(pongWait))
-	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
+	if err != nil {
+		logger.Warnf("failed to set read deadline, err=%v", err)
+	}
+	c.conn.SetPongHandler(func(string) error {
+		err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
+		if err != nil {
+			logger.Warnf("failed to set read deadline, err=%v", err)
+		}
+		return nil
+	})
 	for {
 		_, message, err := c.conn.ReadMessage()
+		if err != nil {
+			logger.Warnf("Error while read message, err=%v", err)
+			break
+		}
 		msg := &Message{}
-		json.Unmarshal(message, &msg)
+		err = json.Unmarshal(message, &msg)
+		if err != nil {
+			logger.Warnf("Invalid JSON, err=%v", err)
+			break
+		}
 		if msg.Type == "" {
 			logger.Warnf("Invalid Signaling Type")
 			break
 		}
 		if msg.Type == "pong" {
 			logger.Printf("recv ping over WS")
-			c.conn.SetReadDeadline(time.Now().Add(pongWait))
+			err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
+			if err != nil {
+				logger.Warnf("failed to set read deadline, err=%v", err)
+			}
 		} else {
-			if msg.Type == "register" && msg.RoomId != "" {
+			if msg.Type == "register" && msg.RoomID != "" {
 				logger.Printf("register: %v", msg)
 				c.hub.register <- &RegisterInfo{
-					clientId: msg.ClientId,
+					clientID: msg.ClientID,
 					client:   c,
-					roomId:   msg.RoomId,
+					roomID:   msg.RoomID,
 					key:      msg.Key,
 					metadata: msg.Metadata,
 				}
 			} else {
 				logger.Printf("onmessage: %s", message)
-				logger.Printf("client roomId: %s", c.roomId)
-				if c.roomId == "" {
+				logger.Printf("client roomID: %s", c.roomID)
+				if c.roomID == "" {
 					logger.Printf("client does not registered: %v", c)
 					return
 				}
@@ -106,7 +127,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				}
 				broadcast := &Broadcast{
 					client:   c,
-					roomId:   c.roomId,
+					roomID:   c.roomID,
 					messages: message,
 				}
 				c.hub.broadcast <- broadcast
@@ -126,21 +147,39 @@ func (c *Client) broadcast(ctx context.Context) {
 		case <-ctx.Done():
 			// channel がすでに close していた場合
 			// ループを抜ける
-			c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+			err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+			if err != nil {
+				logger.Warnf("failed to write close message, err=%v", err)
+			}
 			return
 		case message, ok := <-c.send:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				if err != nil {
+					logger.Warnf("failed to write close message, err=%v", err)
+				}
+				return
+			}
+			err := c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err != nil {
+				logger.Warnf("failed to set write deadline, err=%v", err)
 				return
 			}
 			w, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
 				return
 			}
-			w.Write(message)
+			_, err = w.Write(message)
+			if err != nil {
+				logger.Warnf("failed to write message, err=%v", err)
+				return
+			}
+			w.Close()
 		case <-ticker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			err := c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err != nil {
+				logger.Warnf("failed to set write deadline, err=%v", err)
+			}
 			// over Ws で ping-pong を設定している場合
 			if Options.OverWsPingPong {
 				logger.Info("send ping over WS")
@@ -157,7 +196,7 @@ func (c *Client) broadcast(ctx context.Context) {
 	}
 }
 
-func wsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
+func signalingHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		logger.Println(err)
