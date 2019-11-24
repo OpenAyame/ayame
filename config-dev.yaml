@@ -1,0 +1,14 @@
+log_dir: .
+log_name: ayame-dev.log
+log_level: info
+addr: localhost
+port: 3000
+
+# json 形式で ping-pong するかどうかのフラグ
+over_ws_ping_pong: true
+
+# 認証ウェブフックURLを用いるときに設定します
+# auth_webhook_url: http://127.0.0.1:8000/auth/webhook
+
+# ws でOriginを指定したいときに設定します
+# allow_origin: *.example.com

@@ -32,6 +32,7 @@ var (
 // 初期化処理
 func init() {
 	configFilePath := flag.String("c", "./config.yaml", "ayame の設定ファイルへのパス(yaml)")
+	flag.Parse()
 	// yaml ファイルを読み込み
 	buf, err := ioutil.ReadFile(*configFilePath)
 	if err != nil {
@@ -47,7 +48,6 @@ func init() {
 }
 
 func main() {
-	flag.Parse()
 	args := flag.Args()
 	// 引数の処理
 	if len(args) > 0 {
