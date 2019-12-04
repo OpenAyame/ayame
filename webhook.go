@@ -8,25 +8,24 @@ import (
 // webhook リクエスト
 type WebhookRequest struct {
 	Key    *string `json:"key,omitempty"`
-	RoomID string  `json:"room_id"`
+	RoomID string  `json:"roomId"`
 }
 
 // webhook レスポンス
 type WebhookResponse struct {
 	Allowed       bool          `json:"allowed"`
 	IceServers    []interface{} `json:"iceServers,omitempty"`
-	WebhookURL    *string       `json:"auth_webhook_url,omitempty"`
+	WebhookURL    *string       `json:"authWebhookUrl,omitempty"`
 	Reason        string        `json:"reason"`
-	AuthzMetadata interface{}   `json:"authz_metadata"`
+	AuthzMetadata interface{}   `json:"authzMetadata"`
 }
 
 // TODO(kdxu): 送信するデータを吟味する
 type TwoAuthnRequest struct {
-	Host          *string     `json:"host"`
-	AuthnMetadata interface{} `json:"authn_metadata"`
+	AuthnMetadata interface{} `json:"authnMetadata"`
 }
 
-func AuthWebhookRequest(key *string, roomID string, metadata interface{}, host string) (*WebhookResponse, error) {
+func AuthWebhookRequest(key *string, roomID string, metadata interface{}) (*WebhookResponse, error) {
 	webhookReq := &WebhookRequest{Key: key, RoomID: roomID}
 	respBytes, err := PostRequest(Options.AuthWebhookURL, webhookReq)
 	if err != nil {
@@ -42,7 +41,7 @@ func AuthWebhookRequest(key *string, roomID string, metadata interface{}, host s
 		return &whResp, errors.New("Not Allowed")
 	}
 	if whResp.WebhookURL != nil {
-		respBytes, err := PostRequest(*whResp.WebhookURL, &TwoAuthnRequest{Host: &host, AuthnMetadata: metadata})
+		respBytes, err := PostRequest(*whResp.WebhookURL, &TwoAuthnRequest{AuthnMetadata: metadata})
 		if err != nil {
 			return &whResp, err
 		}

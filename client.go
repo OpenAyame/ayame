@@ -9,7 +9,6 @@ import (
 type Client struct {
 	hub      *Hub
 	conn     *websocket.Conn
-	host     string
 	roomID   string
 	clientID string
 	send     chan []byte

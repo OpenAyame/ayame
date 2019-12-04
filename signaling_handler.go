@@ -202,13 +202,7 @@ func signalingHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		logger.Println(err)
 		return
 	}
-	origin := r.Header.Get("Origin")
-	host, err := TrimOriginToHost(origin)
-	if err != nil {
-		logger.Println(err)
-		return
-	}
-	client := &Client{hub: hub, conn: c, host: *host, send: make(chan []byte, 256)}
+	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
 	logger.Printf("[WS] connected")
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)

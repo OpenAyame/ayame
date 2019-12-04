@@ -16,6 +16,8 @@
 - [UPDATE] @kdxu 先に入室しているユーザーがいる場合 isExistUser をaccept時にtrue にして返す
 - [FIX] @kdxu roomId か clientId が空文字列の場合は reject するように修正する
 - [FIX] @kdxu -c での config ファイル指定が効いていなかったのを修正する
+- [CHANGE] 多段ウェブフック認証時のリクエストから host を削除する
+- [CHANGE] 認証ウェブフック機能時の JSON を lowerCamelCase で統一する
 
 ## 19.08.0
 
