@@ -21,9 +21,25 @@ const (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024 * 4,
 	WriteBufferSize: 1024 * 4,
-	// クロスオリジンを一旦許可する
 	CheckOrigin: func(r *http.Request) bool {
-		return true
+		if Options.AllowOrigin == "" {
+			return true
+		}
+		origin := r.Header.Get("Origin")
+		// origin を trim
+		host, err := TrimOriginToHost(origin)
+		if err != nil {
+			logger.Warn("Invalid Origin Header, header=", origin)
+		}
+		// config.yaml で指定した Allow Origin と一致するかで検査する
+		logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, Options.AllowOrigin)
+		if &Options.AllowOrigin == host {
+			return true
+		}
+		if glob.Glob(Options.AllowOrigin, *host) {
+			return true
+		}
+		return false
 	},
 }
 
@@ -49,26 +65,6 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		c.conn.Close()
 	}()
 
-	upgrader.CheckOrigin = func(r *http.Request) bool {
-		if Options.AllowOrigin == "" {
-			return true
-		}
-		origin := r.Header.Get("Origin")
-		// origin を trim
-		host, err := TrimOriginToHost(origin)
-		if err != nil {
-			logger.Warn("Invalid Origin Header, header=", origin)
-		}
-		// config.yaml で指定した Allow Origin と一致するかで検査する
-		logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, Options.AllowOrigin)
-		if &Options.AllowOrigin == host {
-			return true
-		}
-		if glob.Glob(Options.AllowOrigin, *host) {
-			return true
-		}
-		return false
-	}
 	err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	if err != nil {
 		logger.Warnf("failed to set read deadline, err=%v", err)
