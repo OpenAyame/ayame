@@ -11,4 +11,4 @@ over_ws_ping_pong: true
 # auth_webhook_url: http://127.0.0.1:8000/auth/webhook
 
 # ws でOriginを指定したいときに設定します
-# allow_origin: *.example.com
+# allow_origin: "*.example.com"
