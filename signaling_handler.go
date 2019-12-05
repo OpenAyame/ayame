@@ -26,6 +26,9 @@ var upgrader = websocket.Upgrader{
 			return true
 		}
 		origin := r.Header.Get("Origin")
+		if origin == "" {
+			return true
+		}
 		// origin を trim
 		host, err := TrimOriginToHost(origin)
 		if err != nil {
