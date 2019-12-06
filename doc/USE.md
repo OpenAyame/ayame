@@ -120,30 +120,30 @@ register で送信できるプロパティは以下になります。
 
 - `"type"`: (string): 必須。 `"register"` を指定する。
 - `"clientId"`: (string): 必須
-- `"roomId": (string): 必須
-- `"key"`(string): Optional
-- `"authnMetadata"`(Object): Optional
+- `"roomId"`: (string): 必須
+- `"key"`: (string): Optional
+- `"authnMetadata"`: (Object): Optional
     - 多段ウェブフック認証の際に利用することができます。多段ウェブフック認証については後述します。
 
 
 ## `auth_webhook_url` オプションについて
 
-`config.yaml` にて `auth_webhook_url` を指定している場合、 ayame は client が {"type": "register" } メッセージを送信してきた際に `config.yaml` に指定した `auth_webhook_url` に対して認証リクエストをJSON 形式で POST します。
+`config.yaml` にて `auth_webhook_url` を指定している場合、 ayame は client が {"type": "register"} メッセージを送信してきた際に `config.yaml` に指定した `auth_webhook_url` に対して認証リクエストをJSON 形式で POST します。
 
 
-このとき、{"type": "register" } のメッセージに
+このとき、{"type": "register"} のメッセージに
 
-- `"key"`(string)
+- `"key"`: (string)
 - `"roomId"`: (string)
 
 を含めていると、そのデータを ayame はそのまま指定した `auth_webhook_url` に JSON 形式で送信します。
 
 また、 auth webhook の返り値は JSON 形式で、以下のように想定されています。
 
-- `allowed`: boolean。認証の可否 (必須)
-- `reason`: string。認証不可の際の理由 (`allowed` が false の場合のみ必須)
-- `iceServers`: (array object) クライアントに peer connection で接続する iceServer 情報 (optional)
-- `auth_webhook_url`: 多段認証用の webhook url。(optional、多段認証をしない場合不要)
+- `allowed`: (boolean): 認証の可否 (必須)
+- `reason`: (string): 認証不可の際の理由 (`allowed` が false の場合のみ必須)
+- `iceServers`: (array object): クライアントに peer connection で接続する iceServer 情報 (optional)
+- `authWebhookUrl`: (string): 多段認証用の webhook url。(optional、多段認証をしない場合不要)
     - 多段認証については次の項で説明します。
 
 `allowed` が false の場合 client の ayame への WebSocket 接続は切断されます。
@@ -153,22 +153,21 @@ register で送信できるプロパティは以下になります。
 
 ### 多段ウェブフック認証について
 
-`auth_webhook_url` を指定して、その `auth_webhook_url` からの返り値の JSON プロパティに `auth_webhook_url` が指定してある場合、
+`auth_webhook_url` を指定して、その `auth_webhook_url` からの返り値の JSON プロパティに `authWebhookUrl` が指定してある場合、
 ayame は通常の認証 wehbook での認証後、その URL に対してさらに認証リクエストを POST します。
-この `auth_webhook_url` へのリクエスト、レスポンスは以下のように想定されています。
+この `authWebhookUrl` へのリクエスト、レスポンスは以下のように想定されています。
 
 #### リクエスト
 
-- `host`: string。クライアントの host。
-- `authn_metadata`(Object)
+- `authnMetadata`: (Object)
     - register 時に `authnMetadata` をプロパティとして指定していると、その値がそのまま付与されます。
 
 
 #### レスポンス
 
-- `allowed`: boolean。認証の可否 (必須)
-- `reason`: string。認証不可の際の理由 (`allowed` が false の場合のみ)
-- `authzMetadata`(Object, Optional)
+- `allowed`: (boolean): 認証の可否 (必須)
+- `reason`: (string): 認証不可の際の理由 (`allowed` が false の場合のみ)
+- `authzMetadata`: (Object, Optional)
     - 任意に払い出せるメタデータ。 client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる。
 
 
