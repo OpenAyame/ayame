@@ -22,7 +22,7 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
 
 Ayame Server が互いのSDP 交換や peer connection の接続をシグナリングによってやり取りします。
 
-SDP とは WebRTC の接続に必要な peer connection の 内部情報です。 
+SDP とは WebRTC の接続に必要な peer connection の 内部情報です。
 
 - [RFC 4566 \- SDP: Session Description Protocol](https://tools.ietf.org/html/rfc4566)
 - [Annotated Example SDP for WebRTC](https://tools.ietf.org/html/draft-ietf-rtcweb-sdp-11)
@@ -39,19 +39,19 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
         |                      |     websocket 接続   |
     -----------------Peer-Connection の初期化---------------
         |                      |                      |
-        | getUserMedia()       |                      | getUserMedia() 
-        | localStream の取得   |                      | localStream の取得 
+        | getUserMedia()       |                      | getUserMedia()
+        | localStream の取得   |                      | localStream の取得
         | peer = new PeerConnection()                 | peer = new PeerConnection()
     -----------------クライアント情報の登録----------------------
         +--------------------->|                      | room の id と client のid を登録する
         |   ws message         |                      | 2 人以下で入室可能であれば ayame は accept を返却
         |   {type: register,   |                      | それ以外の場合 reject を返却
-        |   roomId: roomId,  |                      | TURN などのメタデータも将来的にここで交換する
-        |   client: clientId} |                      |
+        |   roomId: roomId,    |                      | TURN などのメタデータも将来的にここで交換する
+        |   client: clientId}  |                      |
         |<---------------------+                      |
         |  {type: accept }     |<---------------------|
-        |                      |   ws message         | 
-        |                      |    register          |  
+        |                      |   ws message         |
+        |                      |    register          |
         |                      |--------------------->|
     -----------------------SDP の交換-----------------------
         |                      |                      |
@@ -63,34 +63,34 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
         |      ws message      |--------------------> |
         |      offerSDP        |   ws message         | offerSDP をもとに Remote Description をセット
         |                      |    offerSDP          |  answerSDP を生成し、それをもとに localDescription を生成する
-        |                      |                      |　peer.setRemoteDescription(offerSDP),
+        |                      |                      |  peer.setRemoteDescription(offerSDP),
         |                      |                      |  peer.createAnswer(),
         |                      | <--------------------+  peer.setLocalDescription(answer)
         | <--------------------+    ws message        |
         |      ws message      |    answerSDP         |
-        |     　answerSDP      |                      |
+        |      answerSDP       |                      |
         |                      |                      |
         + setRemoteDescription(answerSDP)             |
         | Remote Description をセット                 |
         |                      |                      |
-　   　 |                      |                      |
+        |                      |                      |
     ------------------ ICE candidate の交換 -----------------------
         |                      |                      |
-　　　　+onicecandidate()の発火|                      |
+        +onicecandidate()の発火|                      |
         |  candidate の取得    |                      |
         +--------------------->+                      |
-        |      ws message      +--------------------> | peerConnection に　ice candidate を追加する
+        |      ws message      +--------------------> | peerConnection に ice candidate を追加する
         |  {type: "candidate", |   ws message         | peer.addIceCandidate(candidate)
         |    ice: candidate}   |   {type: "candidate",|
-        |                      |   ice: candidate}    |　
+        |                      |   ice: candidate}    |
       ==== 同様に browser2 から browser1 への ICE candidate の交換を行う ====
         |                      |                      |
      ========= ICE negotiation があれば 再び SDP をやりとり ================
         |                      |                      |
         + onaddstream()の発火  |                      + onaddstream()の発火
         | remoteStream をセット（browser2）           | remoteStream をセット(browser1)
-    ------------------ Peer　Connection 確立 -----------------------
- 　　   |                      |                      |　
+    ------------------ Peer Connection 確立 ------------------------
+        |                      |                      |
 ```
 
 
