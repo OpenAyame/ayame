@@ -49,10 +49,16 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
         |   roomId: roomId,    |                      | TURN などのメタデータも将来的にここで交換する
         |   client: clientId}  |                      |
         |<---------------------+                      |
-        |  {type: accept }     |<---------------------|
+        |  {type: accept}      |                      |
+        |  isExistUser: false} |                      |
+        |                      |<---------------------|
         |                      |   ws message         |
-        |                      |    register          |
+        |                      |   {type: register,   |
+        |                      |   roomId: roomId,    |
+        |                      |   client: clientId}  |
         |                      |--------------------->|
+        |                      |   {type: accept}     |
+        |                      |   isExistUser: true} |
     -----------------------SDP の交換-----------------------
         |                      |                      |
         + peer.createOffer(),  |                      |
@@ -60,13 +66,13 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
         |  offerSDP を生成     |                      |
         |                      |                      |
         +--------------------->|                      |
-        |      ws message      |--------------------> |
+        |      ws message      |--------------------->|
         |      offerSDP        |   ws message         | offerSDP をもとに Remote Description をセット
-        |                      |    offerSDP          |  answerSDP を生成し、それをもとに localDescription を生成する
+        |                      |   offerSDP           |  answerSDP を生成し、それをもとに localDescription を生成する
         |                      |                      |  peer.setRemoteDescription(offerSDP),
         |                      |                      |  peer.createAnswer(),
-        |                      | <--------------------+  peer.setLocalDescription(answer)
-        | <--------------------+    ws message        |
+        |                      |<---------------------+  peer.setLocalDescription(answer)
+        |<---------------------+    ws message        |
         |      ws message      |    answerSDP         |
         |      answerSDP       |                      |
         |                      |                      |
@@ -79,9 +85,9 @@ SDP とは WebRTC の接続に必要な peer connection の 内部情報です�
         +onicecandidate()の発火|                      |
         |  candidate の取得    |                      |
         +--------------------->+                      |
-        |      ws message      +--------------------> | peerConnection に ice candidate を追加する
-        |  {type: "candidate", |   ws message         | peer.addIceCandidate(candidate)
-        |    ice: candidate}   |   {type: "candidate",|
+        |      ws message      +--------------------->| peerConnection に ice candidate を追加する
+        |  {type: candidate,   |   ws message         | peer.addIceCandidate(candidate)
+        |    ice: candidate}   |   {type: candidate,  |
         |                      |   ice: candidate}    |
       ==== 同様に browser2 から browser1 への ICE candidate の交換を行う ====
         |                      |                      |
@@ -113,7 +119,7 @@ WS のメッセージはJSONフォーマットでやり取りします。
 クライアントが Ayame Server に room id, client id を登録するメッセージです。
 
 ```
-{type: "register", "roomId" "<string>", "clientId": "<string>"}
+{"type": "register", "roomId" "<string>", "clientId": "<string>"}
 ```
 
 これを受け取った Ayame Server はそのクライアントが指定した room に入室可能か検査して、可能であれば accept, 不可であれば reject を返却します。
@@ -123,8 +129,10 @@ WS のメッセージはJSONフォーマットでやり取りします。
 Ayame Server がregister に込められている情報を検査して入室可能であることをクライアントに知らせるメッセージです。
 
 ```
-{type: "accept"}
+{"type": "accept", "isExistUser": false}
 ```
+
+すでに同じ room に入室しているクライアントがいる場合は、isExistUser は true を返します。
 
 将来的に、TURN などのメタデータもここで返却される予定です。
 これを受け取ったらクライアントは offer のやり取りを開始します。
@@ -134,8 +142,10 @@ Ayame Server がregister に込められている情報を検査して入室可�
 Ayame Server がregister に込められている情報を検査して入室不可能であることをクライアントに知らせるメッセージです。
 
 ```
-{type: "reject"}
+{"type": "reject", "reason": "<string>"}
 ```
+
+reason は入室不可の理由です。
 
 これを受け取ったらクライアントは peerConnection, websocket を閉じて初期化します。
 
@@ -144,7 +154,7 @@ Ayame Server がregister に込められている情報を検査して入室不�
 offer SDP を送信するメッセージです。
 
 ```
-{type: "offer", sdp: "v=0\r\no=- 4765067307885144980..."}
+{"type": "offer", "sdp": "v=0\r\no=- 4765067307885144980..."}
 ```
 
 これを受け取ったクライアントはこのSDP をもとに peer connection に remote description をセットします。
@@ -155,7 +165,7 @@ offer SDP を送信するメッセージです。
 answer SDP を送信するメッセージです。
 
 ```
-{type: "answer", sdp: "v=0\r\no=- 4765067307885144980..."}
+{"type": "answer", "sdp": "v=0\r\no=- 4765067307885144980..."}
 ```
 
 これを受け取ったクライアントはこれをもとに peer connection に remote description をセットします。
@@ -165,7 +175,7 @@ answer SDP を送信するメッセージです。
 ice candidate を交換するメッセージです。
 
 ```
-{type: "candidate", ice: {candidate: "...."}}
+{"type": "candidate", "ice": {"candidate": "...."}}
 ```
 
 これを受け取ったクライアントは peer connection に ice candidate を追加します。
@@ -175,7 +185,7 @@ ice candidate を交換するメッセージです。
 peer connection を切断したことを知らせるメッセージです。
 
 ```
-{type: "close"}
+{"type": "close"}
 ```
 
 これを受け取ったクライアントは peer connection を閉じて、リモート(受信側)の video element を破棄します。
