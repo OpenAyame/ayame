@@ -122,8 +122,6 @@ register で送信できるプロパティは以下になります。
 - `"clientId"`: (string): 必須
 - `"roomId"`: (string): 必須
 - `"key"`: (string): Optional
-- `"authnMetadata"`: (Object): Optional
-    - 多段ウェブフック認証の際に利用することができます。多段ウェブフック認証については後述します。
 
 
 ## `auth_webhook_url` オプションについて
@@ -143,39 +141,11 @@ register で送信できるプロパティは以下になります。
 - `allowed`: (boolean): 認証の可否 (必須)
 - `reason`: (string): 認証不可の際の理由 (`allowed` が false の場合のみ必須)
 - `iceServers`: (array object): クライアントに peer connection で接続する iceServer 情報 (optional)
-- `authWebhookUrl`: (string): 多段認証用の webhook url。(optional、多段認証をしない場合不要)
-    - 多段認証については次の項で説明します。
 
 `allowed` が false の場合 client の ayame への WebSocket 接続は切断されます。
 
 この auth_webhook はシグナリング key とroom ID の結びつきを確認する想定のものです。
 
-
-### 多段ウェブフック認証について
-
-`auth_webhook_url` を指定して、その `auth_webhook_url` からの返り値の JSON プロパティに `authWebhookUrl` が指定してある場合、
-ayame は通常の認証 wehbook での認証後、その URL に対してさらに認証リクエストを POST します。
-この `authWebhookUrl` へのリクエスト、レスポンスは以下のように想定されています。
-
-#### リクエスト
-
-- `authnMetadata`: (Object)
-    - register 時に `authnMetadata` をプロパティとして指定していると、その値がそのまま付与されます。
-
-
-#### レスポンス
-
-- `allowed`: (boolean): 認証の可否 (必須)
-- `reason`: (string): 認証不可の際の理由 (`allowed` が false の場合のみ)
-- `authzMetadata`: (Object, Optional)
-    - 任意に払い出せるメタデータ。 client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる。
-
-
-```
-{"allowed": true, "authzMetadata": {"username": "kdxu", "owner": "true"}}
-```
-
-この多段 auth_webhook は利用者が指定した認証ウェブフック URL を利用するためのものとして想定しています。
 
 ### ローカルで wss/https を試したい場合
 

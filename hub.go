@@ -121,9 +121,6 @@ func (h *Hub) run() {
 					IceServers:  resp.IceServers,
 					IsExistUser: isExistUser,
 				}
-				if resp.AuthzMetadata != nil {
-					msg.Metadata = resp.AuthzMetadata
-				}
 				room.newClient(client)
 				err = client.SendJSON(msg)
 				if err != nil {
