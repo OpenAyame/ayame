@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -58,6 +60,10 @@ type PingMessage struct {
 	Type string `json:"type"`
 }
 
+type ByeMessage struct {
+	Type string `json:"type"`
+}
+
 func (c *Client) listen(cancel context.CancelFunc) {
 	defer func() {
 		cancel()
@@ -79,6 +85,30 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		}
 		return nil
 	})
+	c.conn.SetCloseHandler(func(code int, text string) error {
+		logger.Printf("close code: %d, message: %s", code, text)
+		logger.Printf("client roomID: %s", c.roomID)
+		if c.roomID == "" {
+			msg := fmt.Sprintf("client does not registered: %v", c)
+			logger.Printf(msg)
+			err := errors.New(msg)
+			return err
+		}
+		msg := &ByeMessage{Type: "bye"}
+		message, err := json.Marshal(msg)
+		if err != nil {
+			logger.Printf("error: %v", err)
+			return err
+		}
+		broadcast := &Broadcast{
+			client:   c,
+			roomID:   c.roomID,
+			messages: message,
+		}
+		c.hub.broadcast <- broadcast
+		return nil
+	})
+
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
