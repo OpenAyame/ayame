@@ -112,7 +112,7 @@ WS のメッセージはJSONフォーマットでやり取りします。
 - offer
 - answer
 - candidate
-- close
+- bye
 
 #### type: register
 
@@ -180,12 +180,12 @@ ice candidate を交換するメッセージです。
 
 これを受け取ったクライアントは peer connection に ice candidate を追加します。
 
-#### type: close
+#### type: bye
 
 peer connection を切断したことを知らせるメッセージです。
 
 ```
-{"type": "close"}
+{"type": "bye"}
 ```
 
 これを受け取ったクライアントは peer connection を閉じて、リモート(受信側)の video element を破棄します。
