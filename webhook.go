@@ -17,7 +17,6 @@ type WebhookRequest struct {
 type WebhookResponse struct {
 	Allowed    bool          `json:"allowed"`
 	IceServers []interface{} `json:"iceServers,omitempty"`
-	WebhookURL *string       `json:"authWebhookUrl,omitempty"`
 	Reason     string        `json:"reason"`
 }
 
