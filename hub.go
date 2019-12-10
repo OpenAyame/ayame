@@ -120,12 +120,6 @@ func (h *Hub) run() {
 					client.conn.Close()
 					break
 				}
-				isExistUser := len(room.clients) > 0
-				msg := &acceptMessage{
-					Type:        "accept",
-					IceServers:  resp.IceServers,
-					IsExistUser: isExistUser,
-				}
 				msg.IceServers = resp.IceServers
 			}
 			room.newClient(client)
