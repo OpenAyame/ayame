@@ -7,7 +7,7 @@ import (
 
 // webhook リクエスト
 type WebhookRequest struct {
-	Key           *string     `json:"key,omitempty"`
+	SignalingKey  *string     `json:"signalingKey,omitempty"`
 	RoomID        string      `json:"roomId"`
 	ClientID      string      `json:"clientId"`
 	AuthnMetadata interface{} `json:"authnMetadata"`
@@ -21,8 +21,8 @@ type WebhookResponse struct {
 	Reason     string        `json:"reason"`
 }
 
-func AuthWebhookRequest(key *string, roomID string, clientID string, metadata interface{}) (*WebhookResponse, error) {
-	webhookReq := &WebhookRequest{Key: key, RoomID: roomID, ClientID: clientID, AuthnMetadata: metadata}
+func AuthWebhookRequest(signalingKey *string, roomID string, clientID string, metadata interface{}) (*WebhookResponse, error) {
+	webhookReq := &WebhookRequest{SignalingKey: signalingKey, RoomID: roomID, ClientID: clientID, AuthnMetadata: metadata}
 	respBytes, err := PostRequest(Options.AuthWebhookURL, webhookReq)
 	if err != nil {
 		return nil, err
