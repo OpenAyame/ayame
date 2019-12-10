@@ -5,36 +5,39 @@ import (
 	"errors"
 )
 
-// webhook リクエスト
-type WebhookRequest struct {
+type webhookRequest struct {
 	SignalingKey  *string     `json:"signalingKey,omitempty"`
 	RoomID        string      `json:"roomId"`
 	ClientID      string      `json:"clientId"`
 	AuthnMetadata interface{} `json:"authnMetadata"`
 }
 
-// webhook レスポンス
-type WebhookResponse struct {
+type webhookResponse struct {
 	Allowed    bool          `json:"allowed"`
 	IceServers []interface{} `json:"iceServers,omitempty"`
 	Reason     string        `json:"reason"`
 }
 
-func AuthWebhookRequest(signalingKey *string, roomID string, clientID string, metadata interface{}) (*WebhookResponse, error) {
-	webhookReq := &WebhookRequest{SignalingKey: signalingKey, RoomID: roomID, ClientID: clientID, AuthnMetadata: metadata}
+func authWebhookRequest(signalingKey *string, roomID string, clientID string, metadata interface{}) (*webhookResponse, error) {
+	webhookReq := &webhookRequest{
+		SignalingKey:  signalingKey,
+		RoomID:        roomID,
+		ClientID:      clientID,
+		AuthnMetadata: metadata,
+	}
 	respBytes, err := PostRequest(options.AuthWebhookURL, webhookReq)
 	if err != nil {
 		return nil, err
 	}
-	whResp := WebhookResponse{}
-	err = json.Unmarshal(respBytes, &whResp)
+	webhookResp := webhookResponse{}
+	err = json.Unmarshal(respBytes, &webhookResp)
 	if err != nil {
 		return nil, err
 	}
-	if !whResp.Allowed {
-		logger.Info("authn webhook not allowed, resp=", &whResp)
-		return &whResp, errors.New("Not Allowed")
+	if !webhookResp.Allowed {
+		logger.Info("authn webhook not allowed, resp=", &webhookResp)
+		return &webhookResp, errors.New("Not Allowed")
 	}
-	logger.Info("auth webhook allowed, resp=", whResp)
-	return &whResp, nil
+	logger.Info("auth webhook allowed, resp=", webhookResp)
+	return &webhookResp, nil
 }

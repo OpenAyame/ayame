@@ -99,7 +99,7 @@ func (h *Hub) run() {
 			}
 			// auth webhook を用いる場合
 			if options.AuthWebhookURL != "" {
-				resp, err := AuthWebhookRequest(registerInfo.key, roomID, clientID, registerInfo.metadata)
+				resp, err := authWebhookRequest(registerInfo.key, roomID, clientID, registerInfo.metadata)
 				if err != nil {
 					msg := &RejectMessage{
 						Type:   "reject",
@@ -116,7 +116,7 @@ func (h *Hub) run() {
 					break
 				}
 				isExistUser := len(room.clients) > 0
-				msg := &AcceptMetadataMessage{
+				msg := &AcceptMessage{
 					Type:        "accept",
 					IceServers:  resp.IceServers,
 					IsExistUser: isExistUser,

@@ -32,7 +32,7 @@ var upgrader = websocket.Upgrader{
 			return true
 		}
 		// origin を trim
-		host, err := TrimOriginToHost(origin)
+		host, err := trimOriginToHost(origin)
 		if err != nil {
 			logger.Warn("Invalid Origin Header, header=", origin)
 		}
