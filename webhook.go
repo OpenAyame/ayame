@@ -25,12 +25,12 @@ func authWebhookRequest(signalingKey *string, roomID string, clientID string, me
 		ClientID:      clientID,
 		AuthnMetadata: metadata,
 	}
-	respBytes, err := PostRequest(options.AuthWebhookURL, webhookReq)
+	respBody, err := postRequest(options.AuthWebhookURL, webhookReq)
 	if err != nil {
 		return nil, err
 	}
 	webhookResp := webhookResponse{}
-	err = json.Unmarshal(respBytes, &webhookResp)
+	err = json.Unmarshal(respBody, &webhookResp)
 	if err != nil {
 		return nil, err
 	}

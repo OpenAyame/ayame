@@ -9,7 +9,7 @@ import (
 )
 
 // JSON HTTP Request をするだけのラッパー
-func PostRequest(reqURL string, reqBody interface{}) ([]byte, error) {
+func postRequest(reqURL string, reqBody interface{}) ([]byte, error) {
 	_, err := url.ParseRequestURI(reqURL)
 	if err != nil {
 		return nil, err
