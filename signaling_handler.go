@@ -86,10 +86,10 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		return nil
 	})
 	c.conn.SetCloseHandler(func(code int, text string) error {
-		logger.Printf("close code: %d, message: %s", code, text)
-		logger.Printf("client roomID: %s", c.roomID)
+		logger.Printf("Close code: %d, message: %s", code, text)
+		logger.Printf("Client roomID: %s", c.roomID)
 		if c.roomID == "" {
-			msg := fmt.Sprintf("client does not registered: %v", c)
+			msg := fmt.Sprintf("Client does not registered: %v", c)
 			logger.Printf(msg)
 			err := errors.New(msg)
 			return err
@@ -110,42 +110,42 @@ func (c *Client) listen(cancel context.CancelFunc) {
 	})
 
 	for {
-		_, message, err := c.conn.ReadMessage()
+		_, rawMessage, err := c.conn.ReadMessage()
 		if err != nil {
 			logger.Warnf("Error while read message, err=%v", err)
 			break
 		}
-		msg := &Message{}
-		err = json.Unmarshal(message, &msg)
+		message := &Message{}
+		err = json.Unmarshal(rawMessage, &message)
 		if err != nil {
 			logger.Warnf("Invalid JSON, err=%v", err)
 			break
 		}
-		if msg.Type == "" {
+		if message.Type == "" {
 			logger.Warnf("Invalid Signaling Type")
 			break
 		}
-		if msg.Type == "pong" {
+		if message.Type == "pong" {
 			logger.Printf("recv ping over WS")
 			err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
 			if err != nil {
 				logger.Warnf("failed to set read deadline, err=%v", err)
 			}
 		} else {
-			if msg.Type == "register" && msg.RoomID != "" {
-				logger.Printf("register: %v", msg)
+			if message.Type == "register" && message.RoomID != "" {
+				logger.Printf("Register: %v", message)
 				c.hub.register <- &RegisterInfo{
-					clientID: msg.ClientID,
+					clientID: message.ClientID,
 					client:   c,
-					roomID:   msg.RoomID,
-					key:      msg.Key,
-					metadata: msg.Metadata,
+					roomID:   message.RoomID,
+					key:      message.Key,
+					metadata: message.Metadata,
 				}
 			} else {
-				logger.Printf("onmessage: %s", message)
-				logger.Printf("client roomID: %s", c.roomID)
+				logger.Printf("Onmessage: %s", message)
+				logger.Printf("Client roomID: %s", c.roomID)
 				if c.roomID == "" {
-					logger.Printf("client does not registered: %v", c)
+					logger.Printf("Client does not registered: %v", c)
 					return
 				}
 				if err != nil {
@@ -157,7 +157,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				broadcast := &Broadcast{
 					client:   c,
 					roomID:   c.roomID,
-					messages: message,
+					messages: rawMessage,
 				}
 				c.hub.broadcast <- broadcast
 			}
@@ -191,7 +191,7 @@ func (c *Client) broadcast(ctx context.Context) {
 			}
 			err := c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err != nil {
-				logger.Warnf("failed to set write deadline, err=%v", err)
+				logger.Warnf("Failed to set write deadline, err=%v", err)
 				return
 			}
 			w, err := c.conn.NextWriter(websocket.TextMessage)
@@ -200,18 +200,18 @@ func (c *Client) broadcast(ctx context.Context) {
 			}
 			_, err = w.Write(message)
 			if err != nil {
-				logger.Warnf("failed to write message, err=%v", err)
+				logger.Warnf("Failed to write message, err=%v", err)
 				return
 			}
 			w.Close()
 		case <-ticker.C:
 			err := c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err != nil {
-				logger.Warnf("failed to set write deadline, err=%v", err)
+				logger.Warnf("Failed to set write deadline, err=%v", err)
 			}
 			// over Ws で ping-pong を設定している場合
 			if options.OverWsPingPong {
-				logger.Info("send ping over WS")
+				logger.Info("Send ping over WS")
 				pingMsg := &PingMessage{Type: "ping"}
 				if err := c.SendJSON(pingMsg); err != nil {
 					return
@@ -232,7 +232,7 @@ func signalingHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
-	logger.Printf("[WS] connected")
+	logger.Printf("Websocket connected")
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	go client.listen(cancel)
