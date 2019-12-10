@@ -64,7 +64,7 @@ func (h *Hub) run() {
 			clientID := registerInfo.clientID
 			roomID := registerInfo.roomID
 			if len(roomID) == 0 || len(clientID) == 0 {
-				msg := &RejectMessage{
+				msg := &rejectMessage{
 					Type:   "reject",
 					Reason: "INVALID-ROOM-ID-OR-CLIENT-ID",
 				}
@@ -86,7 +86,7 @@ func (h *Hub) run() {
 			}
 			ok := len(room.clients) < 2
 			if !ok {
-				msg := &RejectMessage{
+				msg := &rejectMessage{
 					Type:   "reject",
 					Reason: "TOO-MANY-USERS",
 				}
@@ -98,10 +98,15 @@ func (h *Hub) run() {
 				break
 			}
 			// auth webhook を用いる場合
+			isExistUser := len(room.clients) > 0
+			msg := &acceptMessage{
+				Type:        "accept",
+				IsExistUser: isExistUser,
+			}
 			if options.AuthWebhookURL != "" {
 				resp, err := authWebhookRequest(registerInfo.key, roomID, clientID, registerInfo.metadata)
 				if err != nil {
-					msg := &RejectMessage{
+					msg := &rejectMessage{
 						Type:   "reject",
 						Reason: "AUTH-WEBHOOK-ERROR",
 					}
@@ -110,34 +115,25 @@ func (h *Hub) run() {
 					}
 					err = client.SendJSON(msg)
 					if err != nil {
-						logger.Warnf("failed to send msg=%v", msg)
+						logger.Warnf("Failed to send msg=%v", msg)
 					}
 					client.conn.Close()
 					break
 				}
 				isExistUser := len(room.clients) > 0
-				msg := &AcceptMessage{
+				msg := &acceptMessage{
 					Type:        "accept",
 					IceServers:  resp.IceServers,
 					IsExistUser: isExistUser,
 				}
-				room.newClient(client)
-				err = client.SendJSON(msg)
-				if err != nil {
-					logger.Warnf("failed to send msg=%v", msg)
-				}
-			} else {
-				isExistUser := len(room.clients) > 0
-				msg := &AcceptMessage{
-					Type:        "accept",
-					IsExistUser: isExistUser,
-				}
-				room.newClient(client)
-				err := client.SendJSON(msg)
-				if err != nil {
-					logger.Warnf("failed to send msg=%v", msg)
-				}
+				msg.IceServers = resp.IceServers
 			}
+			room.newClient(client)
+			err := client.SendJSON(msg)
+			if err != nil {
+				logger.Warnf("Failed to send msg=%v", msg)
+			}
+
 		case registerInfo := <-h.unregister:
 			roomID := registerInfo.roomID
 			client := registerInfo.client
