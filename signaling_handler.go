@@ -142,7 +142,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 					metadata: message.Metadata,
 				}
 			} else {
-				logger.Printf("Onmessage: %s", message)
+				logger.Printf("Onmessage: %s", rawMessage)
 				logger.Printf("Client roomID: %s", c.roomID)
 				if c.roomID == "" {
 					logger.Printf("Client does not registered: %v", c)
