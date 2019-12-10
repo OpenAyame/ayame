@@ -22,7 +22,7 @@ type WebhookResponse struct {
 
 func AuthWebhookRequest(signalingKey *string, roomID string, clientID string, metadata interface{}) (*WebhookResponse, error) {
 	webhookReq := &WebhookRequest{SignalingKey: signalingKey, RoomID: roomID, ClientID: clientID, AuthnMetadata: metadata}
-	respBytes, err := PostRequest(Options.AuthWebhookURL, webhookReq)
+	respBytes, err := PostRequest(options.AuthWebhookURL, webhookReq)
 	if err != nil {
 		return nil, err
 	}

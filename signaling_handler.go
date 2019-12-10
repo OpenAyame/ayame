@@ -24,7 +24,7 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024 * 4,
 	WriteBufferSize: 1024 * 4,
 	CheckOrigin: func(r *http.Request) bool {
-		if Options.AllowOrigin == "" {
+		if options.AllowOrigin == "" {
 			return true
 		}
 		origin := r.Header.Get("Origin")
@@ -37,11 +37,11 @@ var upgrader = websocket.Upgrader{
 			logger.Warn("Invalid Origin Header, header=", origin)
 		}
 		// config.yaml で指定した Allow Origin と一致するかで検査する
-		logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, Options.AllowOrigin)
-		if &Options.AllowOrigin == host {
+		logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, options.AllowOrigin)
+		if &options.AllowOrigin == host {
 			return true
 		}
-		if glob.Glob(Options.AllowOrigin, *host) {
+		if glob.Glob(options.AllowOrigin, *host) {
 			return true
 		}
 		return false
@@ -210,7 +210,7 @@ func (c *Client) broadcast(ctx context.Context) {
 				logger.Warnf("failed to set write deadline, err=%v", err)
 			}
 			// over Ws で ping-pong を設定している場合
-			if Options.OverWsPingPong {
+			if options.OverWsPingPong {
 				logger.Info("send ping over WS")
 				pingMsg := &PingMessage{Type: "ping"}
 				if err := c.SendJSON(pingMsg); err != nil {

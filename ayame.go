@@ -14,7 +14,7 @@ import (
 
 var ayameVersion = "19.08.0"
 
-type AyameOptions struct {
+type ayameOptions struct {
 	LogDir         string `yaml:"log_dir"`
 	LogName        string `yaml:"log_name"`
 	LogLevel       string `yaml:"log_level"`
@@ -26,8 +26,7 @@ type AyameOptions struct {
 }
 
 var (
-	// Options は Ayame の起動時のオプション
-	Options *AyameOptions
+	options *ayameOptions
 	logger  *logrus.Logger
 )
 
@@ -42,7 +41,7 @@ func init() {
 		log.Fatal("cannot open config file, err=", err)
 	}
 	// yaml をパース
-	err = yaml.Unmarshal(buf, &Options)
+	err = yaml.Unmarshal(buf, &options)
 	if err != nil {
 		// パースに失敗した場合 Fatal で終了
 		log.Fatal("cannot parse config file, err=", err)
@@ -59,7 +58,7 @@ func main() {
 		}
 	}
 	logger = setupLogger()
-	url := fmt.Sprintf("%s:%d", Options.Addr, Options.Port)
+	url := fmt.Sprintf("%s:%d", options.Addr, options.Port)
 	logger.Infof("WebRTC Signaling Server Ayame. version=%s", ayameVersion)
 	logger.Infof("running on http://%s (Press Ctrl+C quit)", url)
 	hub := newHub()

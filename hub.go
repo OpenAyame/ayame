@@ -98,7 +98,7 @@ func (h *Hub) run() {
 				break
 			}
 			// auth webhook を用いる場合
-			if Options.AuthWebhookURL != "" {
+			if options.AuthWebhookURL != "" {
 				resp, err := AuthWebhookRequest(registerInfo.key, roomID, clientID, registerInfo.metadata)
 				if err != nil {
 					msg := &RejectMessage{
