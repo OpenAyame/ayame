@@ -12,7 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var AyameVersion = "19.08.0"
+var ayameVersion = "19.08.0"
 
 type AyameOptions struct {
 	LogDir         string `yaml:"log_dir"`
@@ -54,13 +54,13 @@ func main() {
 	// 引数の処理
 	if len(args) > 0 {
 		if args[0] == "version" {
-			fmt.Printf("WebRTC Signaling Server Ayame version %s", AyameVersion)
+			fmt.Printf("WebRTC Signaling Server Ayame version %s", ayameVersion)
 			return
 		}
 	}
 	logger = setupLogger()
 	url := fmt.Sprintf("%s:%d", Options.Addr, Options.Port)
-	logger.Infof("WebRTC Signaling Server Ayame. version=%s", AyameVersion)
+	logger.Infof("WebRTC Signaling Server Ayame. version=%s", ayameVersion)
 	logger.Infof("running on http://%s (Press Ctrl+C quit)", url)
 	hub := newHub()
 	go hub.run()
