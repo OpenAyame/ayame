@@ -48,15 +48,12 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-type Message struct {
-	Type          string       `json:"type"`
-	RoomID        string       `json:"roomId"`
-	ClientID      string       `json:"clientId"`
-	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
-	Key           *string      `json:"key,omitempty"`
+type message struct {
+	Type string `json:"type"`
 }
 
 type registerMessage struct {
+	Type          string       `json:"type"`
 	RoomID        string       `json:"roomId"`
 	ClientID      string       `json:"clientId"`
 	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
@@ -123,52 +120,67 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			logger.Warnf("Error while read message, err=%v", err)
 			break
 		}
-		message := &Message{}
+		message := &message{}
 		err = json.Unmarshal(rawMessage, &message)
 		if err != nil {
 			logger.Warnf("Invalid JSON, err=%v", err)
 			break
 		}
-		if message.Type == "" {
+
+		switch message.Type {
+		case "":
 			logger.Warnf("Invalid Signaling Type")
-			break
-		}
-		if message.Type == "pong" {
-			logger.Printf("recv ping over WS")
+		case "pong":
+			logger.Printf("Recv ping over WS")
 			err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
 			if err != nil {
-				logger.Warnf("failed to set read deadline, err=%v", err)
+				logger.Warnf("Failed to set read deadline, err=%v", err)
 			}
-		} else {
-			if message.Type == "register" && message.RoomID != "" {
+		case "register":
+			registerMessage := &registerMessage{}
+			err = json.Unmarshal(rawMessage, &registerMessage)
+			if err != nil {
+				logger.Warnf("Invalid JSON, err=%v", err)
+				break
+			}
+
+			var signalingKey *string
+			if registerMessage.Key != nil {
+				signalingKey = registerMessage.Key
+			}
+			if registerMessage.SignalingKey != nil {
+				signalingKey = registerMessage.SignalingKey
+			}
+			if registerMessage.RoomID != "" {
 				logger.Printf("Register: %v", message)
 				c.hub.register <- &registerInfo{
-					clientID:      message.ClientID,
+					clientID:      registerMessage.ClientID,
 					client:        c,
-					roomID:        message.RoomID,
-					signalingKey:  message.Key,
-					authnMetadata: message.AuthnMetadata,
+					roomID:        registerMessage.RoomID,
+					signalingKey:  signalingKey,
+					authnMetadata: registerMessage.AuthnMetadata,
 				}
-			} else {
-				logger.Printf("Onmessage: %s", rawMessage)
-				logger.Printf("Client roomID: %s", c.roomID)
-				if c.roomID == "" {
-					logger.Printf("Client does not registered: %v", c)
-					return
-				}
-				if err != nil {
-					if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-						logger.Printf("error: %v", err)
-					}
-					break
-				}
-				broadcast := &Broadcast{
-					client:   c,
-					roomID:   c.roomID,
-					messages: rawMessage,
-				}
-				c.hub.broadcast <- broadcast
 			}
+		default:
+			logger.Printf("Onmessage: %s", rawMessage)
+			logger.Printf("Client roomID: %s", c.roomID)
+
+			if c.roomID == "" {
+				logger.Printf("Client does not registered: %v", c)
+				break
+			}
+			if err != nil {
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+					logger.Printf("error: %v", err)
+				}
+				break
+			}
+			broadcast := &Broadcast{
+				client:   c,
+				roomID:   c.roomID,
+				messages: rawMessage,
+			}
+			c.hub.broadcast <- broadcast
 		}
 	}
 }
