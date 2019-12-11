@@ -49,25 +49,33 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
-	Type     string       `json:"type"`
-	RoomID   string       `json:"roomId"`
-	ClientID string       `json:"clientId"`
-	Metadata *interface{} `json:"authnMetadata,omitempty"`
-	Key      *string      `json:"key,omitempty"`
+	Type          string       `json:"type"`
+	RoomID        string       `json:"roomId"`
+	ClientID      string       `json:"clientId"`
+	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
+	Key           *string      `json:"key,omitempty"`
 }
 
-type PingMessage struct {
+type registerMessage struct {
+	RoomID        string       `json:"roomId"`
+	ClientID      string       `json:"clientId"`
+	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
+	SignalingKey  *string      `json:"signalingKey,omitempty"`
+	Key           *string      `json:"key,omitempty"`
+}
+
+type pingMessage struct {
 	Type string `json:"type"`
 }
 
-type ByeMessage struct {
+type byeMessage struct {
 	Type string `json:"type"`
 }
 
 func (c *Client) listen(cancel context.CancelFunc) {
 	defer func() {
 		cancel()
-		c.hub.unregister <- &RegisterInfo{
+		c.hub.unregister <- &registerInfo{
 			client: c,
 			roomID: c.roomID,
 		}
@@ -94,8 +102,8 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			err := errors.New(msg)
 			return err
 		}
-		msg := &ByeMessage{Type: "bye"}
-		message, err := json.Marshal(msg)
+		byeMessage := &byeMessage{Type: "bye"}
+		message, err := json.Marshal(byeMessage)
 		if err != nil {
 			logger.Printf("error: %v", err)
 			return err
@@ -134,12 +142,12 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		} else {
 			if message.Type == "register" && message.RoomID != "" {
 				logger.Printf("Register: %v", message)
-				c.hub.register <- &RegisterInfo{
-					clientID: message.ClientID,
-					client:   c,
-					roomID:   message.RoomID,
-					key:      message.Key,
-					metadata: message.Metadata,
+				c.hub.register <- &registerInfo{
+					clientID:      message.ClientID,
+					client:        c,
+					roomID:        message.RoomID,
+					signalingKey:  message.Key,
+					authnMetadata: message.AuthnMetadata,
 				}
 			} else {
 				logger.Printf("Onmessage: %s", rawMessage)
@@ -212,7 +220,7 @@ func (c *Client) broadcast(ctx context.Context) {
 			// over Ws で ping-pong を設定している場合
 			if options.OverWsPingPong {
 				logger.Info("Send ping over WS")
-				pingMsg := &PingMessage{Type: "ping"}
+				pingMsg := &pingMessage{Type: "ping"}
 				if err := c.SendJSON(pingMsg); err != nil {
 					return
 				}

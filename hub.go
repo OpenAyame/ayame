@@ -10,12 +10,12 @@ type Broadcast struct {
 	messages []byte
 }
 
-type RegisterInfo struct {
-	roomID   string
-	clientID string
-	client   *Client
-	metadata *interface{}
-	key      *string
+type registerInfo struct {
+	roomID        string
+	clientID      string
+	client        *Client
+	authnMetadata *interface{}
+	signalingKey  *string
 }
 
 type Room struct {
@@ -42,16 +42,16 @@ type Hub struct {
 
 	broadcast chan *Broadcast
 
-	register chan *RegisterInfo
+	register chan *registerInfo
 
-	unregister chan *RegisterInfo
+	unregister chan *registerInfo
 }
 
 func newHub() *Hub {
 	return &Hub{
 		broadcast:  make(chan *Broadcast),
-		register:   make(chan *RegisterInfo),
-		unregister: make(chan *RegisterInfo),
+		register:   make(chan *registerInfo),
+		unregister: make(chan *registerInfo),
 		rooms:      make(map[string]*Room),
 	}
 }
@@ -104,7 +104,7 @@ func (h *Hub) run() {
 				IsExistUser: isExistUser,
 			}
 			if options.AuthWebhookURL != "" {
-				resp, err := authWebhookRequest(registerInfo.key, roomID, clientID, registerInfo.metadata)
+				resp, err := authWebhookRequest(registerInfo.signalingKey, roomID, clientID, registerInfo.authnMetadata)
 				if err != nil {
 					msg := &rejectMessage{
 						Type:   "reject",
