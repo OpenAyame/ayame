@@ -32,8 +32,7 @@ func authWebhookRequest(roomID string, clientID string, metadata interface{}, si
 		return nil, err
 	}
 	webhookResp := webhookResponse{}
-	err = json.Unmarshal(respBody, &webhookResp)
-	if err != nil {
+	if err := json.Unmarshal(respBody, &webhookResp); err != nil {
 		// TODO(nakai): JSON がエラーになったのをログに追加する
 		// roomID と clientID などを出力すること
 		return nil, err

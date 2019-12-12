@@ -68,8 +68,8 @@ func (h *Hub) run() {
 					Type:   "reject",
 					Reason: "INVALID-ROOM-ID-OR-CLIENT-ID",
 				}
-				err := client.SendJSON(msg)
-				if err != nil {
+
+				if err := client.SendJSON(msg); err != nil {
 					logger.Warnf("failed to send msg=%v", msg)
 				}
 				client.conn.Close()
@@ -90,8 +90,8 @@ func (h *Hub) run() {
 					Type:   "reject",
 					Reason: "TOO-MANY-USERS",
 				}
-				err := client.SendJSON(msg)
-				if err != nil {
+
+				if err := client.SendJSON(msg); err != nil {
 					logger.Warnf("failed to send msg=%v", msg)
 				}
 				client.conn.Close()
@@ -111,8 +111,8 @@ func (h *Hub) run() {
 						Type:   "reject",
 						Reason: "AUTH-WEBHOOK-INTERNAL-ERROR",
 					}
-					err = client.SendJSON(msg)
-					if err != nil {
+
+					if err := client.SendJSON(msg); err != nil {
 						logger.Warnf("Failed to send msg=%v", msg)
 					}
 					client.conn.Close()
@@ -125,8 +125,8 @@ func (h *Hub) run() {
 						Type:   "reject",
 						Reason: resp.Reason,
 					}
-					err = client.SendJSON(msg)
-					if err != nil {
+
+					if err := client.SendJSON(msg); err != nil {
 						logger.Warnf("Failed to send msg=%v", msg)
 					}
 					client.conn.Close()
@@ -135,8 +135,8 @@ func (h *Hub) run() {
 				msg.IceServers = resp.IceServers
 			}
 			room.newClient(client)
-			err := client.SendJSON(msg)
-			if err != nil {
+
+			if err := client.SendJSON(msg); err != nil {
 				logger.Warnf("Failed to send msg=%v", msg)
 				client.conn.Close()
 			}

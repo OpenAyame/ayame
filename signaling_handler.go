@@ -79,13 +79,11 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		c.conn.Close()
 	}()
 
-	err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
-	if err != nil {
+	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		logger.Warnf("failed to set read deadline, err=%v", err)
 	}
 	c.conn.SetPongHandler(func(string) error {
-		err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
-		if err != nil {
+		if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 			logger.Warnf("failed to set read deadline, err=%v", err)
 		}
 		return nil
@@ -121,8 +119,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			break
 		}
 		message := &message{}
-		err = json.Unmarshal(rawMessage, &message)
-		if err != nil {
+		if err := json.Unmarshal(rawMessage, &message); err != nil {
 			logger.Warnf("Invalid JSON, err=%v", err)
 			break
 		}
@@ -132,14 +129,12 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			logger.Warnf("Invalid Signaling Type")
 		case "pong":
 			logger.Printf("Recv ping over WS")
-			err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
-			if err != nil {
+			if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 				logger.Warnf("Failed to set read deadline, err=%v", err)
 			}
 		case "register":
 			registerMessage := &registerMessage{}
-			err = json.Unmarshal(rawMessage, &registerMessage)
-			if err != nil {
+			if err := json.Unmarshal(rawMessage, &registerMessage); err != nil {
 				logger.Warnf("Invalid JSON, err=%v", err)
 				break
 			}
@@ -196,21 +191,18 @@ func (c *Client) broadcast(ctx context.Context) {
 		case <-ctx.Done():
 			// channel がすでに close していた場合
 			// ループを抜ける
-			err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-			if err != nil {
+			if err := c.conn.WriteMessage(websocket.CloseMessage, []byte{}); err != nil {
 				logger.Warnf("failed to write close message, err=%v", err)
 			}
 			return
 		case message, ok := <-c.send:
 			if !ok {
-				err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-				if err != nil {
+				if err := c.conn.WriteMessage(websocket.CloseMessage, []byte{}); err != nil {
 					logger.Warnf("failed to write close message, err=%v", err)
 				}
 				return
 			}
-			err := c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err != nil {
+			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
 				logger.Warnf("Failed to set write deadline, err=%v", err)
 				return
 			}
@@ -218,15 +210,13 @@ func (c *Client) broadcast(ctx context.Context) {
 			if err != nil {
 				return
 			}
-			_, err = w.Write(message)
-			if err != nil {
+			if _, err := w.Write(message); err != nil {
 				logger.Warnf("Failed to write message, err=%v", err)
 				return
 			}
 			w.Close()
 		case <-ticker.C:
-			err := c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err != nil {
+			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
 				logger.Warnf("Failed to set write deadline, err=%v", err)
 			}
 			// over Ws で ping-pong を設定している場合

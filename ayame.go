@@ -41,8 +41,8 @@ func init() {
 		log.Fatal("cannot open config file, err=", err)
 	}
 	// yaml をパース
-	err = yaml.Unmarshal(buf, &options)
-	if err != nil {
+
+	if err := yaml.Unmarshal(buf, &options); err != nil {
 		// パースに失敗した場合 Fatal で終了
 		log.Fatal("cannot parse config file, err=", err)
 	}
@@ -77,8 +77,8 @@ func main() {
 	// timeout は暫定的に 10 sec
 	timeout := 10 * time.Second
 	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: timeout}
-	err := server.ListenAndServe()
-	if err != nil {
+
+	if err := server.ListenAndServe(); err != nil {
 		logger.Fatal(err)
 	}
 }
