@@ -104,7 +104,7 @@ func (h *Hub) run() {
 				IsExistUser: isExistUser,
 			}
 			if options.AuthWebhookURL != "" {
-				resp, err := authWebhookRequest(registerInfo.signalingKey, roomID, clientID, registerInfo.authnMetadata)
+				resp, err := authWebhookRequest(roomID, clientID, registerInfo.authnMetadata, registerInfo.signalingKey)
 				if err != nil {
 					msg := &rejectMessage{
 						Type:   "reject",

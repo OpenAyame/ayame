@@ -18,7 +18,7 @@ type webhookResponse struct {
 	Reason     string        `json:"reason"`
 }
 
-func authWebhookRequest(signalingKey *string, roomID string, clientID string, metadata interface{}) (*webhookResponse, error) {
+func authWebhookRequest(roomID string, clientID string, metadata interface{}, signalingKey *string) (*webhookResponse, error) {
 	webhookReq := &webhookRequest{
 		SignalingKey:  signalingKey,
 		RoomID:        roomID,
