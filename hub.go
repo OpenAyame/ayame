@@ -97,21 +97,13 @@ func (h *Hub) run() {
 				client.conn.Close()
 				break
 			}
-			// auth webhook を用いる場合
-			isExistUser := len(room.clients) > 0
-			msg := &acceptMessage{
-				Type:        "accept",
-				IsExistUser: isExistUser,
-			}
 			if options.AuthWebhookURL != "" {
 				resp, err := authWebhookRequest(roomID, clientID, registerInfo.authnMetadata, registerInfo.signalingKey)
+				// インターナルエラー
 				if err != nil {
 					msg := &rejectMessage{
 						Type:   "reject",
-						Reason: "AUTH-WEBHOOK-ERROR",
-					}
-					if resp != nil {
-						msg.Reason = resp.Reason
+						Reason: "AUTH-WEBHOOK-INTERNAL-ERROR",
 					}
 					err = client.SendJSON(msg)
 					if err != nil {
@@ -120,12 +112,32 @@ func (h *Hub) run() {
 					client.conn.Close()
 					break
 				}
-				msg.IceServers = resp.IceServers
-			}
-			room.newClient(client)
-			err := client.SendJSON(msg)
-			if err != nil {
-				logger.Warnf("Failed to send msg=%v", msg)
+
+				if !resp.Allowed {
+					msg := &rejectMessage{
+						Type:   "reject",
+						Reason: resp.Reason,
+					}
+					err = client.SendJSON(msg)
+					if err != nil {
+						logger.Warnf("Failed to send msg=%v", msg)
+					}
+					client.conn.Close()
+					break
+				}
+
+				// auth webhook を用いる場合
+				isExistUser := len(room.clients) > 0
+				msg := &acceptMessage{
+					Type:        "accept",
+					IsExistUser: isExistUser,
+					IceServers:  resp.IceServers,
+				}
+				room.newClient(client)
+				err = client.SendJSON(msg)
+				if err != nil {
+					logger.Warnf("Failed to send msg=%v", msg)
+				}
 			}
 
 		case registerInfo := <-h.unregister:

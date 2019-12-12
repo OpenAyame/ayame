@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 )
 
 type webhookRequest struct {
@@ -39,10 +38,5 @@ func authWebhookRequest(roomID string, clientID string, metadata interface{}, si
 		// roomID と clientID などを出力すること
 		return nil, err
 	}
-	if !webhookResp.Allowed {
-		logger.Info("authn webhook not allowed, resp=", &webhookResp)
-		return &webhookResp, errors.New("Not Allowed")
-	}
-	logger.Info("auth webhook allowed, resp=", webhookResp)
 	return &webhookResp, nil
 }
