@@ -25,13 +25,18 @@ func authWebhookRequest(roomID string, clientID string, metadata interface{}, si
 		ClientID:      clientID,
 		AuthnMetadata: metadata,
 	}
+	// TOOD(nakai): Timeout の引数を渡せるようにする
 	respBody, err := postRequest(options.AuthWebhookURL, webhookReq)
 	if err != nil {
+		// TODO(nakai): ウェブフック失敗時に何故失敗したのかのログを追加する
+		// TODO(nakai): ステータスコードなどもログとして出力するようにする
 		return nil, err
 	}
 	webhookResp := webhookResponse{}
 	err = json.Unmarshal(respBody, &webhookResp)
 	if err != nil {
+		// TODO(nakai): JSON がエラーになったのをログに追加する
+		// roomID と clientID などを出力すること
 		return nil, err
 	}
 	if !webhookResp.Allowed {
