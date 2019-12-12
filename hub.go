@@ -97,6 +97,12 @@ func (h *Hub) run() {
 				client.conn.Close()
 				break
 			}
+			// 認証成功
+			isExistUser := len(room.clients) > 0
+			msg := &acceptMessage{
+				Type:        "accept",
+				IsExistUser: isExistUser,
+			}
 			if options.AuthWebhookURL != "" {
 				resp, err := authWebhookRequest(roomID, clientID, registerInfo.authnMetadata, registerInfo.signalingKey)
 				// インターナルエラー
@@ -126,22 +132,15 @@ func (h *Hub) run() {
 					client.conn.Close()
 					break
 				}
-
-				// 認証成功
-				isExistUser := len(room.clients) > 0
-				msg := &acceptMessage{
-					Type:        "accept",
-					IsExistUser: isExistUser,
-					IceServers:  resp.IceServers,
-					// TODO(nakai): authz を個々に入れる
-				}
-				room.newClient(client)
-				err = client.SendJSON(msg)
-				if err != nil {
-					logger.Warnf("Failed to send msg=%v", msg)
-				}
-				client.conn.Close()
+				msg.IceServers = resp.IceServers
 			}
+			room.newClient(client)
+			err := client.SendJSON(msg)
+			if err != nil {
+				logger.Warnf("Failed to send msg=%v", msg)
+			}
+			client.conn.Close()
+
 		case registerInfo := <-h.unregister:
 			roomID := registerInfo.roomID
 			client := registerInfo.client
