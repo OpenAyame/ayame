@@ -19,6 +19,10 @@ import (
 // ayame 起動時に呼ばれる
 // ログディレクトリおよびファイル名は起動時のオプションにて指定している
 func setupLogger() *logrus.Logger {
+	if f, err := os.Stat(options.LogDir); os.IsNotExist(err) || !f.IsDir() {
+		err := fmt.Errorf("no such directory: %s", options.LogDir)
+		log.Fatal(err)
+	}
 	level, err := logrus.ParseLevel(options.LogLevel)
 	if err != nil {
 		log.Fatalf("Log level error %v", err)
