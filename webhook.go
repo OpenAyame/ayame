@@ -12,9 +12,9 @@ type webhookRequest struct {
 }
 
 type webhookResponse struct {
-	Allowed    bool          `json:"allowed"`
-	IceServers []interface{} `json:"iceServers,omitempty"`
-	Reason     string        `json:"reason"`
+	Allowed    bool         `json:"allowed"`
+	IceServers *[]iceServer `json:"iceServers,omitempty"`
+	Reason     string       `json:"reason"`
 }
 
 func authWebhookRequest(roomID string, clientID string, metadata interface{}, signalingKey *string) (*webhookResponse, error) {

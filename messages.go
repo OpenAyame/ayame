@@ -1,11 +1,16 @@
 package main
 
 type acceptMessage struct {
-	Type     string      `json:"type"`
-	Metadata interface{} `json:"authzMetadata,omitempty"`
-	// iceServer struct を用意してその配列を使うようにしたい
-	IceServers  []interface{} `json:"iceServers,omitempty"`
-	IsExistUser bool          `json:"isExistUser"`
+	Type        string       `json:"type"`
+	Metadata    interface{}  `json:"authzMetadata,omitempty"`
+	IceServers  *[]iceServer `json:"iceServers,omitempty"`
+	IsExistUser bool         `json:"isExistUser"`
+}
+
+type iceServer struct {
+	Urls       []string `json:"urls"`
+	UserName   *string  `json:"username,omitempty"`
+	Credential *string  `json:"credential,omitempty"`
 }
 
 type rejectMessage struct {
