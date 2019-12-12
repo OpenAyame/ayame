@@ -126,7 +126,7 @@ func (h *Hub) run() {
 					break
 				}
 
-				// auth webhook を用いる場合
+				// 認証成功
 				isExistUser := len(room.clients) > 0
 				msg := &acceptMessage{
 					Type:        "accept",
@@ -138,8 +138,8 @@ func (h *Hub) run() {
 				if err != nil {
 					logger.Warnf("Failed to send msg=%v", msg)
 				}
+				client.conn.Close()
 			}
-
 		case registerInfo := <-h.unregister:
 			roomID := registerInfo.roomID
 			client := registerInfo.client
