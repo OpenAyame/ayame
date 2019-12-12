@@ -75,7 +75,7 @@ func (h *Hub) run() {
 				client.conn.Close()
 				break
 			}
-			client = client.Setup(roomID, clientID)
+			client.Setup(roomID, clientID)
 			room := h.rooms[roomID]
 			if _, ok := h.rooms[roomID]; !ok {
 				room = &Room{

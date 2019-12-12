@@ -22,10 +22,9 @@ func (c *Client) SendJSON(v interface{}) error {
 	return c.conn.WriteJSON(v)
 }
 
-func (c *Client) Setup(roomID string, clientID string) *Client {
+func (c *Client) Setup(roomID string, clientID string) {
 	c.Lock()
 	defer c.Unlock()
 	c.roomID = roomID
 	c.clientID = clientID
-	return c
 }
