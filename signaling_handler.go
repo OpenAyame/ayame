@@ -219,17 +219,10 @@ func (c *Client) broadcast(ctx context.Context) {
 			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
 				logger.Warnf("Failed to set write deadline, err=%v", err)
 			}
-			// over Ws で ping-pong を設定している場合
-			if options.OverWsPingPong {
-				logger.Info("Send ping over WS")
-				pingMsg := &pingMessage{Type: "ping"}
-				if err := c.SendJSON(pingMsg); err != nil {
-					return
-				}
-			} else {
-				if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-					return
-				}
+			logger.Info("Send ping over WS")
+			pingMsg := &pingMessage{Type: "ping"}
+			if err := c.SendJSON(pingMsg); err != nil {
+				return
 			}
 		}
 	}
