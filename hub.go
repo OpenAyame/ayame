@@ -138,9 +138,8 @@ func (h *Hub) run() {
 			err := client.SendJSON(msg)
 			if err != nil {
 				logger.Warnf("Failed to send msg=%v", msg)
+				client.conn.Close()
 			}
-			client.conn.Close()
-
 		case registerInfo := <-h.unregister:
 			roomID := registerInfo.roomID
 			client := registerInfo.client
