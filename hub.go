@@ -113,6 +113,7 @@ func (h *Hub) run() {
 					break
 				}
 
+				// 認証失敗
 				if !resp.Allowed {
 					msg := &rejectMessage{
 						Type:   "reject",
@@ -132,6 +133,7 @@ func (h *Hub) run() {
 					Type:        "accept",
 					IsExistUser: isExistUser,
 					IceServers:  resp.IceServers,
+					// TODO(nakai): authz を個々に入れる
 				}
 				room.newClient(client)
 				err = client.SendJSON(msg)
