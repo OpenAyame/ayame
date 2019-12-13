@@ -107,6 +107,22 @@ func (h *Hub) run() {
 				resp, err := authWebhookRequest(roomID, clientID, registerInfo.authnMetadata, registerInfo.signalingKey)
 				// インターナルエラー
 				if err != nil {
+					logger.Warnf("%s", err)
+					msg := &rejectMessage{
+						Type:   "reject",
+						Reason: "AUTH-WEBHOOK-INTERNAL-ERROR",
+					}
+
+					if err := client.SendJSON(msg); err != nil {
+						logger.Warnf("Failed to send msg=%v", msg)
+					}
+					client.conn.Close()
+					break
+				}
+
+				// allowed が存在しない場合はエラー
+				if resp.Allowed == nil {
+					logger.Warn("missing allowed key")
 					msg := &rejectMessage{
 						Type:   "reject",
 						Reason: "AUTH-WEBHOOK-INTERNAL-ERROR",
@@ -120,7 +136,7 @@ func (h *Hub) run() {
 				}
 
 				// 認証失敗
-				if !resp.Allowed {
+				if !*resp.Allowed {
 					msg := &rejectMessage{
 						Type:   "reject",
 						Reason: resp.Reason,

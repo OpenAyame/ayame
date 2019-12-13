@@ -12,7 +12,7 @@ type webhookRequest struct {
 }
 
 type webhookResponse struct {
-	Allowed    bool         `json:"allowed"`
+	Allowed    *bool        `json:"allowed"`
 	IceServers *[]iceServer `json:"iceServers,omitempty"`
 	Reason     string       `json:"reason"`
 }
