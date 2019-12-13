@@ -26,7 +26,7 @@ type ayameOptions struct {
 
 var (
 	options *ayameOptions
-	logger  *logrus.Logger
+	logger  *logrus.Logger = NewLogger()
 )
 
 // 初期化処理
@@ -45,6 +45,10 @@ func init() {
 		// パースに失敗した場合 Fatal で終了
 		log.Fatal("cannot parse config file, err=", err)
 	}
+
+	if err := setupLogger(logger); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -56,7 +60,7 @@ func main() {
 			return
 		}
 	}
-	logger = setupLogger()
+
 	url := fmt.Sprintf("%s:%d", options.Addr, options.Port)
 	logger.Infof("WebRTC Signaling Server Ayame. version=%s", ayameVersion)
 	logger.Infof("running on http://%s (Press Ctrl+C quit)", url)
