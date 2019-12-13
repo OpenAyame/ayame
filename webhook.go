@@ -14,7 +14,7 @@ type webhookRequest struct {
 type webhookResponse struct {
 	Allowed    *bool        `json:"allowed"`
 	IceServers *[]iceServer `json:"iceServers,omitempty"`
-	Reason     *string      `json:"reason",omitempty`
+	Reason     *string      `json:"reason,omitempty"`
 }
 
 func authWebhookRequest(roomID string, clientID string, metadata interface{}, signalingKey *string) (*webhookResponse, error) {

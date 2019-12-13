@@ -26,7 +26,7 @@ type ayameOptions struct {
 
 var (
 	options *ayameOptions
-	logger  *logrus.Logger = NewLogger()
+	logger  *logrus.Logger = newLogger()
 )
 
 // 初期化処理

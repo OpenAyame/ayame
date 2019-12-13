@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func NewLogger() *logrus.Logger {
+func newLogger() *logrus.Logger {
 	return &logrus.Logger{
 		Formatter: &logrus.TextFormatter{},
 	}
