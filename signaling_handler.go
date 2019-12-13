@@ -20,33 +20,13 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024 * 4,
-	WriteBufferSize: 1024 * 4,
-	CheckOrigin: func(r *http.Request) bool {
-		if options.AllowOrigin == "" {
-			return true
-		}
-		origin := r.Header.Get("Origin")
-		if origin == "" {
-			return true
-		}
-		// origin を trim
-		host, err := trimOriginToHost(origin)
-		if err != nil {
-			logger.Warn("Invalid Origin Header, header=", origin)
-		}
-		// config.yaml で指定した Allow Origin と一致するかで検査する
-		logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, options.AllowOrigin)
-		if options.AllowOrigin == host {
-			return true
-		}
-		if glob.Glob(options.AllowOrigin, host) {
-			return true
-		}
-		return false
-	},
-}
+var (
+	upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024 * 4,
+		WriteBufferSize: 1024 * 4,
+		CheckOrigin:     checkOrigin,
+	}
+)
 
 type message struct {
 	Type string `json:"type"`
@@ -240,4 +220,29 @@ func signalingHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithCancel(ctx)
 	go client.listen(cancel)
 	go client.broadcast(ctx)
+}
+
+func checkOrigin(r *http.Request) bool {
+	if options.AllowOrigin == "" {
+		return true
+	}
+	origin := r.Header.Get("Origin")
+	if origin == "" {
+		return true
+	}
+	// origin を trim
+	host, err := trimOriginToHost(origin)
+	if err != nil {
+		logger.Warn("Invalid Origin Header, header=", origin)
+		return false
+	}
+	// config.yaml で指定した Allow Origin と一致するかで検査する
+	logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, options.AllowOrigin)
+	if options.AllowOrigin == host {
+		return true
+	}
+	if glob.Glob(options.AllowOrigin, host) {
+		return true
+	}
+	return false
 }
