@@ -3,23 +3,22 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
 
 // JSON HTTP Request をするだけのラッパー
-func postRequest(reqURL string, reqBody interface{}) ([]byte, error) {
-	if _, err := url.ParseRequestURI(reqURL); err != nil {
+func postRequest(u string, body interface{}) (*http.Response, error) {
+	if _, err := url.ParseRequestURI(u); err != nil {
 		return nil, err
 	}
-	reqJSON, err := json.Marshal(reqBody)
+	reqJSON, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	req, err := http.NewRequest(
 		"POST",
-		reqURL,
+		u,
 		bytes.NewBuffer([]byte(reqJSON)),
 	)
 	if err != nil {
@@ -28,15 +27,7 @@ func postRequest(reqURL string, reqBody interface{}) ([]byte, error) {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return respBody, nil
+	return client.Do(req)
 }
 
 func trimOriginToHost(origin string) (string, error) {
