@@ -38,10 +38,10 @@ var upgrader = websocket.Upgrader{
 		}
 		// config.yaml で指定した Allow Origin と一致するかで検査する
 		logger.Infof("[WS] Request Origin=%s, AllowOrigin=%s", origin, options.AllowOrigin)
-		if &options.AllowOrigin == host {
+		if options.AllowOrigin == host {
 			return true
 		}
-		if glob.Glob(options.AllowOrigin, *host) {
+		if glob.Glob(options.AllowOrigin, host) {
 			return true
 		}
 		return false

@@ -39,11 +39,11 @@ func postRequest(reqURL string, reqBody interface{}) ([]byte, error) {
 	return respBody, nil
 }
 
-func trimOriginToHost(origin string) (*string, error) {
+func trimOriginToHost(origin string) (string, error) {
 	url, err := url.Parse(origin)
 	if err != nil {
 		logger.Warning("origin parse error, origin=", origin)
-		return nil, err
+		return "", err
 	}
-	return &url.Host, nil
+	return url.Host, nil
 }
