@@ -12,6 +12,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const (
+	// timeout は暫定的に 10 sec
+	readHeaderTimeout = 10 * time.Second
+)
+
 var ayameVersion = "19.08.0"
 
 type ayameOptions struct {
@@ -77,9 +82,7 @@ func main() {
 	http.HandleFunc("/signaling", func(w http.ResponseWriter, r *http.Request) {
 		signalingHandler(hub, w, r)
 	})
-	// timeout は暫定的に 10 sec
-	timeout := 10 * time.Second
-	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: timeout}
+	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: readHeaderTimeout}
 
 	if err := server.ListenAndServe(); err != nil {
 		logger.Fatal(err)
