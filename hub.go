@@ -137,9 +137,13 @@ func (h *Hub) run() {
 
 				// 認証失敗
 				if !*resp.Allowed {
+					reason := "AUTH-WEBHOOK-INTERNAL-ERROR"
+					if resp.Reason != nil {
+						reason = *resp.Reason
+					}
 					msg := &rejectMessage{
 						Type:   "reject",
-						Reason: resp.Reason,
+						Reason: reason,
 					}
 
 					if err := client.SendJSON(msg); err != nil {
