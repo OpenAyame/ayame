@@ -64,15 +64,10 @@ func (h *Hub) run() {
 			clientID := registerInfo.clientID
 			roomID := registerInfo.roomID
 			if len(roomID) == 0 || len(clientID) == 0 {
-				msg := &rejectMessage{
-					Type:   "reject",
-					Reason: "INVALID-ROOM-ID-OR-CLIENT-ID",
+				reason := "INVALID-ROOM-ID-OR-CLIENT-ID"
+				if err := client.sendRejectMessage(reason); err != nil {
+					logger.Error(err)
 				}
-
-				if err := client.SendJSON(msg); err != nil {
-					logger.Warnf("failed to send msg=%v", msg)
-				}
-				client.conn.Close()
 				break
 			}
 			client.Setup(roomID, clientID)
@@ -86,15 +81,10 @@ func (h *Hub) run() {
 			}
 			ok := len(room.clients) < 2
 			if !ok {
-				msg := &rejectMessage{
-					Type:   "reject",
-					Reason: "TOO-MANY-USERS",
+				reason := "TOO-MANY-USERS"
+				if err := client.sendRejectMessage(reason); err != nil {
+					logger.Error(err)
 				}
-
-				if err := client.SendJSON(msg); err != nil {
-					logger.Warnf("failed to send msg=%v", msg)
-				}
-				client.conn.Close()
 				break
 			}
 			// 認証成功
@@ -108,30 +98,20 @@ func (h *Hub) run() {
 				// インターナルエラー
 				if err != nil {
 					logger.Warnf("%s", err)
-					msg := &rejectMessage{
-						Type:   "reject",
-						Reason: "AUTH-WEBHOOK-INTERNAL-ERROR",
+					reason := "AUTH-WEBHOOK-INTERNAL-ERROR"
+					if err := client.sendRejectMessage(reason); err != nil {
+						logger.Error(err)
 					}
-
-					if err := client.SendJSON(msg); err != nil {
-						logger.Warnf("Failed to send msg=%v", msg)
-					}
-					client.conn.Close()
 					break
 				}
 
 				// allowed が存在しない場合はエラー
 				if resp.Allowed == nil {
 					logger.Warn("missing allowed key")
-					msg := &rejectMessage{
-						Type:   "reject",
-						Reason: "AUTH-WEBHOOK-INTERNAL-ERROR",
+					reason := "AUTH-WEBHOOK-INTERNAL-ERROR"
+					if err := client.sendRejectMessage(reason); err != nil {
+						logger.Error(err)
 					}
-
-					if err := client.SendJSON(msg); err != nil {
-						logger.Warnf("Failed to send msg=%v", msg)
-					}
-					client.conn.Close()
 					break
 				}
 
@@ -141,15 +121,9 @@ func (h *Hub) run() {
 					if resp.Reason != nil {
 						reason = *resp.Reason
 					}
-					msg := &rejectMessage{
-						Type:   "reject",
-						Reason: reason,
+					if err := client.sendRejectMessage(reason); err != nil {
+						logger.Error(err)
 					}
-
-					if err := client.SendJSON(msg); err != nil {
-						logger.Warnf("Failed to send msg=%v", msg)
-					}
-					client.conn.Close()
 					break
 				}
 				msg.IceServers = resp.IceServers

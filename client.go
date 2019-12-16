@@ -28,3 +28,17 @@ func (c *Client) Setup(roomID string, clientID string) {
 	c.roomID = roomID
 	c.clientID = clientID
 }
+
+func (c *Client) sendRejectMessage(reason string) error {
+	msg := &rejectMessage{
+		Type:   "reject",
+		Reason: "AUTH-WEBHOOK-INTERNAL-ERROR",
+	}
+
+	if err := c.SendJSON(msg); err != nil {
+		logger.Warnf("Failed to send msg=%v", msg)
+		return err
+	}
+	c.conn.Close()
+	return nil
+}
