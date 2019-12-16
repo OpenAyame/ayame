@@ -175,18 +175,18 @@ func (c *Client) broadcast(ctx context.Context) {
 }
 
 func signalingHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
-	c, err := upgrader.Upgrade(w, r, nil)
+	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		logger.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
+	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
 	logger.Printf("Websocket connected")
 	client.conn.SetCloseHandler(func(code int, text string) error {
 		logger.Printf("Close code: %d, message: %s", code, text)
 		logger.Printf("Client roomID: %s", client.roomID)
 		if client.roomID == "" {
-			msg := fmt.Sprintf("Client does not registered: %v", c)
+			msg := fmt.Sprintf("Client does not registered: %v", client)
 			logger.Printf(msg)
 			return errors.New(msg)
 		}
