@@ -165,7 +165,10 @@ func (c *Client) broadcast(ctx context.Context) {
 				logger.Warnf("Failed to write message, err=%v", err)
 				return
 			}
-			w.Close()
+			if err := w.Close(); err != nil {
+				logger.Warnf("Failed to write message, err=%v", err)
+				return
+			}
 		case <-ticker.C:
 			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
 				logger.Warnf("Failed to set write deadline, err=%v", err)
