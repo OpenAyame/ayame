@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"time"
 )
 
 type webhookRequest struct {
@@ -18,6 +19,11 @@ type webhookResponse struct {
 	Reason     *string      `json:"reason,omitempty"`
 }
 
+var (
+	// TODO(yoshida): Timeout を設定等から取得する
+	webhookTimeout = 5 * time.Second
+)
+
 func authWebhookRequest(roomID string, clientID string, authnMetadata interface{}, signalingKey *string) (*webhookResponse, error) {
 	req := &webhookRequest{
 		SignalingKey:  signalingKey,
@@ -25,8 +31,7 @@ func authWebhookRequest(roomID string, clientID string, authnMetadata interface{
 		ClientID:      clientID,
 		AuthnMetadata: authnMetadata,
 	}
-	// TOOD(nakai): Timeout の引数を渡せるようにする
-	resp, err := postRequest(options.AuthWebhookURL, req)
+	resp, err := postRequest(options.AuthWebhookURL, req, webhookTimeout)
 	if err != nil {
 		// TODO(nakai): ウェブフック失敗時に何故失敗したのかのログを追加する
 		// TODO(nakai): ステータスコードなどもログとして出力するようにする

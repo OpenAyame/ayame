@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // JSON HTTP Request をするだけのラッパー
-func postRequest(u string, body interface{}) (*http.Response, error) {
+func postRequest(u string, body interface{}, timeout time.Duration) (*http.Response, error) {
 	if _, err := url.ParseRequestURI(u); err != nil {
 		return nil, err
 	}
@@ -26,7 +27,7 @@ func postRequest(u string, body interface{}) (*http.Response, error) {
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{}
+	client := &http.Client{Timeout: timeout}
 	return client.Do(req)
 }
 
