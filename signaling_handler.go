@@ -76,8 +76,6 @@ func (c *Client) listen(cancel context.CancelFunc) {
 		}
 
 		switch message.Type {
-		case "":
-			logger.Warnf("Invalid Signaling Type")
 		case "pong":
 			logger.Printf("Recv ping over WS")
 			if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
@@ -107,7 +105,7 @@ func (c *Client) listen(cancel context.CancelFunc) {
 					authnMetadata: registerMessage.AuthnMetadata,
 				}
 			}
-		default:
+		case "offer", "answer", "candidate":
 			logger.Printf("Onmessage: %s", rawMessage)
 			logger.Printf("Client roomID: %s", c.roomID)
 
@@ -127,6 +125,8 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				messages: rawMessage,
 			}
 			c.hub.broadcast <- broadcast
+		default:
+			logger.Warnf("Invalid Signaling Type")
 		}
 	}
 }
