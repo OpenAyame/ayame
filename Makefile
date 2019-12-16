@@ -1,18 +1,24 @@
-VERSION=19.08.0
+VERSION = 19.08.0
 
-ayame: *.go
-	GO111MODULE=on go build -ldflags '-X main.AyameVersion=${VERSION}' -o $@
+LDFLAGS = -ldflags '-X main.AyameVersion=$(VERSION)'
+GO111MODULE = on
 
-.PHONY: all
-all: ayame
+.PHONY: ayame
 
-darwin-build: *.go
-	GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -ldflags '-X main.AyameVersion=${VERSION}' -o ayame-darwin
-linux-build:
-	GO111MODULE=on GOOS=linux GOARCH=amd64 go build -ldflags '-s -w -X main.AyameVersion=${VERSION}' -o ayame-linux
+ayame:
+	GO111MODULE=$(GO111MODULE) go build $(LDFLAGS) -o $@
+
+
+.PHONY: darwin linux
+
+GOOS = $@
+GOARCH = amd64
+
+linux darwin:
+	GO111MODULE=$(GO111MODULE) GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ayame-$(GOOS)
 
 check:
-	GO111MODULE=on go test ./...
+	GO111MODULE=$(GO111MODULE) go test ./...
 
 clean:
 	rm -rf ayame
