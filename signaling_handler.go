@@ -147,14 +147,14 @@ func (c *Client) broadcast(ctx context.Context) {
 			}
 			return
 		case message, ok := <-c.send:
+			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				logger.Warnf("Failed to set write deadline, err=%v", err)
+				return
+			}
 			if !ok {
 				if err := c.conn.WriteMessage(websocket.CloseMessage, []byte{}); err != nil {
 					logger.Warnf("failed to write close message, err=%v", err)
 				}
-				return
-			}
-			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
-				logger.Warnf("Failed to set write deadline, err=%v", err)
 				return
 			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, message); err != nil {
