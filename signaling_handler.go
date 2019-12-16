@@ -157,15 +157,7 @@ func (c *Client) broadcast(ctx context.Context) {
 				logger.Warnf("Failed to set write deadline, err=%v", err)
 				return
 			}
-			w, err := c.conn.NextWriter(websocket.TextMessage)
-			if err != nil {
-				return
-			}
-			if _, err := w.Write(message); err != nil {
-				logger.Warnf("Failed to write message, err=%v", err)
-				return
-			}
-			if err := w.Close(); err != nil {
+			if err := c.conn.WriteMessage(websocket.TextMessage, message); err != nil {
 				logger.Warnf("Failed to write message, err=%v", err)
 				return
 			}
