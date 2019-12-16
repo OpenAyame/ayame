@@ -62,12 +62,6 @@ func (c *Client) listen(cancel context.CancelFunc) {
 	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		logger.Warnf("failed to set read deadline, err=%v", err)
 	}
-	c.conn.SetPongHandler(func(string) error {
-		if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-			logger.Warnf("failed to set read deadline, err=%v", err)
-		}
-		return nil
-	})
 	c.conn.SetCloseHandler(func(code int, text string) error {
 		logger.Printf("Close code: %d, message: %s", code, text)
 		logger.Printf("Client roomID: %s", c.roomID)
