@@ -62,29 +62,6 @@ func (c *Client) listen(cancel context.CancelFunc) {
 	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		logger.Warnf("failed to set read deadline, err=%v", err)
 	}
-	c.conn.SetCloseHandler(func(code int, text string) error {
-		logger.Printf("Close code: %d, message: %s", code, text)
-		logger.Printf("Client roomID: %s", c.roomID)
-		if c.roomID == "" {
-			msg := fmt.Sprintf("Client does not registered: %v", c)
-			logger.Printf(msg)
-			err := errors.New(msg)
-			return err
-		}
-		byeMessage := &byeMessage{Type: "bye"}
-		message, err := json.Marshal(byeMessage)
-		if err != nil {
-			logger.Printf("error: %v", err)
-			return err
-		}
-		broadcast := &Broadcast{
-			client:   c,
-			roomID:   c.roomID,
-			messages: message,
-		}
-		c.hub.broadcast <- broadcast
-		return nil
-	})
 
 	for {
 		_, rawMessage, err := c.conn.ReadMessage()
@@ -210,6 +187,28 @@ func signalingHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	}
 	client := &Client{hub: hub, conn: c, send: make(chan []byte, 256)}
 	logger.Printf("Websocket connected")
+	client.conn.SetCloseHandler(func(code int, text string) error {
+		logger.Printf("Close code: %d, message: %s", code, text)
+		logger.Printf("Client roomID: %s", client.roomID)
+		if client.roomID == "" {
+			msg := fmt.Sprintf("Client does not registered: %v", c)
+			logger.Printf(msg)
+			return errors.New(msg)
+		}
+		byeMessage := &byeMessage{Type: "bye"}
+		message, err := json.Marshal(byeMessage)
+		if err != nil {
+			logger.Printf("error: %v", err)
+			return err
+		}
+		broadcast := &Broadcast{
+			client:   client,
+			roomID:   client.roomID,
+			messages: message,
+		}
+		client.hub.broadcast <- broadcast
+		return nil
+	})
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	go client.listen(cancel)
