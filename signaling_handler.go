@@ -67,6 +67,28 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				break
 			}
 
+			if registerMessage.RoomID == "" {
+				reason := "missing roomId"
+				logger.Error(reason)
+				if err := c.sendRejectMessage(reason); err != nil {
+					logger.Error(err)
+				}
+				c.conn.Close()
+				break
+			}
+			c.roomID = registerMessage.RoomID
+
+			if registerMessage.ClientID == "" {
+				reason := "missing clientId"
+				logger.Error(reason)
+				if err := c.sendRejectMessage(reason); err != nil {
+					logger.Error(err)
+				}
+				c.conn.Close()
+				break
+			}
+			c.clientID = registerMessage.ClientID
+
 			var signalingKey *string
 			if registerMessage.Key != nil {
 				signalingKey = registerMessage.Key
@@ -74,15 +96,13 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			if registerMessage.SignalingKey != nil {
 				signalingKey = registerMessage.SignalingKey
 			}
-			if registerMessage.RoomID != "" {
-				logger.Printf("Register: %v", message)
-				c.hub.register <- &registerInfo{
-					clientID:      registerMessage.ClientID,
-					client:        c,
-					roomID:        registerMessage.RoomID,
-					signalingKey:  signalingKey,
-					authnMetadata: registerMessage.AuthnMetadata,
-				}
+
+			logger.Printf("Register: %v", message)
+			c.hub.register <- &registerInfo{
+				client:        c,
+				roomID:        registerMessage.RoomID,
+				signalingKey:  signalingKey,
+				authnMetadata: registerMessage.AuthnMetadata,
 			}
 		case "offer", "answer", "candidate":
 			logger.Printf("Onmessage: %s", rawMessage)

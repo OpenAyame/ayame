@@ -64,17 +64,7 @@ func (h *Hub) run() {
 		select {
 		case registerInfo := <-h.register:
 			client := registerInfo.client
-			clientID := registerInfo.clientID
 			roomID := registerInfo.roomID
-			// TODO(nakai): ROOM-ID と CLIENT-ID のエラーは分ける
-			if len(roomID) == 0 || len(clientID) == 0 {
-				reason := "INVALID-ROOM-ID-OR-CLIENT-ID"
-				if err := client.sendRejectMessage(reason); err != nil {
-					logger.Error(err)
-				}
-				break
-			}
-			client.Setup(roomID, clientID)
 			room := h.rooms[roomID]
 			if _, ok := h.rooms[roomID]; !ok {
 				room = &Room{
@@ -89,6 +79,7 @@ func (h *Hub) run() {
 				if err := client.sendRejectMessage(reason); err != nil {
 					logger.Error(err)
 				}
+				client.conn.Close()
 				break
 			}
 			// 認証成功
@@ -98,7 +89,7 @@ func (h *Hub) run() {
 				IsExistUser: isExistUser,
 			}
 			if options.AuthWebhookURL != "" {
-				resp, err := authWebhookRequest(roomID, clientID, registerInfo.authnMetadata, registerInfo.signalingKey)
+				resp, err := authWebhookRequest(roomID, client.clientID, registerInfo.authnMetadata, registerInfo.signalingKey)
 				// インターナルエラー
 				if err != nil {
 					logger.Warnf("%s", err)
@@ -106,6 +97,7 @@ func (h *Hub) run() {
 					if err := client.sendRejectMessage(reason); err != nil {
 						logger.Error(err)
 					}
+					client.conn.Close()
 					break
 				}
 
@@ -116,6 +108,7 @@ func (h *Hub) run() {
 					if err := client.sendRejectMessage(reason); err != nil {
 						logger.Error(err)
 					}
+					client.conn.Close()
 					break
 				}
 
@@ -128,6 +121,7 @@ func (h *Hub) run() {
 					if err := client.sendRejectMessage(reason); err != nil {
 						logger.Error(err)
 					}
+					client.conn.Close()
 					break
 				}
 				msg.IceServers = resp.IceServers
