@@ -66,6 +66,7 @@ func (h *Hub) run() {
 			client := registerInfo.client
 			clientID := registerInfo.clientID
 			roomID := registerInfo.roomID
+			// TODO(nakai): ROOM-ID と CLIENT-ID のエラーは分ける
 			if len(roomID) == 0 || len(clientID) == 0 {
 				reason := "INVALID-ROOM-ID-OR-CLIENT-ID"
 				if err := client.sendRejectMessage(reason); err != nil {
