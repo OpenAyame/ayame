@@ -28,28 +28,6 @@ var (
 	}
 )
 
-type message struct {
-	Type string `json:"type"`
-}
-
-type registerMessage struct {
-	Type          string       `json:"type"`
-	RoomID        string       `json:"roomId"`
-	ClientID      string       `json:"clientId"`
-	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
-	SignalingKey  *string      `json:"signalingKey,omitempty"`
-	// TODO(nakai): どこかのタイミングで削除する
-	Key           *string      `json:"key,omitempty"`
-}
-
-type pingMessage struct {
-	Type string `json:"type"`
-}
-
-type byeMessage struct {
-	Type string `json:"type"`
-}
-
 func (c *Client) listen(cancel context.CancelFunc) {
 	defer func() {
 		cancel()
