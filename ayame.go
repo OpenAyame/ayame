@@ -20,13 +20,14 @@ const (
 var ayameVersion = "19.08.0"
 
 type ayameOptions struct {
-	LogDir         string `yaml:"log_dir"`
-	LogName        string `yaml:"log_name"`
-	LogLevel       string `yaml:"log_level"`
-	Addr           string `yaml:"addr"`
-	Port           int    `yaml:"port"`
-	AuthWebhookURL string `yaml:"auth_webhook_url"`
-	AllowOrigin    string `yaml:"allow_origin"`
+	LogDir                     string `yaml:"log_dir"`
+	LogName                    string `yaml:"log_name"`
+	LogLevel                   string `yaml:"log_level"`
+	Addr                       string `yaml:"addr"`
+	Port                       int    `yaml:"port"`
+	AuthWebhookURL             string `yaml:"auth_webhook_url"`
+	AllowOrigin                string `yaml:"allow_origin"`
+	AuthnWebhookRequestTimeout *int   `yaml:"authn_webhook_request_timeout"`
 }
 
 var (

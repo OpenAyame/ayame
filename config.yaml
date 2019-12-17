@@ -1,11 +1,14 @@
-log_dir: .
-log_name: ayame.log
-log_level: info
 addr: localhost
 port: 3000
 
-# 認証ウェブフックURLを用いるときに設定します
+# 認証ウェブフック URL を用いるときに設定します
 # auth_webhook_url: http://127.0.0.1:3001/auth/webhook
+# 認証ウェブフック URL へのリクエストのタイムアウト時間（秒）を設定します
+# authn_webhook_request_timeout: 3
 
-# ws でOriginを指定したいときに設定します
+# ws で Origin を指定したいときに設定します
 # allow_origin: "*.example.com"
+
+log_dir: ./
+log_name: ayame.log
+log_level: info

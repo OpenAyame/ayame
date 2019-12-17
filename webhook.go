@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+const (
+	defaultAuthnWebhookRequestTimeout = 5
+)
+
 type webhookRequest struct {
 	SignalingKey  *string     `json:"signalingKey,omitempty"`
 	RoomID        string      `json:"roomId"`
@@ -19,11 +23,6 @@ type webhookResponse struct {
 	Reason     *string      `json:"reason,omitempty"`
 }
 
-var (
-	// TODO(yoshida): Timeout を設定等から取得する
-	webhookTimeout = 5 * time.Second
-)
-
 func authWebhookRequest(roomID string, clientID string, authnMetadata interface{}, signalingKey *string) (*webhookResponse, error) {
 	req := &webhookRequest{
 		SignalingKey:  signalingKey,
@@ -31,7 +30,12 @@ func authWebhookRequest(roomID string, clientID string, authnMetadata interface{
 		ClientID:      clientID,
 		AuthnMetadata: authnMetadata,
 	}
-	resp, err := postRequest(options.AuthWebhookURL, req, webhookTimeout)
+
+	timeout := time.Duration(defaultAuthnWebhookRequestTimeout) * time.Second
+	if options.AuthnWebhookRequestTimeout != nil {
+		timeout = time.Duration(*options.AuthnWebhookRequestTimeout) * time.Second
+	}
+	resp, err := postRequest(options.AuthWebhookURL, req, timeout)
 	if err != nil {
 		// TODO(nakai): ウェブフック失敗時に何故失敗したのかのログを追加する
 		// TODO(nakai): ステータスコードなどもログとして出力するようにする
