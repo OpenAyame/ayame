@@ -73,8 +73,8 @@ func (h *Hub) run() {
 				}
 				h.rooms[roomID] = room
 			}
-			ok := len(room.clients) < 2
-			if !ok {
+
+			if len(room.clients) > 1 {
 				reason := "TOO-MANY-USERS"
 				if err := client.sendRejectMessage(reason); err != nil {
 					logger.Error(err)
