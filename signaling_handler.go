@@ -38,6 +38,7 @@ type registerMessage struct {
 	ClientID      string       `json:"clientId"`
 	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
 	SignalingKey  *string      `json:"signalingKey,omitempty"`
+	// TODO(nakai): どこかのタイミングで削除する
 	Key           *string      `json:"key,omitempty"`
 }
 
