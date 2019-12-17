@@ -11,7 +11,8 @@ type Broadcast struct {
 }
 
 type registerInfo struct {
-	roomID        string
+	roomID string
+	// TODO(nakai): client がいるので clientID は削除
 	clientID      string
 	client        *Client
 	authnMetadata *interface{}
@@ -24,12 +25,14 @@ type Room struct {
 	sync.Mutex
 }
 
+// TODO(nakai): registerClient
 func (r *Room) newClient(client *Client) {
 	r.Lock()
 	defer r.Unlock()
 	r.clients[client] = true
 }
 
+// TODO(nakai): unregisterClient
 func (r *Room) deleteClient(client *Client) {
 	r.Lock()
 	defer r.Unlock()
