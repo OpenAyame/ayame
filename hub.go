@@ -11,9 +11,7 @@ type Broadcast struct {
 }
 
 type registerInfo struct {
-	roomID string
-	// TODO(nakai): client がいるので clientID は削除
-	clientID      string
+	roomID        string
 	client        *Client
 	authnMetadata *interface{}
 	signalingKey  *string
