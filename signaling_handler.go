@@ -39,48 +39,32 @@ func (c *Client) listen(cancel context.CancelFunc) {
 	}()
 
 	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		logger.Errorf("failed to set read deadline, err=%v", err)
-		if err := c.sendCloseMessage(err.Error()); err != nil {
-			logger.Error(err)
-		}
-		return
+		logger.Warnf("failed to set read deadline, err=%v", err)
 	}
 
 	for {
 		_, rawMessage, err := c.conn.ReadMessage()
 		if err != nil {
-			logger.Errorf("Error while read message, err=%v", err)
-			if err := c.sendCloseMessage(err.Error()); err != nil {
-				logger.Error(err)
-			}
-			return
+			logger.Warnf("Error while read message, err=%v", err)
+			break
 		}
 		message := &message{}
 		if err := json.Unmarshal(rawMessage, &message); err != nil {
-			logger.Errorf("Invalid JSON, err=%v", err)
-			if err := c.sendCloseMessage(err.Error()); err != nil {
-				logger.Error(err)
-			}
-			return
+			logger.Warnf("Invalid JSON, err=%v", err)
+			break
 		}
 
 		switch message.Type {
 		case "pong":
 			logger.Printf("Recv ping over WS")
 			if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-				logger.Errorf("Failed to set read deadline, err=%v", err)
-				if err := c.sendCloseMessage(err.Error()); err != nil {
-					logger.Error(err)
-				}
+				logger.Warnf("Failed to set read deadline, err=%v", err)
 			}
 		case "register":
 			registerMessage := &registerMessage{}
 			if err := json.Unmarshal(rawMessage, &registerMessage); err != nil {
-				logger.Errorf("Invalid JSON, err=%v", err)
-				if err := c.sendCloseMessage(err.Error()); err != nil {
-					logger.Error(err)
-				}
-				return
+				logger.Warnf("Invalid JSON, err=%v", err)
+				break
 			}
 
 			if registerMessage.RoomID == "" {
@@ -89,7 +73,8 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				if err := c.sendRejectMessage(reason); err != nil {
 					logger.Error(err)
 				}
-				return
+				c.conn.Close()
+				break
 			}
 			c.roomID = registerMessage.RoomID
 
@@ -99,7 +84,8 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				if err := c.sendRejectMessage(reason); err != nil {
 					logger.Error(err)
 				}
-				return
+				c.conn.Close()
+				break
 			}
 			c.clientID = registerMessage.ClientID
 
@@ -123,12 +109,8 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			logger.Printf("Client roomID: %s", c.roomID)
 
 			if c.roomID == "" {
-				reason := fmt.Sprintf("Client does not registered: %v", c)
-				logger.Errorf(reason)
-				if err := c.sendCloseMessage(reaosn); err != nil {
-					logger.Error(err)
-				}
-				return
+				logger.Printf("Client does not registered: %v", c)
+				break
 			}
 			broadcast := &Broadcast{
 				client:   c,
@@ -137,38 +119,9 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			}
 			c.hub.broadcast <- broadcast
 		default:
-			logger.Errorf("Invalid Signaling Type")
-			if err := c.sendCloseMessage(err.Error()); err != nil {
-				logger.Error(err)
-			}
-			return
+			logger.Warnf("Invalid Signaling Type")
 		}
 	}
-}
-
-// TODO(yoshida): messages.go へ移す
-type closeMessage struct {
-	Type   string `json:"type"`
-	Reason string `json:"reason"`
-}
-
-// TODO(yoshida): client.go へ移す
-func (c *Client) sendCloseMessage(reason string) error {
-	c.Lock()
-	defer c.Unlock()
-
-	closeMessage := &closeMessage{
-		Type:   "close",
-		Reason: reason,
-	}
-
-	msg, err := json.Marshal(closeMessage)
-	if err != nil {
-		return err
-	}
-
-	deadline := time.Now().Add(writeWait)
-	return c.conn.WriteControl(websocket.CloseMessage, msg, deadline)
 }
 
 func (c *Client) broadcast(ctx context.Context) {
