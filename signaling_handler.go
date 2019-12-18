@@ -181,28 +181,7 @@ func signalingHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	}
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
 	logger.Printf("Websocket connected")
-	client.conn.SetCloseHandler(func(code int, text string) error {
-		logger.Printf("Close code: %d, message: %s", code, text)
-		logger.Printf("Client roomID: %s", client.roomID)
-		if client.roomID == "" {
-			msg := fmt.Sprintf("Client does not registered: %v", client)
-			logger.Printf(msg)
-			return errors.New(msg)
-		}
-		byeMessage := &byeMessage{Type: "bye"}
-		message, err := json.Marshal(byeMessage)
-		if err != nil {
-			logger.Printf("error: %v", err)
-			return err
-		}
-		broadcast := &Broadcast{
-			client:   client,
-			roomID:   client.roomID,
-			messages: message,
-		}
-		client.hub.broadcast <- broadcast
-		return nil
-	})
+	client.conn.SetCloseHandler(client.closeHandler)
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	go client.listen(cancel)
@@ -232,4 +211,27 @@ func checkOrigin(r *http.Request) bool {
 		return true
 	}
 	return false
+}
+
+func (c *Client) closeHandler(code int, text string) error {
+	logger.Printf("Close code: %d, message: %s", code, text)
+	logger.Printf("Client roomID: %s", c.roomID)
+	if c.roomID == "" {
+		msg := fmt.Sprintf("Client does not registered: %v", c)
+		logger.Printf(msg)
+		return errors.New(msg)
+	}
+	byeMessage := &byeMessage{Type: "bye"}
+	message, err := json.Marshal(byeMessage)
+	if err != nil {
+		logger.Printf("error: %v", err)
+		return err
+	}
+	broadcast := &Broadcast{
+		client:   c,
+		roomID:   c.roomID,
+		messages: message,
+	}
+	c.hub.broadcast <- broadcast
+	return nil
 }
