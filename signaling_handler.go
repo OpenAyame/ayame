@@ -112,12 +112,6 @@ func (c *Client) listen(cancel context.CancelFunc) {
 				logger.Printf("Client does not registered: %v", c)
 				break
 			}
-			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-					logger.Printf("error: %v", err)
-				}
-				break
-			}
 			broadcast := &Broadcast{
 				client:   c,
 				roomID:   c.roomID,

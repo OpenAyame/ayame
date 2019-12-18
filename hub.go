@@ -63,8 +63,8 @@ func (h *Hub) run() {
 		case registerInfo := <-h.register:
 			client := registerInfo.client
 			roomID := registerInfo.roomID
-			room := h.rooms[roomID]
-			if _, ok := h.rooms[roomID]; !ok {
+			room, ok := h.rooms[roomID]
+			if !ok {
 				room = &Room{
 					clients: make(map[*Client]bool),
 					roomID:  roomID,
