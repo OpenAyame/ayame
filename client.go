@@ -2,6 +2,7 @@ package main
 
 import (
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -33,4 +34,14 @@ func (c *Client) sendRejectMessage(reason string) error {
 		return err
 	}
 	return nil
+}
+
+// TODO(yoshida): reason の長さが不十分そうな場合は CloseMessage ではなく TextMessage を使用するように変更する
+func (c *Client) sendCloseMessage(code int, reason string) error {
+	c.Lock()
+	defer c.Unlock()
+
+	deadline := time.Now().Add(writeWait)
+	closeMessage := websocket.FormatCloseMessage(code, reason)
+	return c.conn.WriteControl(websocket.CloseMessage, closeMessage, deadline)
 }
