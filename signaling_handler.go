@@ -35,7 +35,6 @@ func (c *Client) listen(cancel context.CancelFunc) {
 			client: c,
 			roomID: c.roomID,
 		}
-		c.conn.Close()
 	}()
 
 	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
