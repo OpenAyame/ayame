@@ -18,24 +18,22 @@ type registerInfo struct {
 }
 
 type Room struct {
-	clients map[*Client]bool
+	clients map[string]*Client
 	roomID  string
 	sync.Mutex
 }
 
-// TODO(nakai): registerClient
-func (r *Room) newClient(client *Client) {
+func (r *Room) registerClient(client *Client) {
 	r.Lock()
 	defer r.Unlock()
-	r.clients[client] = true
+	r.clients[client.clientID] = client
 }
 
-// TODO(nakai): unregisterClient
-func (r *Room) deleteClient(client *Client) {
+func (r *Room) unregisterClient(client *Client) {
 	r.Lock()
 	defer r.Unlock()
 	close(client.send)
-	delete(r.clients, client)
+	delete(r.clients, client.clientID)
 }
 
 type Hub struct {
@@ -66,14 +64,14 @@ func (h *Hub) run() {
 			room, ok := h.rooms[roomID]
 			if !ok {
 				room = &Room{
-					clients: make(map[*Client]bool),
+					clients: make(map[string]*Client),
 					roomID:  roomID,
 				}
 				h.rooms[roomID] = room
 			}
 
 			if len(room.clients) > 1 {
-				reason := "TOO-MANY-USERS"
+				reason := "TOO-MANY-CLIENTS"
 				if err := client.sendRejectMessage(reason); err != nil {
 					logger.Error(err)
 				}
@@ -124,7 +122,7 @@ func (h *Hub) run() {
 				}
 				msg.IceServers = resp.IceServers
 			}
-			room.newClient(client)
+			room.registerClient(client)
 
 			if err := client.SendJSON(msg); err != nil {
 				logger.Warnf("Failed to send msg=%v", msg)
@@ -134,18 +132,18 @@ func (h *Hub) run() {
 			roomID := registerInfo.roomID
 			client := registerInfo.client
 			if room, ok := h.rooms[roomID]; ok {
-				if _, ok := room.clients[client]; ok {
-					room.deleteClient(client)
+				if _, ok := room.clients[client.clientID]; ok {
+					room.unregisterClient(client)
 				}
 			}
 		case broadcast := <-h.broadcast:
 			if room, ok := h.rooms[broadcast.roomID]; ok {
-				for client := range room.clients {
-					if client.clientID != broadcast.client.clientID {
+				for clientID, client := range room.clients {
+					if clientID != broadcast.client.clientID {
 						select {
 						case client.send <- broadcast.messages:
 						default:
-							room.deleteClient(client)
+							room.unregisterClient(client)
 						}
 					}
 				}
