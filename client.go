@@ -149,6 +149,7 @@ func (c *Client) broadcast(ctx context.Context) {
 		ticker.Stop()
 		c.conn.Close()
 	}()
+loop:
 	for {
 		select {
 		case <-ctx.Done():
@@ -157,21 +158,21 @@ func (c *Client) broadcast(ctx context.Context) {
 			if err := c.conn.WriteMessage(websocket.CloseMessage, []byte{}); err != nil {
 				logger.Warnf("failed to write close message, err=%v", err)
 			}
-			return
+			break loop
 		case message, ok := <-c.send:
 			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
 				logger.Warnf("Failed to set write deadline, err=%v", err)
-				return
+				break loop
 			}
 			if !ok {
 				if err := c.conn.WriteMessage(websocket.CloseMessage, []byte{}); err != nil {
 					logger.Warnf("failed to write close message, err=%v", err)
 				}
-				return
+				break loop
 			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, message); err != nil {
 				logger.Warnf("Failed to write message, err=%v", err)
-				return
+				break loop
 			}
 		case <-ticker.C:
 			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
@@ -180,7 +181,7 @@ func (c *Client) broadcast(ctx context.Context) {
 			logger.Info("Send ping over WS")
 			pingMsg := &pingMessage{Type: "ping"}
 			if err := c.SendJSON(pingMsg); err != nil {
-				return
+				break loop
 			}
 		}
 	}
