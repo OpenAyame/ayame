@@ -1,5 +1,6 @@
 # ayame binary
 ayame
+ayame.yaml
 # log file
 *.log
 *.log.*
