@@ -13,8 +13,6 @@ const (
 
 	pongWait = 10 * time.Second
 
-	pingPeriod = (pongWait * 9) / 10
-
 	// ws の読み込みは最大 1MByte までにする
 	readLimit = 1048576
 )

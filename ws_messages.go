@@ -27,10 +27,10 @@ type byeMessage struct {
 }
 
 // なにか問題があって閉じる時はこれを使う
-type errorMessage struct {
-	Type   string `json:"type"`
-	Reason string `json:"reason"`
-}
+// type errorMessage struct {
+// 	Type   string `json:"type"`
+// 	Reason string `json:"reason"`
+// }
 
 type acceptMessage struct {
 	Type          string       `json:"type"`

@@ -22,8 +22,8 @@ func (c *client) disconnectWebhook() error {
 			Str("clientId", c.ID).
 			Err(err).
 			Caller().
-			Msg("DiconnectWebhookResponseError")
-		return errDisconnectWebhookResponse
+			Msg("DiconnectWebhookError")
+		return errDisconnectWebhook
 	}
 	defer resp.Body.Close()
 

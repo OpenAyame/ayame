@@ -43,7 +43,7 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 			Str("clientId", c.ID).
 			Err(err).
 			Caller().
-			Msg("AuthnWebhookResponseError")
+			Msg("AuthnWebhookError")
 		return nil, err
 	}
 	// http://ikawaha.hateblo.jp/entry/2015/06/07/074155

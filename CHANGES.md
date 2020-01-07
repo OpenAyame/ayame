@@ -23,4 +23,5 @@
 - [CHANGE] allow_origin 設定を削除する
 - [CHANGE] ロガーを zerolog に変更する
 - [CHANGE] ログローテーションを lumberjack に変更する
+- [CHANGE] サンプルを削除する
 - [FIX] サーバ側の切断の WS の終了処理を適切に行う
