@@ -54,6 +54,11 @@ func init() {
 		log.Fatal(err)
 	}
 
+	webhookLogger, err = initWebhookLogger()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if config.AuthnWebhookURL != "" {
 		if _, err := url.ParseRequestURI(config.AuthnWebhookURL); err != nil {
 			log.Fatal(err)

@@ -9,6 +9,7 @@ type authnWebhookRequest struct {
 	RoomID        string       `json:"roomId"`
 	ClientID      string       `json:"clientId"`
 	SignalingKey  *string      `json:"signalingKey,omitempty"`
+	Key           *string      `json:"key,omitempty"`
 	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
 	AyameClient   *string      `json:"ayameClient,omitempty"`
 	Libwebrtc     *string      `json:"libwebrtc,omitempty"`
@@ -33,6 +34,7 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 		RoomID:        c.roomID,
 		ClientID:      c.ID,
 		SignalingKey:  c.signalingKey,
+		Key:           c.signalingKey,
 		AuthnMetadata: c.authnMetadata,
 	}
 

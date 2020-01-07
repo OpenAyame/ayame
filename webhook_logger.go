@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -30,7 +31,13 @@ func initWebhookLogger() (*zerolog.Logger, error) {
 		Compress:   true,
 	}
 
-	logger := zerolog.New(writer).With().Timestamp().Logger()
+	var writers io.Writer
+	// デバッグが有効な時はコンソールにもだす
+	if config.Debug {
+		writers = io.MultiWriter(os.Stdout, writer)
+	}
+
+	logger := zerolog.New(writers).With().Timestamp().Logger()
 
 	return &logger, nil
 }
