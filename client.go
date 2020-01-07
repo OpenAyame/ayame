@@ -59,6 +59,8 @@ func (c *client) sendAcceptMessage(isExistClient bool, iceServers *[]iceServer, 
 	msg := &acceptMessage{
 		Type:          "accept",
 		IsExistClient: isExistClient,
+		// 下位互換性
+		IsExistUser:   isExistClient,
 		AuthzMetadata: authzMetadata,
 		IceServers:    iceServers,
 	}
@@ -239,7 +241,15 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		}
 		c.ID = registerMessage.ClientID
 
-		c.signalingKey = registerMessage.SignalingKey
+		// 下位互換性
+		if registerMessage.Key != nil {
+			c.signalingKey = registerMessage.Key
+		}
+
+		if registerMessage.SignalingKey != nil {
+			c.signalingKey = registerMessage.SignalingKey
+		}
+
 		c.authnMetadata = registerMessage.AuthnMetadata
 
 		resp, err := c.authnWebhook()

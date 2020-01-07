@@ -11,6 +11,7 @@ type registerMessage struct {
 	ClientID      string       `json:"clientId"`
 	AuthnMetadata *interface{} `json:"authnMetadata"`
 	SignalingKey  *string      `json:"signalingKey"`
+	Key           *string      `json:"key"`
 	// Ayame クライアント情報が詰まっている
 	AyameClient *string `json:"ayameClient"`
 	Libwebrtc   *string `json:"libwebrtc"`
@@ -35,7 +36,9 @@ type acceptMessage struct {
 	Type          string       `json:"type"`
 	AuthzMetadata *interface{} `json:"authzMetadata,omitempty"`
 	IceServers    *[]iceServer `json:"iceServers,omitempty"`
-	IsExistClient bool         `json:"isExistClient"`
+	// 下位互換性
+	IsExistUser   bool `json:"isUserClient"`
+	IsExistClient bool `json:"isExistClient"`
 }
 
 type rejectMessage struct {
