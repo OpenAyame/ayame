@@ -24,7 +24,7 @@ func (c *client) postRequest(u string, body interface{}) (*http.Response, error)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	timeout := time.Duration(config.WebhookRequestTimeout) * time.Second
+	timeout := time.Duration(config.WebhookRequestTimeoutSec) * time.Second
 
 	client := &http.Client{Timeout: timeout}
 	return client.Do(req)

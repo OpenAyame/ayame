@@ -21,10 +21,8 @@ type ayameConfig struct {
 	AuthnWebhookURL      string `yaml:"authn_webhook_url"`
 	DisconnectWebhookURL string `yaml:"disconnect_webhook_url"`
 
-	WebhookLogName        string `yaml:"webhook_log_name"`
-	WebhookRequestTimeout int    `yaml:"webhook_request_timeout"`
-
-	AllowOrigin string `yaml:"allow_origin"`
+	WebhookLogName           string `yaml:"webhook_log_name"`
+	WebhookRequestTimeoutSec uint   `yaml:"webhook_request_timeout_sec"`
 }
 
 func setDefaultsConfig() {
@@ -44,7 +42,7 @@ func setDefaultsConfig() {
 		config.WebhookLogName = defaultWebhookLogName
 	}
 
-	if config.WebhookRequestTimeout == 0 {
-		config.WebhookRequestTimeout = defaultWebhookRequestTimeout
+	if config.WebhookRequestTimeoutSec == 0 {
+		config.WebhookRequestTimeoutSec = defaultWebhookRequestTimeout
 	}
 }

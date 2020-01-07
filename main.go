@@ -90,8 +90,7 @@ func main() {
 	logger.Info().Str("authn_webhook_url", config.AuthnWebhookURL).Msg("AyameConf")
 	logger.Info().Str("disconnect_webhook_url", config.DisconnectWebhookURL).Msg("AyameConf")
 	logger.Info().Str("webhook_log_name", config.WebhookLogName).Msg("AyameConf")
-	logger.Info().Int("webhook_request_timeout", config.WebhookRequestTimeout).Msg("AyameConf")
-	logger.Info().Str("allow_origin", config.AllowOrigin).Msg("AyameConf")
+	logger.Info().Uint("webhook_request_timeout_sec", config.WebhookRequestTimeoutSec).Msg("AyameConf")
 
 	// URL の生成
 	url := fmt.Sprintf("%s:%d", config.ListenIPv4Address, config.ListenPortNumber)
