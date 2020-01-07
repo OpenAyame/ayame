@@ -1,0 +1,232 @@
+# Ayame 技術概要
+
+この文書は Ayame のシグナリングサーバ及びデモアプリケーションがどのように動作しているかを説明することを目的とします。
+
+## 互換性
+
+このシグナリングサーバは [webrtc/apprtc: The video chat demo app based on WebRTC](https://github.com/webrtc/apprtc) と互換性があります。
+
+## 設計
+
+- ログの時間は UTC に固定する
+- 切断が発生する場合のログレベルはエラー
+- 切断しないけどログに残しておきたいときはワーニング
+- Webhook 関連でエラーになった時はエラーをできるだけ詳細に出す
+- クライアント側でできるだけ処理をする
+- offer / answer / candidate は forward する
+    - forward メッセージを ayame.go に渡してスルーしていく
+- register の戻りは result (int) で受け取る
+- unregister は戻り値はなし、送って受信したら終了
+- forward の中身は client, raw_message を用意しておいてそれを書き込むだけにする
+- チャネル利用時はインターフェースはできるだけ使わない
+- クライアントとは ping/pong を独自に行う
+- API の利用を想定する
+    - 指定した RoomID の切断 API を用意する
+- 認証ウェブフックは signaling_handler 部分で行う
+    - signalingKey のチェックなども個々で行う
+    - 認証が成功したら register 処理を走らせる
+        - その際にすでに他の人がマッチしてたらキックされる
+        - 認証が成功したとしても接続できる状態になるとは限らない
+- 認証ウェブフックが ok になったら、register を試みる
+    - signalingKey がない場合は直接 register を試みる
+- 終了は丁寧に終了する
+    - どうするか要検討
+    - 作ってみてから考える
+- SDK サンプルがあるので、サンプルの提供はしない
+- main, wsRecv の２つのプロセスがぐるぐる動く
+    - wsRecv はとにかくバイナリを受け取って main にわたすだけ
+    - wsRecv は main が死んだ時用に ctx を共有しておく
+- ping/pong は ping を 5 秒間隔でなげて 60 秒 pong が返ってこなかったら切断する
+    - Sora 方式を採用する
+- シグナリングの送受信ログを取る
+    - roomId / clientId を突っ込む
+    - JSON 形式でとる
+    - 送られてきたメッセージをそのまま書き出す
+- ログローテーションはすべてのログに共通にする
+    - 個別には対応しない
+- 認証ウェブフックのログを取る
+    - 送信、受信ログを取る
+
+## 利用ライブラリ
+
+- WS は gorilla/websocket
+- ログは zerolog
+- ログローテは lumberjack
+
+## 検討
+
+- クライアント ID はオプションにする
+    - 送ってこなかったら動的生成
+
+### シグナリングについて
+
+Ayame の `ws://localhost:3000/signaling` がクライアントからの WebSocket 接続を確立し、管理するエンドポイントとなります。
+
+このエンドポイントに WebSocket で接続すると、Ayame は接続したクライアントを保持します。
+
+このシグナリングサーバは 1 対 1 専用のため、3 つ以上のクライアントの接続要求は拒否します。
+
+Ayame は WebSocket で接続しているクライアントのうちどれかからデータが来ると、送信元のクライアント以外の接続済みのクライアントにデータを*そのまま* WebSocket で送信します。これらはすべて非同期で行われます。
+
+これが「シグナリング」です。
+
+### 接続確立までのシーケンス図
+
+Ayame が互いのSDP 交換や peer connection の接続をシグナリングによってやり取りします。
+
+SDP とは WebRTC の接続に必要な peer connection の 内部情報です。 
+
+- [RFC 4566 \- SDP: Session Description Protocol](https://tools.ietf.org/html/rfc4566)
+- [Annotated Example SDP for WebRTC](https://tools.ietf.org/html/draft-ietf-rtcweb-sdp-11)
+
+ ```
+
+  +-------------+     +-------------------+    +-------------+
+  |   browser1  |     |   Ayame           |    |   browser2  |
+  +-----+-------+     +--------+----------+    +------+------+
+        |                      |                      |
+    ----------------------WebSocket 接続確立----------------
+        +--------------------->|                      |
+        |      websocket 接続  | <--------------------+
+        |                      |     websocket 接続   |
+    -----------------Peer-Connection の初期化---------------
+        |                      |                      |
+        | getUserMedia()       |                      | getUserMedia() 
+        | localStream の取得   |                      | localStream の取得 
+        | peer = new PeerConnection()                 | peer = new PeerConnection()
+    -----------------クライアント情報の登録----------------------
+        +--------------------->|                      | room の id と client のid を登録する
+        |   ws message         |                      | 2 人以下で入室可能であれば ayame は accept を返却
+        |   {type: register,   |                      | それ以外の場合 reject を返却
+        |   roomId: roomId,  |                      | TURN などのメタデータも将来的にここで交換する
+        |   client: clientId} |                      |
+        |<---------------------+                      |
+        |  {type: accept }     |<---------------------|
+        |                      |   ws message         | 
+        |                      |    register          |  
+        |                      |--------------------->|
+    -----------------------SDP の交換-----------------------
+        |                      |                      |
+        + peer.createOffer(),  |                      |
+        | peer.setLocalDescription()                  |
+        |  offerSDP を生成     |                      |
+        |                      |                      |
+        +--------------------->|                      |
+        |      ws message      |--------------------> |
+        |      offerSDP        |   ws message         | offerSDP をもとに Remote Description をセット
+        |                      |    offerSDP          |  answerSDP を生成し、それをもとに localDescription を生成する
+        |                      |                      |　peer.setRemoteDescription(offerSDP),
+        |                      |                      |  peer.createAnswer(),
+        |                      | <--------------------+  peer.setLocalDescription(answer)
+        | <--------------------+    ws message        |
+        |      ws message      |    answerSDP         |
+        |     　answerSDP      |                      |
+        |                      |                      |
+        + setRemoteDescription(answerSDP)             |
+        | Remote Description をセット                 |
+        |                      |                      |
+　   　 |                      |                      |
+    ------------------ ICE candidate の交換 -----------------------
+        |                      |                      |
+　　　　+onicecandidate()の発火|                      |
+        |  candidate の取得    |                      |
+        +--------------------->+                      |
+        |      ws message      +--------------------> | peerConnection に　ice candidate を追加する
+        |  {type: "candidate", |   ws message         | peer.addIceCandidate(candidate)
+        |    ice: candidate}   |   {type: "candidate",|
+        |                      |   ice: candidate}    |　
+      ==== 同様に browser2 から browser1 への ICE candidate の交換を行う ====
+        |                      |                      |
+     ========= ICE negotiation があれば 再び SDP をやりとり ================
+        |                      |                      |
+        + onaddstream()の発火  |                      + onaddstream()の発火
+        | remoteStream をセット（browser2）           | remoteStream をセット(browser1)
+    ------------------ Peer　Connection 確立 -----------------------
+ 　　   |                      |                      |　
+```
+
+
+### プロトコル
+
+WS のメッセージはJSONフォーマットでやり取りします。
+すべてのメッセージはプロパティに `type` を持ちます。
+`type` は以下の5つです。
+
+- register
+- accept
+- reject
+- offer
+- answer
+- candidate
+- close
+
+#### type: register
+
+クライアントが Ayame Server に room id, client id を登録するメッセージです。
+
+```
+{type: "register", "roomId" "<string>", "clientId": "<string>"}
+```
+
+これを受け取った Ayame Server はそのクライアントが指定した room に入室可能か検査して、可能であれば accept, 不可であれば reject を返却します。
+
+#### type: accept
+
+Ayame がregister に込められている情報を検査して入室可能であることをクライアントに知らせるメッセージです。
+
+```
+{type: "accept", isExistClient: "<boolean>"}
+```
+
+
+#### type: reject
+
+Ayame がregister に込められている情報を検査して入室不可能であることをクライアントに知らせるメッセージです。
+
+```
+{type: "reject", "reason": "<string>"}
+```
+
+これを受け取ったらクライアントは peerConnection, websocket を閉じて初期化する必要があります。
+
+#### type: offer
+
+offer SDP を送信するメッセージです。
+
+```
+{type: "offer", sdp: "v=0\r\no=- 4765067307885144980..."}
+```
+
+これを受け取ったクライアントはこのSDP をもとに peer connection に remote description をセットします。
+また、このタイミングで local description を生成し、anwser SDP を送信します。
+
+#### type: answer
+
+answer SDP を送信するメッセージです。
+
+```
+{type: "answer", sdp: "v=0\r\no=- 4765067307885144980..."}
+```
+
+これを受け取ったクライアントはこれをもとに peer connection に remote description をセットします。
+
+#### type: candidate
+
+ice candidate を交換するメッセージです。
+
+```
+{type: "candidate", ice: {candidate: "...."}}
+```
+
+これを受け取ったクライアントは peer connection に ice candidate を追加します。
+
+#### type: bye
+
+peer connection を切断したことを知らせるメッセージです。
+
+```
+{type: "bye"}
+```
+
+これを受け取ったクライアントは peer connection を閉じて、
+リモート(受信側)の video element を破棄する必要があります。
