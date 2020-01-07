@@ -5,16 +5,30 @@ import (
 	"io/ioutil"
 )
 
+// 下位互換のための対応
+// 次のリリースでは RoomId に揃える予定
 type authnWebhookRequest struct {
-	RoomID        string       `json:"roomId"`
-	ClientID      string       `json:"clientId"`
-	SignalingKey  *string      `json:"signalingKey,omitempty"`
+	RoomID        string       `json:"room_id"`
+	ClientID      string       `json:"client_id"`
+	SignalingKey  *string      `json:"signaling_key,omitempty"`
 	Key           *string      `json:"key,omitempty"`
-	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
-	AyameClient   *string      `json:"ayameClient,omitempty"`
+	AuthnMetadata *interface{} `json:"authn_metadata,omitempty"`
+	AyameClient   *string      `json:"ayame_client,omitempty"`
 	Libwebrtc     *string      `json:"libwebrtc,omitempty"`
 	Environment   *string      `json:"environment,omitempty"`
 }
+
+// type authnWebhookRequest struct {
+// 	RoomID        string       `json:"roomId"`
+// 	ClientID      string       `json:"clientId"`
+// 	SignalingKey  *string      `json:"signalingKey,omitempty"`
+// 	Key           *string      `json:"key,omitempty"`
+// 	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
+// 	AyameClient   *string      `json:"ayameClient,omitempty"`
+// 	Libwebrtc     *string      `json:"libwebrtc,omitempty"`
+// 	Environment   *string      `json:"environment,omitempty"`
+// }
+
 
 type authnWebhookResponse struct {
 	Allowed       *bool        `json:"allowed"`
