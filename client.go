@@ -161,7 +161,8 @@ loop:
 			if !ok {
 				// server 側でforwardChannel を閉じた
 				c.debugLog("UNREGISTERED")
-				c.sendByeMessage()
+				if err := c.sendByeMessage(); err != nil {
+				}
 				c.debugLog("SENT-BYE-MESSAGE")
 				break loop
 			}
@@ -169,7 +170,8 @@ loop:
 		}
 	}
 	// 終了するので Websocket 終了のお知らせを送る
-	c.sendCloseMessage(websocket.CloseNormalClosure, "")
+	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
+	}
 	c.debugLog("EXIT-MAIN")
 }
 
@@ -283,15 +285,21 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		case one:
 			// room がまだなかった、accept を返す
 			c.debugLog("REGISTERED-ONE")
-			c.sendAcceptMessage(false, resp.IceServers, resp.AuthzMetadata)
+			if err := c.sendAcceptMessage(false, resp.IceServers, resp.AuthzMetadata); err != nil {
+				return err
+			}
 		case two:
 			// room がすでにあって、一人いた、二人目
 			c.debugLog("REGISTERED-TWO")
-			c.sendAcceptMessage(true, resp.IceServers, resp.AuthzMetadata)
+			if err := c.sendAcceptMessage(true, resp.IceServers, resp.AuthzMetadata); err != nil {
+				return err
+			}
 		case full:
 			// room が満杯だった
 			logger.Error().Msg("RoomFull")
-			c.sendRejectMessage("full")
+			if err := c.sendRejectMessage("full"); err != nil {
+				return err
+			}
 			return errRoomFull
 		}
 	case "offer", "answer", "candidate":
