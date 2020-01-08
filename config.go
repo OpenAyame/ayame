@@ -46,6 +46,7 @@ func setDefaultsConfig() {
 		config.WebhookRequestTimeoutSec = defaultWebhookRequestTimeout
 	}
 
+	logger.Info().Bool("debug", config.Debug).Msg("AyameConf")
 	logger.Info().Str("log_dir", config.LogDir).Msg("AyameConf")
 	logger.Info().Str("log_name", config.LogName).Msg("AyameConf")
 	logger.Info().Str("log_level", config.LogLevel).Msg("AyameConf")
