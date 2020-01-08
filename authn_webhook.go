@@ -5,24 +5,10 @@ import (
 	"io/ioutil"
 )
 
-// 後方互換性対応
-// 次のリリースでは RoomId に揃える予定
-// type authnWebhookRequest struct {
-// 	RoomID        string       `json:"room_id"`
-// 	ClientID      string       `json:"client_id"`
-// 	SignalingKey  *string      `json:"signaling_key,omitempty"`
-// 	Key           *string      `json:"key,omitempty"`
-// 	AuthnMetadata *interface{} `json:"authn_metadata,omitempty"`
-// 	AyameClient   *string      `json:"ayame_client,omitempty"`
-// 	Libwebrtc     *string      `json:"libwebrtc,omitempty"`
-// 	Environment   *string      `json:"environment,omitempty"`
-// }
-
 type authnWebhookRequest struct {
 	RoomID        string       `json:"roomId"`
 	ClientID      string       `json:"clientId"`
 	SignalingKey  *string      `json:"signalingKey,omitempty"`
-	Key           *string      `json:"key,omitempty"`
 	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
 	AyameClient   *string      `json:"ayameClient,omitempty"`
 	Libwebrtc     *string      `json:"libwebrtc,omitempty"`
@@ -31,9 +17,9 @@ type authnWebhookRequest struct {
 
 type authnWebhookResponse struct {
 	Allowed       *bool        `json:"allowed"`
-	IceServers    *[]iceServer `json:"iceServers,omitempty"`
-	Reason        *string      `json:"reason,omitempty"`
-	AuthzMetadata *interface{} `json:"authzMetadata,omitempty"`
+	IceServers    *[]iceServer `json:"iceServers"`
+	Reason        *string      `json:"reason"`
+	AuthzMetadata *interface{} `json:"authzMetadata"`
 }
 
 func (c *client) authnWebhook() (*authnWebhookResponse, error) {
@@ -44,11 +30,9 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 	}
 
 	req := &authnWebhookRequest{
-		RoomID:       c.roomID,
-		ClientID:     c.ID,
-		SignalingKey: c.signalingKey,
-		// 後方互換性対応
-		Key:           c.signalingKey,
+		RoomID:        c.roomID,
+		ClientID:      c.ID,
+		SignalingKey:  c.signalingKey,
 		AuthnMetadata: c.authnMetadata,
 	}
 
