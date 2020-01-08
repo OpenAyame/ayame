@@ -37,7 +37,23 @@ $ ./ayame
 
 ## Ayame Web SDK サンプルを利用して動作確認をする
 
+Ayame Web SDK のサンプルを利用することで動作を確認できます。
 
+```
+$ git clone git@github.com:OpenAyame/ayame-web-sdk-samples.git
+$ cd ayame-web-sdk-samples
+$ yarn install
+```
+
+main.js URL を `'ws://127.0.0.1:3000/signaling'` に変更
+
+https://github.com/OpenAyame/ayame-web-sdk-samples/blob/master/main.js#L1
+
+```
+$ yarn serve
+```
+
+http://127.0.0.1:5000/sendrecv.html をブラウザタブで２つ開いて接続を押してみてください。
 
 
 ## コマンド
