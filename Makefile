@@ -26,3 +26,8 @@ lint:
 
 fmt:
 	golangci-lint run ./... --fix
+
+.PHONY: init
+
+init:
+	cp -n ayame.yaml.example ayame.yaml
