@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 )
 
-// 下位互換のための対応
+// 後方互換性対応
 // 次のリリースでは RoomId に揃える予定
 type authnWebhookRequest struct {
 	RoomID        string       `json:"room_id"`
@@ -29,7 +29,6 @@ type authnWebhookRequest struct {
 // 	Environment   *string      `json:"environment,omitempty"`
 // }
 
-
 type authnWebhookResponse struct {
 	Allowed       *bool        `json:"allowed"`
 	IceServers    *[]iceServer `json:"iceServers,omitempty"`
@@ -45,9 +44,10 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 	}
 
 	req := &authnWebhookRequest{
-		RoomID:        c.roomID,
-		ClientID:      c.ID,
-		SignalingKey:  c.signalingKey,
+		RoomID:       c.roomID,
+		ClientID:     c.ID,
+		SignalingKey: c.signalingKey,
+		// 後方互換性対応
 		Key:           c.signalingKey,
 		AuthnMetadata: c.authnMetadata,
 	}
