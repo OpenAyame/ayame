@@ -39,7 +39,7 @@ type acceptMessage struct {
 	IceServers    *[]iceServer `json:"iceServers,omitempty"`
 	IsExistClient bool         `json:"isExistClient"`
 	// 後方互換性対応
-	IsExistUser bool `json:"isUserClient"`
+	IsExistUser bool `json:"isExistUser"`
 }
 
 type rejectMessage struct {
