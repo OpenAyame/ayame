@@ -48,6 +48,8 @@ func init() {
 		log.Fatal(err)
 	}
 
+	setDefaultsConfig()
+
 	// グローバルの signalingLogger に代入する
 	signalingLogger, err = initSignalingLogger()
 	if err != nil {
@@ -82,8 +84,6 @@ func main() {
 			return
 		}
 	}
-
-	setDefaultsConfig()
 
 	// URL の生成
 	url := fmt.Sprintf("%s:%d", config.ListenIPv4Address, config.ListenPortNumber)
