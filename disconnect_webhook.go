@@ -1,5 +1,9 @@
 package main
 
+import (
+	"io/ioutil"
+)
+
 type disconnectWebhookRequest struct {
 	RoomID   string `json:"roomId"`
 	ClientID string `json:"clientId"`
@@ -28,7 +32,6 @@ func (c *client) disconnectWebhook() error {
 	defer resp.Body.Close()
 
 	c.webhookLog("disconnectReq", req)
-	c.webhookLog("disconnectResp", resp)
 
 	// 200 以外で返ってきたときはエラーとする
 	if resp.StatusCode != 200 {
@@ -40,6 +43,28 @@ func (c *client) disconnectWebhook() error {
 			Msg("DiconnectWebhookResponseError")
 		return errDisconnectWebhookResponse
 	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.Error().
+			Str("roomlId", c.roomID).
+			Str("clientId", c.ID).
+			Bytes("body", body).
+			Err(err).
+			Caller().
+			Msg("DiconnectWebhookResponseError")
+		return err
+	}
+
+	// ログ出力用$
+	httpResponse := &httpResponse{
+		Status: resp.Status,
+		Proto:  resp.Proto,
+		Header: resp.Header,
+		Body:   string(body),
+	}
+
+	c.webhookLog("disconnectResp", httpResponse)
 
 	return nil
 }

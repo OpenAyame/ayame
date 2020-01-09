@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+type httpResponse struct {
+	Status string      `json:"status"`
+	Proto  string      `json:"proto"`
+	Header http.Header `json:"header"`
+	Body   string      `json:"body"`
+}
+
 // JSON HTTP Request をするだけのラッパー
 func (c *client) postRequest(u string, body interface{}) (*http.Response, error) {
 	reqJSON, err := json.Marshal(body)

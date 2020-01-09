@@ -50,18 +50,6 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 	defer resp.Body.Close()
 
 	c.webhookLog("authnReq", req)
-	c.webhookLog("authnResp", resp)
-
-	// 200 以外で返ってきたときはエラーとする
-	if resp.StatusCode != 200 {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Interface("resp", resp).
-			Caller().
-			Msg("AuthnWebhookResponseError")
-		return nil, errAuthnWebhookResponse
-	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -74,6 +62,26 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 			Msg("AuthnWebhookResponseError")
 		return nil, err
 	}
+
+	// ログ出力用
+	httpResponse := &httpResponse{
+		Status: resp.Status,
+		Proto:  resp.Proto,
+		Header: resp.Header,
+		Body:   string(body),
+	}
+
+	// 200 以外で返ってきたときはエラーとする
+	if resp.StatusCode != 200 {
+		logger.Error().
+			Str("roomlId", c.roomID).
+			Str("clientId", c.ID).
+			Interface("resp", httpResponse).
+			Caller().
+			Msg("AuthnWebhookResponseError")
+		return nil, errAuthnWebhookResponse
+	}
+	c.webhookLog("authnResp", httpResponse)
 
 	authnWebhookResponse := authnWebhookResponse{}
 	if err := json.Unmarshal(body, &authnWebhookResponse); err != nil {
