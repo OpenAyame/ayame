@@ -147,8 +147,6 @@ func (c *client) main(cancel context.CancelFunc, messageChannel chan []byte) {
 
 	defer timerStop(pongTimeoutTimer)
 	defer timerStop(pingTimer)
-	defer c.unregister()
-	defer cancel()
 
 loop:
 	for {
@@ -193,6 +191,10 @@ loop:
 	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
 		c.errLog().Err(err).Msg("FailedSendCloseMessage")
 	}
+
+	cancel()
+	c.unregister()
+
 	c.debugLog().Msg("EXIT-MAIN")
 }
 
