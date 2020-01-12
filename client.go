@@ -13,7 +13,12 @@ type client struct {
 	roomID        string
 	authnMetadata *interface{}
 	signalingKey  *string
-	conn          *websocket.Conn
+
+	// WebSocket コネクション
+	conn *websocket.Conn
+
+	// レジスターされているかどうか
+	registered bool
 
 	// 転送用のチャネル
 	forwardChannel chan forward
@@ -114,8 +119,10 @@ func (c *client) register() int {
 }
 
 func (c *client) unregister() {
-	unregisterChannel <- &unregister{
-		client: c,
+	if c.registered {
+		unregisterChannel <- &unregister{
+			client: c,
+		}
 	}
 }
 
@@ -287,12 +294,14 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		case one:
 			// room がまだなかった、accept を返す
 			c.debugLog("REGISTERED-ONE")
+			c.registered = true
 			if err := c.sendAcceptMessage(false, resp.IceServers, resp.AuthzMetadata); err != nil {
 				return err
 			}
 		case two:
 			// room がすでにあって、一人いた、二人目
 			c.debugLog("REGISTERED-TWO")
+			c.registered = true
 			if err := c.sendAcceptMessage(true, resp.IceServers, resp.AuthzMetadata); err != nil {
 				return err
 			}
