@@ -38,12 +38,7 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 
 	resp, err := c.postRequest(config.AuthnWebhookURL, req)
 	if err != nil {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Err(err).
-			Caller().
-			Msg("AuthnWebhookError")
+		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
 		return nil, err
 	}
 	// http://ikawaha.hateblo.jp/entry/2015/06/07/074155
@@ -53,13 +48,7 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Bytes("body", body).
-			Err(err).
-			Caller().
-			Msg("AuthnWebhookResponseError")
+		c.errLog().Bytes("body", body).Err(err).Caller().Msg("AuthnWebhookResponseError")
 		return nil, err
 	}
 
@@ -73,24 +62,14 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 
 	// 200 以外で返ってきたときはエラーとする
 	if resp.StatusCode != 200 {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Interface("resp", httpResponse).
-			Caller().
-			Msg("AuthnWebhookResponseError")
+		c.errLog().Interface("resp", httpResponse).Caller().Msg("AuthnWebhookResponseError")
 		return nil, errAuthnWebhookResponse
 	}
 	c.webhookLog("authnResp", httpResponse)
 
 	authnWebhookResponse := authnWebhookResponse{}
 	if err := json.Unmarshal(body, &authnWebhookResponse); err != nil {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Err(err).
-			Caller().
-			Msg("AuthnWebhookResponseError")
+		c.errLog().Err(err).Caller().Msg("AuthnWebhookResponseError")
 		return nil, errAuthnWebhookResponse
 	}
 

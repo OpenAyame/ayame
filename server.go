@@ -61,12 +61,12 @@ func server() {
 					for _, client := range r.clients {
 						// 両方の forwardChannel を閉じる
 						close(client.forwardChannel)
-						c.debugLog("CLOSED-FORWARD-CHANNEL")
-						c.debugLog("REMOVED-CLIENT")
+						c.debugLog().Msg("CLOSED-FORWARD-CHANNEL")
+						c.debugLog().Msg("REMOVED-CLIENT")
 					}
 					// room を削除
 					delete(m, c.roomID)
-					c.debugLog("DELETED-ROOM")
+					c.debugLog().Msg("DELETED-ROOM")
 				}
 			} else {
 				// 部屋がなかった

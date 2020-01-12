@@ -31,7 +31,7 @@ func signalingHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	conn.SetReadLimit(readLimit)
 	if err != nil {
-		logger.Debug().Err(err)
+		logger.Debug().Err(err).Caller().Msg("")
 		return
 	}
 	client := client{

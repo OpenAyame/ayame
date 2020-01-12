@@ -35,7 +35,7 @@ const (
 
 func (c *client) SendJSON(v interface{}) error {
 	if err := c.conn.WriteJSON(v); err != nil {
-		logger.Error().Err(err).Interface("msg", v).Msg("FailedToSendMsg")
+		c.errLog().Err(err).Interface("msg", v).Msg("FailedToSendMsg")
 		return err
 	}
 	return nil
@@ -101,7 +101,7 @@ func (c *client) sendByeMessage() error {
 
 func (c *client) closeWs() {
 	c.conn.Close()
-	c.debugLog("CLOSED-WS-CONN")
+	c.debugLog().Msg("CLOSED-WS-CONN")
 }
 
 func (c *client) register() int {
@@ -153,7 +153,7 @@ loop:
 			pingTimer.Reset(pingInterval * time.Second)
 		case <-pongTimeoutTimer.C:
 			// タイマーが発火してしまったので切断する
-			logger.Error().Msg("PongTimeout")
+			c.errLog().Msg("PongTimeout")
 			break loop
 		case rawMessage, ok := <-messageChannel:
 			// チャンネルが閉じられたら loop を抜ける
@@ -167,10 +167,10 @@ loop:
 		case forward, ok := <-c.forwardChannel:
 			if !ok {
 				// server 側でforwardChannel を閉じた
-				c.debugLog("UNREGISTERED")
+				c.debugLog().Msg("UNREGISTERED")
 				if err := c.sendByeMessage(); err != nil {
 				}
-				c.debugLog("SENT-BYE-MESSAGE")
+				c.debugLog().Msg("SENT-BYE-MESSAGE")
 				break loop
 			}
 			c.conn.WriteMessage(websocket.TextMessage, forward.rawMessage)
@@ -179,7 +179,7 @@ loop:
 	// 終了するので Websocket 終了のお知らせを送る
 	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
 	}
-	c.debugLog("EXIT-MAIN")
+	c.debugLog().Msg("EXIT-MAIN")
 }
 
 func (c *client) wsRecv(ctx context.Context, messageChannel chan []byte) {
@@ -187,40 +187,37 @@ loop:
 	for {
 		readDeadline := time.Now().Add(time.Duration(readTimeout) * time.Second)
 		if err := c.conn.SetReadDeadline(readDeadline); err != nil {
-			logger.Error().Err(err).Msg("")
+			c.errLog().Err(err).Msg("FailedSetReadDeadLine")
 			break loop
 		}
 		// 定期的に main が終了していないかチェックする
 		_, rawMessage, err := c.conn.ReadMessage()
 		if err != nil {
-			logger.Debug().
-				Err(err).
-				Str("roomId", c.roomID).
-				Str("clientId", c.ID).
-				Msg("WS-READ-MESSAGE-ERROR")
+			c.debugLog().Err(err).Msg("WS-READ-MESSAGE-ERROR")
 			break loop
 		}
 
 		select {
 		case <-ctx.Done():
 			// メインが死んでたらループ抜けて終了
-			c.debugLog("EXITED-MAIN")
+			c.debugLog().Msg("EXITED-MAIN")
 			break loop
 		default:
 			messageChannel <- rawMessage
 		}
 	}
 	close(messageChannel)
-	c.debugLog("CLOSED-MESSAGE-CHANNEL")
+	c.debugLog().Msg("CLOSED-MESSAGE-CHANNEL")
 	c.closeWs()
-	c.debugLog("CLOSED-WS")
-	c.debugLog("EXIT-WS-RECV")
+	c.debugLog().Msg("CLOSED-WS")
+	c.debugLog().Msg("EXIT-WS-RECV")
 }
 
+// メッセージ系のエラーログはここですべて取る
 func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer) error {
 	message := &message{}
 	if err := json.Unmarshal(rawMessage, &message); err != nil {
-		logger.Error().Err(err).Msg("InvalidJSON")
+		c.errLog().Err(err).Msg("InvalidJSON")
 		return errInvalidJSON
 	}
 
@@ -234,20 +231,20 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 	case "register":
 		registerMessage := &registerMessage{}
 		if err := json.Unmarshal(rawMessage, &registerMessage); err != nil {
-			logger.Warn().Err(err).Msg("InvalidJSON")
+			c.errLog().Err(err).Msg("InvalidJSON")
 			return errInvalidJSON
 		}
 
 		if registerMessage.RoomID == "" {
 			// XXX(nakai): どんな JSON だったのか見たくなるはず
-			c.errorLog("MissingRoomID")
+			c.errLog().Msg("MissingRoomID")
 			return errMissingRoomID
 		}
 		c.roomID = registerMessage.RoomID
 
 		if registerMessage.ClientID == "" {
 			// XXX(nakai): どんな JSON だったのか見たくなるはず
-			c.errorLog("MissingClientID")
+			c.errLog().Msg("MissingClientID")
 			return errMissingClientID
 		}
 		c.ID = registerMessage.ClientID
@@ -265,25 +262,26 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 
 		resp, err := c.authnWebhook()
 		if err != nil {
-			logger.Error().Err(err).Caller().Msg("AuthnWebhookError")
+			c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
 			return err
 		}
 
 		// 認証サーバの戻り値がおかしい場合は全部 Error にする
 		if resp.Allowed == nil {
-			logger.Error().Caller().Msg("AuthnWebhookResponseError")
+			c.errLog().Caller().Msg("AuthnWebhookResponseError")
 			return errAuthnWebhookResponse
 		}
 
 		if !*resp.Allowed {
 			if resp.Reason == nil {
-				logger.Error().Caller().Msg("AuthnWebhookResponseError")
+				c.errLog().Caller().Msg("AuthnWebhookResponseError")
 				if err := c.sendRejectMessage("InternalServerError"); err != nil {
 					return err
 				}
 				return errAuthnWebhookResponse
 			}
 			if err := c.sendRejectMessage(*resp.Reason); err != nil {
+				c.errLog().Err(err).Msg("FailedSendRejectMessage")
 				return err
 			}
 			return errAuthnWebhookReject
@@ -293,41 +291,45 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		switch c.register() {
 		case one:
 			// room がまだなかった、accept を返す
-			c.debugLog("REGISTERED-ONE")
+			c.debugLog().Msg("REGISTERED-ONE")
 			c.registered = true
 			if err := c.sendAcceptMessage(false, resp.IceServers, resp.AuthzMetadata); err != nil {
+				c.errLog().Err(err).Msg("FailedSendAcceptMessage")
 				return err
 			}
 		case two:
 			// room がすでにあって、一人いた、二人目
-			c.debugLog("REGISTERED-TWO")
+			c.debugLog().Msg("REGISTERED-TWO")
 			c.registered = true
 			if err := c.sendAcceptMessage(true, resp.IceServers, resp.AuthzMetadata); err != nil {
+				c.errLog().Err(err).Msg("FailedSendAcceptMessage")
 				return err
 			}
 		case full:
 			// room が満杯だった
-			c.errorLog("RoomFull")
+			c.errLog().Msg("RoomFull")
 			if err := c.sendRejectMessage("full"); err != nil {
+				c.errLog().Err(err).Msg("FailedSendRejectMessage")
 				return err
 			}
 			return errRoomFull
 		case dup:
 			// clientID が重複してた
-			c.errorLog("DuplicateClientID")
+			c.errLog().Msg("DuplicateClientID")
 			if err := c.sendRejectMessage("dup"); err != nil {
+				c.errLog().Err(err).Msg("FailedSendRejectMessage")
 				return err
 			}
 			return errDuplicateClientID
 		}
 	case "offer", "answer", "candidate":
 		if c.ID == "" {
-			c.errorLog("RegistrationIncomplete")
+			c.errLog().Msg("RegistrationIncomplete")
 			return errRegistrationIncomplete
 		}
 		c.forward(rawMessage)
 	default:
-		c.errorLog("InvalidMessageType")
+		c.errLog().Msg("InvalidMessageType")
 		return errInvalidMessageType
 	}
 	return nil

@@ -21,12 +21,7 @@ func (c *client) disconnectWebhook() error {
 
 	resp, err := c.postRequest(config.DisconnectWebhookURL, req)
 	if err != nil {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Err(err).
-			Caller().
-			Msg("DiconnectWebhookError")
+		c.errLog().Err(err).Caller().Msg("DiconnectWebhookError")
 		return errDisconnectWebhook
 	}
 	defer resp.Body.Close()
@@ -35,24 +30,13 @@ func (c *client) disconnectWebhook() error {
 
 	// 200 以外で返ってきたときはエラーとする
 	if resp.StatusCode != 200 {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Err(err).
-			Caller().
-			Msg("DiconnectWebhookResponseError")
+		c.errLog().Err(err).Caller().Msg("DiconnectWebhookResponseError")
 		return errDisconnectWebhookResponse
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.Error().
-			Str("roomlId", c.roomID).
-			Str("clientId", c.ID).
-			Bytes("body", body).
-			Err(err).
-			Caller().
-			Msg("DiconnectWebhookResponseError")
+		c.errLog().Bytes("body", body).Err(err).Caller().Msg("DiconnectWebhookResponseError")
 		return err
 	}
 
