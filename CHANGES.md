@@ -21,7 +21,7 @@
 - [ADD] signaling.log を追加する
 - [ADD] webhook.log を追加する
 - [ADD] register メッセージで ayameClient / environment / libwebrtc の情報を追加する
-    - 認証ウェブフックで飛ぶ
+    - 認証ウェブフック通知で含まれるようにする
 - [CHANGE] コードベースを変更する
 - [CHANGE] addr を listen_ipv4_address に変更する
 - [CHANGE] port を listen_port_number に変更する
@@ -30,4 +30,7 @@
 - [CHANGE] ログローテーションを lumberjack に変更する
 - [CHANGE] 同一クライアント ID での同一ルームへの接続をできなくする
 - [CHANGE] サンプルを削除する
+- [CHANGE] 登録済みのあとに WebSocket 切断した場合、 type: bye を送信するようにする
+- [CHANGE] ウェブフックの戻り値のステータスコード 200 以外はエラーにする
 - [FIX] サーバ側の切断の WS の終了処理を適切に行う
+- [FIX] ウェブソケットの最大メッセージを 1MB に制限する

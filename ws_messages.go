@@ -27,12 +27,6 @@ type byeMessage struct {
 	Type string `json:"type"`
 }
 
-// なにか問題があって閉じる時はこれを使う
-// type errorMessage struct {
-// 	Type   string `json:"type"`
-// 	Reason string `json:"reason"`
-// }
-
 type acceptMessage struct {
 	Type          string       `json:"type"`
 	AuthzMetadata *interface{} `json:"authzMetadata,omitempty"`
