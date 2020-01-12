@@ -19,6 +19,13 @@ func (c *client) debugLog(msg string) {
 		Msg(msg)
 }
 
+func (c *client) errorLog(msg string) {
+	logger.Error().
+		Str("roomId", c.roomID).
+		Str("clientId", c.ID).
+		Msg(msg)
+}
+
 func (c *client) debugSignalingLog(rawMsg string) {
 	logger.Debug().
 		Str("roomId", c.roomID).

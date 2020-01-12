@@ -11,6 +11,7 @@ var (
 	errMissingRoomID      = errors.New("MissingRoomID")
 	errMissingClientID    = errors.New("MissingClientID")
 	errInvalidJSON        = errors.New("InvalidJSON")
+	errDuplicateClientID  = errors.New("DuplicateClientID")
 
 	errRegistrationIncomplete = errors.New("RegistrationIncomplete")
 

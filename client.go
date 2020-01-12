@@ -232,13 +232,15 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		}
 
 		if registerMessage.RoomID == "" {
-			logger.Error().Msg("MissingRoomID")
+			// XXX(nakai): どんな JSON だったのか見たくなるはず
+			c.errorLog("MissingRoomID")
 			return errMissingRoomID
 		}
 		c.roomID = registerMessage.RoomID
 
 		if registerMessage.ClientID == "" {
-			logger.Error().Msg("MissingClientID")
+			// XXX(nakai): どんな JSON だったのか見たくなるはず
+			c.errorLog("MissingClientID")
 			return errMissingClientID
 		}
 		c.ID = registerMessage.ClientID
@@ -296,20 +298,27 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			}
 		case full:
 			// room が満杯だった
-			logger.Error().Msg("RoomFull")
+			c.errorLog("RoomFull")
 			if err := c.sendRejectMessage("full"); err != nil {
 				return err
 			}
 			return errRoomFull
+		case dup:
+			// clientID が重複してた
+			c.errorLog("DuplicateClientID")
+			if err := c.sendRejectMessage("dup"); err != nil {
+				return err
+			}
+			return errDuplicateClientID
 		}
 	case "offer", "answer", "candidate":
 		if c.ID == "" {
-			logger.Error().Msg("RegistrationIncomplete")
+			c.errorLog("RegistrationIncomplete")
 			return errRegistrationIncomplete
 		}
 		c.forward(rawMessage)
 	default:
-		logger.Error().Msg("InvalidMessageType")
+		c.errorLog("InvalidMessageType")
 		return errInvalidMessageType
 	}
 	return nil
