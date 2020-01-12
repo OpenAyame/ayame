@@ -40,7 +40,7 @@ func (c *client) disconnectWebhook() error {
 		return err
 	}
 
-	// ログ出力用$
+	// ログ出力用
 	httpResponse := &httpResponse{
 		Status: resp.Status,
 		Proto:  resp.Proto,

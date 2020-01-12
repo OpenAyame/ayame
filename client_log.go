@@ -2,8 +2,6 @@ package main
 
 import "github.com/rs/zerolog"
 
-// room_id と client_id をログに出したい
-
 func (c *client) signalingLog(message message, rawMessage []byte) {
 	if message.Type != "pong" {
 		signalingLogger.Log().
@@ -14,14 +12,14 @@ func (c *client) signalingLog(message message, rawMessage []byte) {
 	}
 }
 
-func (c *client) debugLog() *zerolog.Event {
-	return logger.Debug().
+func (c *client) errLog() *zerolog.Event {
+	return logger.Error().
 		Str("roomId", c.roomID).
 		Str("clientId", c.ID)
 }
 
-func (c *client) errLog() *zerolog.Event {
-	return logger.Error().
+func (c *client) debugLog() *zerolog.Event {
+	return logger.Debug().
 		Str("roomId", c.roomID).
 		Str("clientId", c.ID)
 }

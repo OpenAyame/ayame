@@ -220,7 +220,7 @@ loop:
 func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer) error {
 	message := &message{}
 	if err := json.Unmarshal(rawMessage, &message); err != nil {
-		c.errLog().Err(err).Msg("InvalidJSON")
+		c.errLog().Err(err).Bytes("rawMessage", rawMessage).Msg("InvalidJSON")
 		return errInvalidJSON
 	}
 
@@ -234,20 +234,18 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 	case "register":
 		registerMessage := &registerMessage{}
 		if err := json.Unmarshal(rawMessage, &registerMessage); err != nil {
-			c.errLog().Err(err).Msg("InvalidJSON")
+			c.errLog().Err(err).Bytes("rawMessage", rawMessage).Msg("InvalidRegisterMessageJSON")
 			return errInvalidJSON
 		}
 
 		if registerMessage.RoomID == "" {
-			// XXX(nakai): どんな JSON だったのか見たくなるはず
-			c.errLog().Msg("MissingRoomID")
+			c.errLog().Bytes("rawMessage", rawMessage).Msg("MissingRoomID")
 			return errMissingRoomID
 		}
 		c.roomID = registerMessage.RoomID
 
 		if registerMessage.ClientID == "" {
-			// XXX(nakai): どんな JSON だったのか見たくなるはず
-			c.errLog().Msg("MissingClientID")
+			c.errLog().Bytes("rawMessage", rawMessage).Msg("MissingClientID")
 			return errMissingClientID
 		}
 		c.ID = registerMessage.ClientID
@@ -263,6 +261,7 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 
 		c.authnMetadata = registerMessage.AuthnMetadata
 
+		// Webhook 系のエラーログは Caller をつける
 		resp, err := c.authnWebhook()
 		if err != nil {
 			c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
@@ -279,13 +278,13 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			if resp.Reason == nil {
 				c.errLog().Caller().Msg("AuthnWebhookResponseError")
 				if err := c.sendRejectMessage("InternalServerError"); err != nil {
-					c.errLog().Err(err).Msg("FailedSendRejectMessage")
+					c.errLog().Err(err).Caller().Msg("FailedSendRejectMessage")
 					return err
 				}
 				return errAuthnWebhookResponse
 			}
 			if err := c.sendRejectMessage(*resp.Reason); err != nil {
-				c.errLog().Err(err).Msg("FailedSendRejectMessage")
+				c.errLog().Err(err).Caller().Msg("FailedSendRejectMessage")
 				return err
 			}
 			return errAuthnWebhookReject
@@ -311,7 +310,7 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			}
 		case full:
 			// room が満杯だった
-			c.errLog().Msg("RoomFull")
+			c.errLog().Msg("RoomFilled")
 			if err := c.sendRejectMessage("full"); err != nil {
 				c.errLog().Err(err).Msg("FailedSendRejectMessage")
 				return err
@@ -319,7 +318,7 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			return errRoomFull
 		case dup:
 			// clientID が重複してた
-			c.errLog().Msg("DuplicateClientID")
+			c.errLog().Msg("DuplicatedClientID")
 			if err := c.sendRejectMessage("dup"); err != nil {
 				c.errLog().Err(err).Msg("FailedSendRejectMessage")
 				return err
