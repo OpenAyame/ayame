@@ -14,6 +14,13 @@ type client struct {
 	authnMetadata *interface{}
 	signalingKey  *string
 
+	// クライアント情報
+	ayameClient *string
+	environment *string
+	libwebrtc   *string
+
+	authzMetadata *interface{}
+
 	// WebSocket コネクション
 	conn *websocket.Conn
 
@@ -176,11 +183,15 @@ loop:
 				c.debugLog().Msg("SENT-BYE-MESSAGE")
 				break loop
 			}
-			c.conn.WriteMessage(websocket.TextMessage, forward.rawMessage)
+			if err := c.conn.WriteMessage(websocket.TextMessage, forward.rawMessage); err != nil {
+				c.errLog().Err(err).Msg("FailedWriteMessage")
+				break loop
+			}
 		}
 	}
 	// 終了するので Websocket 終了のお知らせを送る
 	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
+		c.errLog().Err(err).Msg("FailedSendCloseMessage")
 	}
 	c.debugLog().Msg("EXIT-MAIN")
 }
@@ -261,6 +272,11 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 
 		c.authnMetadata = registerMessage.AuthnMetadata
 
+		// クライアント情報の登録
+		c.ayameClient = registerMessage.AyameClient
+		c.environment = registerMessage.Environment
+		c.libwebrtc = registerMessage.Libwebrtc
+
 		// Webhook 系のエラーログは Caller をつける
 		resp, err := c.authnWebhook()
 		if err != nil {
@@ -289,6 +305,8 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			}
 			return errAuthnWebhookReject
 		}
+
+		c.authzMetadata = resp.AuthzMetadata
 
 		// 戻り値は手抜き
 		switch c.register() {
