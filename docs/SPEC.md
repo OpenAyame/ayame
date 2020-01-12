@@ -4,7 +4,7 @@
 
 ## シグナリング
 
-Ayame の `ws://0.0.0.0:3000/signaling` がクライアントからの WebSocket 接続を確立し、管理するエンドポイントとなります。
+Ayame の `ws://192.0.2.100:3000/signaling` がクライアントからの WebSocket 接続を確立し、管理するエンドポイントとなります。
 
 このエンドポイントに WebSocket で接続すると、Ayame は接続したクライアントの接続を保持します。
 
@@ -117,7 +117,7 @@ ice candidate を交換するメッセージです。
 ### シグナリング詳細
 
 - 基本的には AppRTC へ準拠する
-- 必要があれば拡張する
+- 積極的に拡張する
 
 - 登録
     - type: register
@@ -129,9 +129,11 @@ ice candidate を交換するメッセージです。
                 - 要検討
             - string
         - authnMetadata
+            - 拡張
             - オプション
             - any
         - signalingKey
+            - 拡張
             - オプション
             - string
             - 互換性のため key も許可する
@@ -159,43 +161,14 @@ ice candidate を交換するメッセージです。
 - ピンポン
     - 拡張
     - type: ping
+    - type: pong
+    - ping を 5 秒間隔でなげて 60 秒 pong が返ってこなかったら切断する
 
 ## ウェブフック
 
 - URL の設定は yaml に設定可能にする
 
 ### 認証サーバへ飛ばす情報
-
-#### 2020.1 までの仕様 
-
-**後方互換性維持のため snake_case になります**
-
-- client_id
-    - 必須
-    - string
-- room_id
-    - 必須
-    - string
-- authn_metadata
-    - オプション
-    - any
-- signaling_key
-    - オプション
-    - string
-- key
-    - オプション
-    - string
-- ayame_client
-    - オプション
-    - string
-- environment
-    - オプション
-    - string
-- libwebrtc
-    - オプション
-    - string
-
-#### 2020.2 からの仕様
 
 - clientId
     - 必須

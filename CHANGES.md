@@ -32,5 +32,6 @@
 - [CHANGE] サンプルを削除する
 - [CHANGE] 登録済みのあとに WebSocket 切断した場合、 type: bye を送信するようにする
 - [CHANGE] ウェブフックの戻り値のステータスコード 200 以外はエラーにする
+- [CHANGE] ウェブフックの JSON のキーを snake_case から camelCase にする
 - [FIX] サーバ側の切断の WS の終了処理を適切に行う
 - [FIX] ウェブソケットの最大メッセージを 1MB に制限する

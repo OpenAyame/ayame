@@ -28,12 +28,6 @@ func (c *client) disconnectWebhook() error {
 
 	c.webhookLog("disconnectReq", req)
 
-	// 200 以外で返ってきたときはエラーとする
-	if resp.StatusCode != 200 {
-		c.errLog().Err(err).Caller().Msg("DiconnectWebhookResponseError")
-		return errDisconnectWebhookResponse
-	}
-
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c.errLog().Bytes("body", body).Err(err).Caller().Msg("DiconnectWebhookResponseError")
@@ -46,6 +40,12 @@ func (c *client) disconnectWebhook() error {
 		Proto:  resp.Proto,
 		Header: resp.Header,
 		Body:   string(body),
+	}
+
+	// 200 以外で返ってきたときはエラーとする
+	if resp.StatusCode != 200 {
+		c.errLog().Interface("resp", httpResponse).Caller().Msg("DisconnectWebhookUnexpectedStatusCode")
+		return errDisconnectWebhookUnexpectedStatusCode
 	}
 
 	c.webhookLog("disconnectResp", httpResponse)

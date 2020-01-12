@@ -90,12 +90,14 @@ Usage of ./ayame:
 クライアントは ayame への接続可否を問い合わせるために WebSocket に接続した際に、まず `"type": "register"` の JSON メッセージを WS で送信する必要があります。
 register で送信できるプロパティは以下になります。
 
-
 - `"type"`: (string): 必須。 `"register"` を指定する
 - `"clientId"`: (string): 必須
 - `"roomId"`: (string): 必須
 - `"signalingkey"`(string): オプション
 - `"authnMetadata"`(object): オプション
+- `"ayameClient"`(string): オプション
+- `"environment"`(string): オプション
+- `"libwebrtc"`(string): オプション
 
 ## 認証ウェブフックの `auth_webhook_url` オプションについて
 
@@ -104,9 +106,9 @@ ayame は client が `{"type": "register" }` メッセージを送信してき�
 
 また、 認証リクエストの返り値は JSON 形式で、以下のように想定されています。
 
-- `"allowed"`: boolean。認証の可否 (必須)
-- `"reason"`: string。認証不可の際の理由 (`allowed` が false の場合のみ必須)
-- `"iceServers"`: (array object) クライアントに peer connection で接続する iceServer 情報 (optional)
+- `"allowed"`: (boolean): 必須。認証の可否
+- `"reason"`: (string): オプション。認証不可の際の理由 (`allowed` が false の場合のみ必須)
+- `"iceServers"`: (array object): オプション。クライアントに peer connection で接続する iceServer 情報
 
 `allowed` が false の場合 client の ayame への WebSocket 接続は切断されます。
 
@@ -117,20 +119,21 @@ ayame は client が `{"type": "register" }` メッセージを送信してき�
 - `"signalingkey"`(string): オプション
 - `"authnMetadata"`: (object): オプション
     - register 時に `authnMetadata` をプロパティとして指定していると、その値がそのまま付与されます
+- `"ayameClient"`(string): オプション
+- `"environment"`(string): オプション
+- `"libwebrtc"`(string): オプション
 
 #### レスポンス
 
-- `"allowed"`: boolean。認証の可否 (必須)
-- `"reason"`: string。認証不可の際の理由 (`allowed` が false の場合のみ)
-- `"authzMetadata"`(Object, Optional)
+- `"allowed"`: (boolean): 必須。認証の可否
+- `"reason"`: (string): 認証不可の際の理由 (`allowed` が false の場合のみ)
+- `"authzMetadata"`(object): オプション
     - クライアントに対して任意に払い出せるメタデータ
     -  client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる
 
 ```
 {"allowed": true, "authzMetadata": {"username": "ayame", "owner": "true"}}
 ```
-
-この多段 auth_webhook は利用者が指定した認証ウェブフック URL を利用するためのものとして想定しています。
 
 ### ローカルで wss/https を試したい場合
 

@@ -62,9 +62,10 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 
 	// 200 以外で返ってきたときはエラーとする
 	if resp.StatusCode != 200 {
-		c.errLog().Interface("resp", httpResponse).Caller().Msg("AuthnWebhookResponseError")
-		return nil, errAuthnWebhookResponse
+		c.errLog().Interface("resp", httpResponse).Caller().Msg("AuthnWebhookUnexpectedStatusCode")
+		return nil, errAuthnWebhookUnexpectedStatusCode
 	}
+
 	c.webhookLog("authnResp", httpResponse)
 
 	authnWebhookResponse := authnWebhookResponse{}

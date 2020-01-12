@@ -15,12 +15,14 @@ var (
 
 	errRegistrationIncomplete = errors.New("RegistrationIncomplete")
 
-	errAuthnWebhook         = errors.New("AuthnWebhookError")
-	errAuthnWebhookResponse = errors.New("AuthnWebhookResponseError")
-	errAuthnWebhookReject   = errors.New("AuthnWebhookReject")
+	errAuthnWebhook                     = errors.New("AuthnWebhookError")
+	errAuthnWebhookResponse             = errors.New("AuthnWebhookResponseError")
+	errAuthnWebhookUnexpectedStatusCode = errors.New("AuthnWebhookUnexpectedStatusCode")
+	errAuthnWebhookReject               = errors.New("AuthnWebhookReject")
 
-	errDisconnectWebhook         = errors.New("DisconnectWebhookError")
-	errDisconnectWebhookResponse = errors.New("DisconnectWebhookResponseError")
+	errDisconnectWebhook                     = errors.New("DisconnectWebhookError")
+	errDisconnectWebhookResponse             = errors.New("DisconnectWebhookResponseError")
+	errDisconnectWebhookUnexpectedStatusCode = errors.New("DisconnectWebhookUnexpectedStatusCode")
 
 	errRoomFull = errors.New("RoomFull")
 	// 想定外のエラー
