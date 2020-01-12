@@ -161,6 +161,7 @@ loop:
 				break loop
 			}
 			if err := c.handleWsMessage(rawMessage, pongTimeoutTimer); err != nil {
+				// ここのエラーのログはすでに handleWsMessage でとってあるので不要
 				// エラーになったら抜ける
 				break loop
 			}
@@ -169,6 +170,8 @@ loop:
 				// server 側でforwardChannel を閉じた
 				c.debugLog().Msg("UNREGISTERED")
 				if err := c.sendByeMessage(); err != nil {
+					c.errLog().Err(err).Msg("FailedSendByeMessage")
+					break loop
 				}
 				c.debugLog().Msg("SENT-BYE-MESSAGE")
 				break loop
@@ -276,6 +279,7 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			if resp.Reason == nil {
 				c.errLog().Caller().Msg("AuthnWebhookResponseError")
 				if err := c.sendRejectMessage("InternalServerError"); err != nil {
+					c.errLog().Err(err).Msg("FailedSendRejectMessage")
 					return err
 				}
 				return errAuthnWebhookResponse
@@ -323,7 +327,8 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			return errDuplicateClientID
 		}
 	case "offer", "answer", "candidate":
-		if c.ID == "" {
+		// register が完了していない
+		if !c.registered {
 			c.errLog().Msg("RegistrationIncomplete")
 			return errRegistrationIncomplete
 		}
