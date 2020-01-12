@@ -49,6 +49,7 @@ func server() {
 					id:      c.roomID,
 					clients: clients,
 				}
+				c.debugLog().Msg("CREATED-ROOM")
 				rch <- one
 			}
 		case unregister := <-unregisterChannel:

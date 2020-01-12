@@ -293,17 +293,17 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		// 戻り値は手抜き
 		switch c.register() {
 		case one:
+			c.registered = true
 			// room がまだなかった、accept を返す
 			c.debugLog().Msg("REGISTERED-ONE")
-			c.registered = true
 			if err := c.sendAcceptMessage(false, resp.IceServers, resp.AuthzMetadata); err != nil {
 				c.errLog().Err(err).Msg("FailedSendAcceptMessage")
 				return err
 			}
 		case two:
+			c.registered = true
 			// room がすでにあって、一人いた、二人目
 			c.debugLog().Msg("REGISTERED-TWO")
-			c.registered = true
 			if err := c.sendAcceptMessage(true, resp.IceServers, resp.AuthzMetadata); err != nil {
 				c.errLog().Err(err).Msg("FailedSendAcceptMessage")
 				return err
