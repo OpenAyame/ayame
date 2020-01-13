@@ -188,6 +188,7 @@ loop:
 			}
 		}
 	}
+
 	// 終了するので Websocket 終了のお知らせを送る
 	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
 		c.errLog().Err(err).Msg("FailedSendCloseMessage")
@@ -207,26 +208,27 @@ loop:
 			c.errLog().Err(err).Msg("FailedSetReadDeadLine")
 			break loop
 		}
-		// 定期的に main が終了していないかチェックする
 		_, rawMessage, err := c.conn.ReadMessage()
 		if err != nil {
+			// ここに来るのはほぼ WebSocket が切断されたとき
 			c.debugLog().Err(err).Msg("WS-READ-MESSAGE-ERROR")
 			break loop
 		}
 
+		// 定期的に main が終了していないかチェックする
 		select {
 		case <-ctx.Done():
-			// メインが死んでたらループ抜けて終了
+			// メインが死んでたら loop を抜ける
 			c.debugLog().Msg("EXITED-MAIN")
+			c.closeWs()
+			c.debugLog().Msg("CLOSED-WS")
 			break loop
 		default:
 			messageChannel <- rawMessage
 		}
 	}
 	close(messageChannel)
-	c.debugLog().Msg("CLOSED-MESSAGE-CHANNEL")
-	c.closeWs()
-	c.debugLog().Msg("CLOSED-WS")
+	c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 	c.debugLog().Msg("EXIT-WS-RECV")
 }
 
