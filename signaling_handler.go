@@ -34,6 +34,7 @@ func signalingHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Debug().Err(err).Caller().Msg("")
 		return
 	}
+	// ここで connectionId みたいなの作るべき
 	client := client{
 		conn:           conn,
 		forwardChannel: make(chan forward),
@@ -45,4 +46,5 @@ func signalingHandler(w http.ResponseWriter, r *http.Request) {
 	messageChannel := make(chan []byte)
 	go client.wsRecv(ctx, messageChannel)
 	go client.main(cancel, messageChannel)
+
 }

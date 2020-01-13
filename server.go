@@ -62,8 +62,8 @@ func server() {
 					for _, client := range r.clients {
 						// 両方の forwardChannel を閉じる
 						close(client.forwardChannel)
-						c.debugLog().Msg("CLOSED-FORWARD-CHANNEL")
-						c.debugLog().Msg("REMOVED-CLIENT")
+						client.debugLog().Msg("CLOSED-FORWARD-CHANNEL")
+						client.debugLog().Msg("REMOVED-CLIENT")
 					}
 					// room を削除
 					delete(m, c.roomID)

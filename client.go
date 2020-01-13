@@ -163,6 +163,7 @@ loop:
 		case rawMessage, ok := <-messageChannel:
 			// チャンネルが閉じられたら loop を抜ける
 			if !ok {
+				c.debugLog().Msg("CLOSED-MESSAGE-CHANNEL")
 				break loop
 			}
 			if err := c.handleWsMessage(rawMessage, pongTimeoutTimer); err != nil {
