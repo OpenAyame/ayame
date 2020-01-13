@@ -190,8 +190,9 @@ loop:
 	}
 
 	// 終了するので Websocket 終了のお知らせを送る
+	// ただ WS が閉じてる可能性もあるので、失敗するかも知れない
 	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
-		c.errLog().Err(err).Msg("FailedSendCloseMessage")
+		c.debugLog().Err(err).Msg("FailedSendCloseMessage")
 	}
 
 	cancel()
