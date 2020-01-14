@@ -145,8 +145,17 @@ func (c *client) main(cancel context.CancelFunc, messageChannel chan []byte) {
 	pongTimeoutTimer := time.NewTimer(pongTimeout * time.Second)
 	pingTimer := time.NewTimer(pingInterval * time.Second)
 
-	defer timerStop(pongTimeoutTimer)
-	defer timerStop(pingTimer)
+	defer func() {
+		timerStop(pongTimeoutTimer)
+		timerStop(pingTimer)
+		// キャンセルを呼ぶ
+		cancel()
+		c.debugLog().Msg("CANCEL")
+		// アンレジはここでやる
+		c.unregister()
+		c.debugLog().Msg("UNREGISTER")
+		c.debugLog().Msg("EXIT-MAIN")
+	}()
 
 loop:
 	for {
@@ -164,12 +173,7 @@ loop:
 			// message チャンネルが閉じられた、main 終了待ち
 			if !ok {
 				c.debugLog().Msg("CLOSED-MESSAGE-CHANNEL")
-				// キャンセルを呼ぶ
-				cancel()
-				// アンレジはここでやる
-				c.unregister()
-				c.debugLog().Msg("EXIT-MAIN (EXITED WS-RECV)")
-				// return なのではないか
+				// メッセージチャネルが閉じてるので return でもう抜けてしまう
 				return
 			}
 			if err := c.handleWsMessage(rawMessage, pongTimeoutTimer); err != nil {
@@ -195,19 +199,10 @@ loop:
 		}
 	}
 
-	// 終了するので Websocket 終了のお知らせを送る
-	// ただ WS が閉じてる可能性もあるので、失敗するかも知れない
+	// こちらの都合で終了するので Websocket 終了のお知らせを送る
 	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
 		c.debugLog().Err(err).Msg("FAILED-SEND-CLOSE-MESSAGE")
 	}
-
-	cancel()
-	c.debugLog().Msg("CANCEL")
-
-	c.unregister()
-	c.debugLog().Msg("UNREGISTER")
-
-	c.debugLog().Msg("EXIT-MAIN")
 }
 
 func (c *client) wsRecv(ctx context.Context, messageChannel chan []byte) {
