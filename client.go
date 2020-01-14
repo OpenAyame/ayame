@@ -213,21 +213,17 @@ loop:
 		if err != nil {
 			// ここに来るのはほぼ WebSocket が切断されたとき
 			c.debugLog().Err(err).Msg("WS-READ-MESSAGE-ERROR")
-			break loop
+			select {
+			case <-ctx.Done():
+				// メインが死んでたら loop を抜ける
+				c.debugLog().Msg("EXITED-MAIN")
+				break loop
+			}
 		}
-
-		// 定期的に main が終了していないかチェックする
-		select {
-		case <-ctx.Done():
-			// メインが死んでたら loop を抜ける
-			c.debugLog().Msg("EXITED-MAIN")
-			c.closeWs()
-			c.debugLog().Msg("CLOSED-WS")
-			break loop
-		default:
-			messageChannel <- rawMessage
-		}
+		messageChannel <- rawMessage
 	}
+	c.closeWs()
+	c.debugLog().Msg("CLOSED-WS")
 	close(messageChannel)
 	c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 	c.debugLog().Msg("EXIT-WS-RECV")
