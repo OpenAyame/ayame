@@ -201,7 +201,10 @@ loop:
 	}
 
 	cancel()
+	c.debugLog().Msg("CANCEL")
+
 	c.unregister()
+	c.debugLog().Msg("UNREGISTER")
 
 	c.debugLog().Msg("EXIT-MAIN")
 }
@@ -225,10 +228,12 @@ loop:
 	close(messageChannel)
 	c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 	// メインが死ぬまで待つ
-	<-ctx.Done()
-	c.debugLog().Msg("EXITED-MAIN")
-	c.closeWs()
-	c.debugLog().Msg("EXIT-WS-RECV")
+	select {
+	case <-ctx.Done(): // 1秒以上かかると Done() がcloseされる
+		c.debugLog().Msg("EXITED-MAIN")
+		c.closeWs()
+		c.debugLog().Msg("EXIT-WS-RECV")
+	}
 }
 
 // メッセージ系のエラーログはここですべて取る
