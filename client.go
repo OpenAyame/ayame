@@ -213,8 +213,8 @@ loop:
 		if err != nil {
 			// ここに来るのはほぼ WebSocket が切断されたとき
 			c.debugLog().Err(err).Msg("WS-READ-MESSAGE-ERROR")
+			// メインが死ぬまで待つ
 			<-ctx.Done()
-			// メインが死んでたら loop を抜ける
 			c.debugLog().Msg("EXITED-MAIN")
 			break loop
 		}
