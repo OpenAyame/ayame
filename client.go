@@ -212,12 +212,16 @@ loop:
 		readDeadline := time.Now().Add(time.Duration(readTimeout) * time.Second)
 		if err := c.conn.SetReadDeadline(readDeadline); err != nil {
 			c.errLog().Err(err).Msg("FailedSetReadDeadLine")
+			close(messageChannel)
+			c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 			break loop
 		}
 		_, rawMessage, err := c.conn.ReadMessage()
 		if err != nil {
 			// ここに来るのはほぼ WebSocket が切断されたとき
 			c.debugLog().Err(err).Msg("WS-READ-MESSAGE-ERROR")
+			close(messageChannel)
+			c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 			// メインが死ぬまで待つ
 			<-ctx.Done()
 			c.debugLog().Msg("EXITED-MAIN")
@@ -225,8 +229,6 @@ loop:
 		}
 		messageChannel <- rawMessage
 	}
-	close(messageChannel)
-	c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 	c.closeWs()
 	c.debugLog().Msg("CLOSED-WS")
 	c.debugLog().Msg("EXIT-WS-RECV")
