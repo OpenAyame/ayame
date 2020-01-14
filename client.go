@@ -187,14 +187,16 @@ loop:
 				c.debugLog().Msg("UNREGISTERED")
 				if err := c.sendByeMessage(); err != nil {
 					c.errLog().Err(err).Msg("FailedSendByeMessage")
-					break loop
+					// 送れなかったら閉じるメッセージも送れないので return
+					return
 				}
 				c.debugLog().Msg("SENT-BYE-MESSAGE")
 				break loop
 			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, forward.rawMessage); err != nil {
 				c.errLog().Err(err).Msg("FailedWriteMessage")
-				break loop
+				// 送れなかったら閉じるメッセージも送れないので return
+				return
 			}
 		}
 	}
@@ -202,7 +204,10 @@ loop:
 	// こちらの都合で終了するので Websocket 終了のお知らせを送る
 	if err := c.sendCloseMessage(websocket.CloseNormalClosure, ""); err != nil {
 		c.debugLog().Err(err).Msg("FAILED-SEND-CLOSE-MESSAGE")
+		// 送れなかったら return する
+		return
 	}
+	c.debugLog().Msg("SENT-CLOSE-MESSAGE")
 }
 
 func (c *client) wsRecv(ctx context.Context, messageChannel chan []byte) {
