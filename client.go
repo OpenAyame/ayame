@@ -161,10 +161,15 @@ loop:
 			c.errLog().Msg("PongTimeout")
 			break loop
 		case rawMessage, ok := <-messageChannel:
-			// チャンネルが閉じられたら loop を抜ける
+			// message チャンネルが閉じられた == wsRecv が終了した
+			// その場合は unregister だけしてプロセスを終了させる
 			if !ok {
 				c.debugLog().Msg("CLOSED-MESSAGE-CHANNEL")
-				break loop
+				// アンレジはここでやる
+				c.unregister()
+				c.debugLog().Msg("EXIT-MAIN (EXITED WS-RECV)")
+				// return なのではないか
+				return
 			}
 			if err := c.handleWsMessage(rawMessage, pongTimeoutTimer); err != nil {
 				// ここのエラーのログはすでに handleWsMessage でとってあるので不要
