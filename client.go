@@ -108,7 +108,7 @@ func (c *client) sendByeMessage() error {
 
 func (c *client) closeWs() {
 	c.conn.Close()
-	c.debugLog().Msg("CLOSED-WS-CONN")
+	c.debugLog().Msg("CLOSED-WS")
 }
 
 func (c *client) register() int {
@@ -230,7 +230,6 @@ loop:
 		messageChannel <- rawMessage
 	}
 	c.closeWs()
-	c.debugLog().Msg("CLOSED-WS")
 	c.debugLog().Msg("EXIT-WS-RECV")
 }
 
