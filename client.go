@@ -230,7 +230,7 @@ loop:
 	c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 	// メインが死ぬまで待つ
 	select {
-	case <-ctx.Done(): // 1秒以上かかると Done() がcloseされる
+	case <-ctx.Done():
 		c.debugLog().Msg("EXITED-MAIN")
 		c.closeWs()
 		c.debugLog().Msg("EXIT-WS-RECV")
