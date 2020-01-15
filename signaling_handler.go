@@ -36,14 +36,16 @@ func signalingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// ここで connectionId みたいなの作るべき
 	client := client{
-		conn:           conn,
-		forwardChannel: make(chan forward),
+		conn: conn,
+		// 複数箇所でブロックした時を考えて少し余裕をもたせる
+		forwardChannel: make(chan forward, 100),
 	}
 	// client.conn.SetCloseHandler(client.closeHandler)
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 
-	messageChannel := make(chan []byte)
+	// ブロックしないよう余裕をもたせておく
+	messageChannel := make(chan []byte, 100)
 	go client.wsRecv(ctx, messageChannel)
 	go client.main(cancel, messageChannel)
 

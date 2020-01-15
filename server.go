@@ -3,7 +3,9 @@ package main
 var (
 	registerChannel   = make(chan *register)
 	unregisterChannel = make(chan *unregister)
-	forwardChannel    = make(chan forward)
+	// ブロックされたくないので 100 cap
+	// TODO(nakai): 100 は定数化
+	forwardChannel = make(chan forward, 100)
 )
 
 type room struct {

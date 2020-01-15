@@ -26,5 +26,5 @@ var (
 
 	errRoomFull = errors.New("RoomFull")
 	// 想定外のエラー
-	// errInternalServer = errors.New("InternalServerError")
+	errInternalServer = errors.New("InternalServerError")
 )

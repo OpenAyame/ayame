@@ -229,12 +229,10 @@ loop:
 	close(messageChannel)
 	c.debugLog().Msg("CLOSE-MESSAGE-CHANNEL")
 	// メインが死ぬまで待つ
-	select {
-	case <-ctx.Done():
-		c.debugLog().Msg("EXITED-MAIN")
-		c.closeWs()
-		c.debugLog().Msg("EXIT-WS-RECV")
-	}
+	<-ctx.Done()
+	c.debugLog().Msg("EXITED-MAIN")
+	c.closeWs()
+	c.debugLog().Msg("EXIT-WS-RECV")
 }
 
 // メッセージ系のエラーログはここですべて取る
@@ -253,6 +251,12 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		timerStop(pongTimeoutTimer)
 		pongTimeoutTimer.Reset(pongTimeout * time.Second)
 	case "register":
+		// すでに登録されているのにもう一度登録しに来た
+		if c.registered {
+			c.errLog().Bytes("rawMessage", rawMessage).Msg("InternalServer")
+			return errInternalServer
+		}
+
 		registerMessage := &registerMessage{}
 		if err := json.Unmarshal(rawMessage, &registerMessage); err != nil {
 			c.errLog().Err(err).Bytes("rawMessage", rawMessage).Msg("InvalidRegisterMessageJSON")
