@@ -291,12 +291,20 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 		resp, err := c.authnWebhook()
 		if err != nil {
 			c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
+			if err := c.sendRejectMessage("InternalServerError"); err != nil {
+				c.errLog().Err(err).Caller().Msg("FailedSendRejectMessage")
+				return err
+			}
 			return err
 		}
 
 		// 認証サーバの戻り値がおかしい場合は全部 Error にする
 		if resp.Allowed == nil {
 			c.errLog().Caller().Msg("AuthnWebhookResponseError")
+			if err := c.sendRejectMessage("InternalServerError"); err != nil {
+				c.errLog().Err(err).Caller().Msg("FailedSendRejectMessage")
+				return err
+			}
 			return errAuthnWebhookResponse
 		}
 
