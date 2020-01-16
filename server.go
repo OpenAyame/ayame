@@ -56,8 +56,9 @@ func server() {
 			}
 		case unregister := <-unregisterChannel:
 			c := unregister.client
-			// 部屋を探す
+			// room を探す
 			r, ok := m[c.roomID]
+			// room がない場合は何もしない
 			if ok {
 				_, ok := r.clients[c.ID]
 				if ok {
@@ -71,22 +72,18 @@ func server() {
 					delete(m, c.roomID)
 					c.debugLog().Msg("DELETED-ROOM")
 				}
-			} else {
-				// 部屋がなかった
-				// 何もしない
 			}
 		case forward := <-forwardChannel:
 			r, ok := m[forward.client.roomID]
+			// room がない場合は何もしない
 			if ok {
 				// room があった
 				for clientID, client := range r.clients {
+					// 自分ではない方に投げつける
 					if clientID != forward.client.ID {
 						client.forwardChannel <- forward
 					}
 				}
-			} else {
-				// room がなかった
-				logger.Warn().Msg("MISSING-ROOM")
 			}
 		}
 	}

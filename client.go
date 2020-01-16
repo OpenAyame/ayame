@@ -118,9 +118,8 @@ func (c *client) register() int {
 		resultChannel: resultChannel,
 	}
 	// ここはブロックする candidate とかを並列で来てるかもしれないが知らん
-	result, _ := <-resultChannel
+	result := <-resultChannel
 	// もう server で触ることはないのでここで閉じる
-	// これ server で閉じてもいいのかも
 	close(resultChannel)
 	return result
 }
@@ -183,7 +182,7 @@ loop:
 			}
 		case forward, ok := <-c.forwardChannel:
 			if !ok {
-				// server 側でforwardChannel を閉じた
+				// server 側で forwardChannel を閉じた
 				c.debugLog().Msg("UNREGISTERED")
 				if err := c.sendByeMessage(); err != nil {
 					c.errLog().Err(err).Msg("FailedSendByeMessage")
