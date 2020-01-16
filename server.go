@@ -1,21 +1,23 @@
 package main
 
 var (
+	// register/unregister は待たせる
 	registerChannel   = make(chan *register)
 	unregisterChannel = make(chan *unregister)
-	// ブロックされたくないので 100 cap
+	// ブロックされたくないので 100 に設定
 	// TODO(nakai): 100 は定数化
 	forwardChannel = make(chan forward, 100)
 )
 
+// roomId がキーになる
 type room struct {
+	// XXX(nakai): これいる？
 	id      string
 	clients map[string]*client
 }
 
 func server() {
-	// Rooms を管理するマップはここに用意する
-	// roomId がキーになる
+	// room を管理するマップはここに用意する
 	var m = make(map[string]room)
 	// ここはシングルなのでロックは不要、多分
 	for {
