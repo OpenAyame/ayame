@@ -5,14 +5,11 @@ var (
 	registerChannel   = make(chan *register)
 	unregisterChannel = make(chan *unregister)
 	// ブロックされたくないので 100 に設定
-	// TODO(nakai): 100 は定数化
 	forwardChannel = make(chan forward, 100)
 )
 
 // roomId がキーになる
 type room struct {
-	// XXX(nakai): これいる？
-	id      string
 	clients map[string]*client
 }
 
@@ -50,7 +47,6 @@ func server() {
 				clients[c.ID] = c
 				// room を追加
 				m[c.roomID] = room{
-					id:      c.roomID,
 					clients: clients,
 				}
 				c.debugLog().Msg("CREATED-ROOM")
