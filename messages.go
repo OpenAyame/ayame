@@ -1,19 +1,31 @@
 package main
 
-type AcceptMessage struct {
-	Type        string        `json:"type"`
-	IceServers  []interface{} `json:"iceServers,omitempty"`
-	IsExistUser bool          `json:"isExistUser"`
+const (
+	// 登録成功
+	// 部屋が作成された相手を待つ
+	one int = iota
+	// すでに部屋はあり相手が待ってる
+	// offer を出させる
+	// 登録成功
+	two
+	// 満員だったので Reject か Error を返す
+	// 登録失敗
+	full
+	// clientID が重複している
+	dup
+)
+
+type register struct {
+	client        *client
+	resultChannel chan int
 }
 
-type RejectMessage struct {
-	Type   string `json:"type"`
-	Reason string `json:"reason"`
+// rawMessage には JOSN パース前の offer / answer / candidate が入る
+type forward struct {
+	client     *client
+	rawMessage []byte
 }
 
-type AcceptMetadataMessage struct {
-	Type        string        `json:"type"`
-	Metadata    interface{}   `json:"authzMetadata,omitempty"`
-	IceServers  []interface{} `json:"iceServers,omitempty"`
-	IsExistUser bool          `json:"isExistUser"`
+type unregister struct {
+	client *client
 }

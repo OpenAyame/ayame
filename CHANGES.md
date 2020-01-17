@@ -9,45 +9,29 @@
 - FIX
     - バグ修正
 
+## feature/rewrite
 
-## develop
-- [ADD] CI の go を 1.13 に上げる
-- [UPDATE] @kdxu 推奨の go version を 1.13 にあげる
-- [UPDATE] @kdxu 先に入室しているユーザーがいる場合 isExistUser をaccept時にtrue にして返す
-- [FIX] @kdxu roomId か clientId が空文字列の場合は reject するように修正する
-- [FIX] @kdxu -c での config ファイル指定が効いていなかったのを修正する
-
-## 19.08.0
-
-2019-08-16
-
-- [UPDATE] `/ws` エンドポイントと同様のものを `/signaling` エンドポイントとして追加する
-- [UPDATE] ayame register 時に key も送信できるようにする
-- [UPDATE] auth webhook の返り値に iceServers があれば返却するようにする
-
-## 19.07.1
-- [CHANGE] @kdxu サンプルを ayame-web-sdk を用いたものに置き換える
-
-## 19.07.0
-
-- [UPDATE] @kdxu -overWsPingPong オプションで over WS の ping-pong にも対応できるようにした
-- [FIX] @kdxu サンプルを unified plan に対応する
-- [ADD] @kdxu ayame 起動時に少し説明を出す
-- [ADD] @kdxu `ayame version` でバージョンを表示するようにする
-- [ADD] @kdxu 認証ウェブフック機能を追加する
-- [ADD] @kdxu 多段認証ウェブフック機能を追加する
-- [CHANGE] @kdxu 設定を `config.yaml` に切り分けるよう変更する
-
-
-## 19.02.1
-
-- [FIX] @kdxu uuid を使わず、client_id で持ち回すよう修正する
-
-## 19.02.0
-
-**ファーストリリース**
-
-- [ADD] AppRTC 互換のシグナリングサーバの追加
-- [ADD] ルーム機能の追加
-- [ADD] type: accept/reject の追加
-- [ADD} 3 人以上はキックする機能の追加
+- [ADD] register メッセージで key と signalingKey のどちらかを指定できるようにする
+    - signalingKey が優先される
+    - 将来的に signalingKey のみになる
+- [ADD] accept メッセージで isExistUser 以外に isExistClient を送るようにする
+    - 将来的に isExistClient のみになる
+- [ADD] 切断時にウェブフック通知を飛ばせるようにする
+    - disconnect_webhook_url を設定
+- [ADD] signaling.log を追加する
+- [ADD] webhook.log を追加する
+- [ADD] register メッセージで ayameClient / environment / libwebrtc の情報を追加する
+    - 認証ウェブフック通知で含まれるようにする
+- [CHANGE] コードベースを変更する
+- [CHANGE] addr を listen_ipv4_address に変更する
+- [CHANGE] port を listen_port_number に変更する
+- [CHANGE] allow_origin 設定を削除する
+- [CHANGE] ロガーを zerolog に変更する
+- [CHANGE] ログローテーションを lumberjack に変更する
+- [CHANGE] 同一クライアント ID での同一ルームへの接続をできなくする
+- [CHANGE] サンプルを削除する
+- [CHANGE] 登録済みのあとに WebSocket 切断した場合、 type: bye を送信するようにする
+- [CHANGE] ウェブフックの戻り値のステータスコード 200 以外はエラーにする
+- [CHANGE] ウェブフックの JSON のキーを snake_case から camelCase にする
+- [FIX] サーバ側の切断の WS の終了処理を適切に行う
+- [FIX] ウェブソケットの最大メッセージを 1MB に制限する

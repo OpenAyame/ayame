@@ -25,26 +25,22 @@ OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公
 
 - Ayame は P2P にしか対応していません
 - Ayame は 1 ルーム最大 2 名までしか対応していません
-- サンプルが利用している STUN サーバは Google のものを利用しています
+- Ayame は Origin チェック機能を保持していません
+    - 今後提供予定です
 
 ## 使ってみる
 
 Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください。
 
-## SDK を使ってみる
+## Web SDK を使ってみる
 
-Ayame は Web SDK と Android SDK を提供しています。現在 iOS SDK を開発中です。
+[Ayame Web SDK](https://github.com/OpenAyame/ayame-web-sdk)
 
-- [Ayame Web SDK](https://github.com/OpenAyame/ayame-web-sdk)
-    - [Ayame Web SDK サンプル](https://github.com/OpenAyame/ayame-web-sdk-samples)
-- [Ayame Android SDK](https://github.com/OpenAyame/ayame-android-sdk)
-    - [Ayame Android SDK サンプル](https://github.com/OpenAyame/ayame-android-sdk-samples)
-- [Ayame iOS SDK](https://github.com/OpenAyame/ayame-ios-sdk)
-    - 開発中です
+## Web SDK サンプルを使ってみる
+
+[Ayame Web SDK サンプル](https://github.com/OpenAyame/ayame-web-sdk-samples)
 
 ## React サンプルを使ってみる
-
-**このリポジトリにあるサンプルと全く同じ動作になっています**
 
 [OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
 
@@ -62,11 +58,30 @@ Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みく�
 
 Ayame を利用した無料で TURN サーバまで利用可能なシグナリングサービスを時雨堂が提供しています。
 
-[WebRTC シグナリングサービス Ayame Lite)](https://ayame-lite.shiguredo.jp/beta)
+[Ayame Lite)](https://ayame-lite.shiguredo.jp/beta)
 
 ## 関連プロダクト
 
 [hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
+
+## 開発について
+
+Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
+そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
+
+まずは Discord にてご連絡ください。
+
+## バグ報告
+
+WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。
+
+https://github.com/OpenAyame/ayame/issues
+
+## Discord
+
+ベストエフォートで運用しています。
+
+https://discord.gg/mDesh2E
 
 ## ライセンス
 
@@ -88,25 +103,3 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## 開発について
-
-Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
-そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
-
-まずは Discord にてご連絡ください。
-
-## バグ報告
-
-WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。
-
-https://github.com/OpenAyame/ayame/issues
-
-## Discord
-
-ベストエフォートで運用しています。
-
-https://discord.gg/mDesh2E
-
-### サポートについて
-
-- コアコミッターである @kdxu が有料でのサポートやカスタマイズを提供しています。 Discord 経由で @kdxu へ連絡をお願いします。
