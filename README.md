@@ -30,7 +30,7 @@ OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公
 
 ## 使ってみる
 
-Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください。
+Ayame を使ってみたい人は [USE.md](docs/USE.md) をお読みください。
 
 ## Web SDK を使ってみる
 
@@ -52,7 +52,7 @@ Ayame を使ってみたい人は [USE.md](doc/USE.md) をお読みください�
 
 ## 仕組みの詳細を知りたい
 
-Ayame の詳細を知りたい人は [DETAIL.md](doc/DETAIL.md) をお読みください。
+Ayame の詳細を知りたい人は [SPEC.md](docs/SPEC.md) をお読みください。
 
 ## WebRTC シグナリングサービス Ayame Lite を使ってみる
 
