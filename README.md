@@ -79,7 +79,10 @@ https://github.com/OpenAyame/ayame/issues
 
 ## Discord
 
-ベストエフォートで運用しています。
+アドバイスはしますが、サポートはしません
+
+最新の状況などはこちらで共有しています。質疑応答もこちらでのみ受け付けています
+GitHub Issues を利用する前にまずは Discord へ質問をお願いします。
 
 https://discord.gg/mDesh2E
 
