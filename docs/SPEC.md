@@ -21,7 +21,113 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
     - [Annotated Example SDP for WebRTC](https://tools.ietf.org/html/draft-ietf-rtcweb-sdp-11)
 
 ```
-TODO: シーケンス図
+                  +-------------+          +-------------------+         +-------------+
+                  |   client1   |          |      Ayame        |         |   client2   |
+                  +-----+-------+          +--------+----------+         +------+------+
+                        |                           |                           |
+                        |                           |                           |
+                ============================= WebSocket 接続 =============================
+                        |                           |                           |
+                        |GET /signaling             |                           |
+                        |-------------------------->|                           |
+                        |    101 Switching Protocols|                           |
+                        |<--------------------------|                           |
+                     +--|                           |             GET /signaling|
+                     |  |                           |<--------------------------|
+  Stream の取得      |  |                           |101 Switching Protocols    |
+  PeerConnection の初期化等                         |-------------------------->|
+                     |  |                           |                           |--+
+                     |  |                           |                           |  |
+                     |  |                           |                           |  | Stream の取得
+                     |  |                           |                           |  | PeerConnection の初期化等
+                     |  |                           |                           |  |
+                ============ ここからは WebSockets の Data フレームの送受信 ===============
+                     |  |                           |                           |  |
+                ========================== クライアントの登録 =============================
+                     |  |                           |                           |  |
+                     |  |{"type":"register",        |                           |  |
+                     |  | "roomId": "",             |                           |  |
+                     +->| "clientId":""}            |                           |  |
+                        |-------------------------->|                           |  |
+  認証ウェブフックで    |  {"type":"accept",        |                           |  |
+  認証拒否の場合は      |   "iceServers": [],       |                           |  |
+  type は reject です   |   "isExistClient": false} |                           |  |
+                        |<--------------------------|                           |  |
+  isExistClient が false の場合は、                 |                           |  |
+  offer を送らずに相手クライアントの                |                           |  |
+  登録を待ちます        |                           |        {"type":"register",|  |
+                        |                           |         "roomId": "",     |  |
+                        |                           |         "clientId":""}    |<-+
+                        |                           |<--------------------------|
+                        |                           |{"type":"accept",          |
+                        |                           | "iceServers": [],         |
+                        |                           | "isExistClient": true}    | isExistClient が true のため、
+                        |                           |-------------------------->| offer を作成します
+                        |                           |                           |--+
+                        |                           |                           |  |
+                        |                           |                           |  | 作成した offer の SDP を
+                        |                           |                           |  | setLocalDescription で
+                =================== SDP および ICE Candidate の交換 =======================
+                        |                           |                           |  | PeerConnection に適用させます
+                        |                           |           {"type":"offer",|  | offer を Ayame 経由で
+                        |                           |            "sdp":"..."}   |<-+ 相手クライアントへ送ります
+                        |                           |<--------------------------|
+                        |           {"type":"offer",|                           |
+                        |               "sdp":"..."}|                           |
+                        |<--------------------------|                           |
+                     +--|                           |                           |
+                     |  |                           |                           |
+  受信した offer を  |  |                           | {"type":"candidate",      |
+  setRemoteDescription で                           |  "ice":{"candidate":"..."}|
+  PeerConnection に適用させます                     |<--------------------------|
+                     |  |                           |                           |
+                     |  |{"type":"candidate",       |                           |
+                     |  | "ice":{"candidate":"..."} |                           |
+                     |  |<--------------------------|                           |
+  answer を作成します|  |                           |                           |
+  作成した answer の SDP を                         |                           |
+  PeerConnection に適用させます                     |                           |
+  Answer を Ayame 経由で|                           |                           |
+  相手クライアントへ送ります                        |                           |
+                     |  |{"type":"answer",          |                           |
+                     +->| "sdp":"..."}              |                           |
+                        |-------------------------->|                           |
+                        |                           |{"type":"answer",          |
+                        |                           | "sdp":"..."}              |
+                        |                           |-------------------------->|
+                        |                           |                           |
+                        |                           |                           |
+  ICE candidate イベント発火時に                    |                           |
+  ICE candidate を Ayame 経由で                     |                           |
+  相手クライアントへ送ります                        |                           |
+                        |{"type":"candidate",       |                           |
+                        | "ice":{"candidate":"..."} |                           |
+                        |-------------------------->|                           |
+                        |                           |                           |
+                        |                           |{"type":"candidate",       |
+                        |                           | "ice":{"candidate":"..."} |
+                        |                           |-------------------------->|
+                        |                           |                           | 受信した ICE candidate を
+                        |                           |                           | addIceCandidate で
+                        |                           |                           | PeerConnection に追加します
+                        |                           | {"type":"candidate",      |
+                        |                           |  "ice":{"candidate":"..."}|
+                        |                           |<--------------------------|
+                        | {"type":"candidate",      |                           |
+                        |  "ice":{"candidate":"..."}|                           |
+                        |<--------------------------|                           |
+                        |                           |                           |
+                        |{"type":"candidate",       |                           |
+                        | "ice":{"candidate":"..."} |                           |
+                        |-------------------------->|                           |
+                        |                           |                           |
+                        |                           |{"type":"candidate",       |
+                        |                           | "ice":{"candidate":"..."} |
+                        |                           |-------------------------->|
+                        |                           |                           |
+                        |                           |                           |
+                        |                           |                           |
+                        |                           |                           |
 ```
 
 ### プロトコル
