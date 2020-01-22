@@ -41,7 +41,7 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                      |  |                           |                           |  | Stream の取得
                      |  |                           |                           |  | PeerConnection の初期化等
                      |  |                           |                           |  |
-                ============ ここからは WebSockets の Data フレームの送受信 ===============
+         ============== ここからは WebSockets の Data フレームでの JSON の送受信 =================
                      |  |                           |                           |  |
                 ========================== クライアントの登録 =============================
                      |  |                           |                           |  |
@@ -77,9 +77,9 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                         |<--------------------------|                           |
                      +--|                           |                           |
                      |  |                           |                           |
-  受信した offer を  |  |                           | {"type":"candidate",      |
-  setRemoteDescription で                           |  "ice":{"candidate":"..."}|
-  PeerConnection に適用させます                     |<--------------------------|
+  受信した offer を  |  |                           |                           |
+  setRemoteDescription で                           |                           |
+  PeerConnection に適用させます                     |                           |
                      |  |                           |                           |
                      |  |{"type":"candidate",       |                           |
                      |  | "ice":{"candidate":"..."} |                           |
@@ -89,14 +89,15 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
   PeerConnection に適用させます                     |                           |
   Answer を Ayame 経由で|                           |                           |
   相手クライアントへ送ります                        |                           |
-                     |  |{"type":"answer",          |                           |
-                     +->| "sdp":"..."}              |                           |
-                        |-------------------------->|                           |
+                     |  |                           |                           |
+                     +->|                           |                           |
+                        |                           |                           |
                         |                           |{"type":"answer",          |
                         |                           | "sdp":"..."}              |
                         |                           |-------------------------->|
                         |                           |                           |
                         |                           |                           |
+                  ======================== Trickle ICE の場合 ===========================
   ICE candidate イベント発火時に                    |                           |
   ICE candidate を Ayame 経由で                     |                           |
   相手クライアントへ送ります                        |                           |
@@ -110,6 +111,13 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                         |                           |                           | 受信した ICE candidate を
                         |                           |                           | addIceCandidate で
                         |                           |                           | PeerConnection に追加します
+                        |                           | {"type":"candidate",      |
+                        |                           |  "ice":{"candidate":"..."}|
+                        |                           |<--------------------------|
+                        | {"type":"candidate",      |                           |
+                        |  "ice":{"candidate":"..."}|                           |
+                        |<--------------------------|                           |
+                        |                           |                           |
                         |                           | {"type":"candidate",      |
                         |                           |  "ice":{"candidate":"..."}|
                         |                           |<--------------------------|
