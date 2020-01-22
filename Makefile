@@ -1,9 +1,10 @@
 GO111MODULE = on
+LDFLAGS = -ldflags '-w -s'
 
 .PHONY: ayame
 
 ayame:
-	GO111MODULE=$(GO111MODULE) go build -o $@
+	GO111MODULE=$(GO111MODULE) go build $(LDFLAGS) -o $@
 
 .PHONY: darwin linux
 
