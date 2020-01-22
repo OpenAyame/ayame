@@ -64,11 +64,11 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                         |                           |                           |  |                "authzMetadata":"..."}|<-+
                         |                           |<--------------------------------------------------------------------|
                         |                           |                           |  |                                      |
-  認証ウェブフックで    |  {"type":"accept",        |                           |  |                                      |
-  認証拒否の場合は      |   "iceServers": [],       |                           |  |                                      |
-  type は reject です   |   "isExistUser": false,   |                           |  |                                      |
-                        |   "isExistClient": false, |                           |  |                                      |
-                        |   "authzMetadata": "..."} |                           |  |                                      |
+  認証ウェブフックで    |   {"type":"accept",       |                           |  |                                      |
+  認証拒否の場合は      |    "iceServers": [],      |                           |  |                                      |
+  type は reject です   |    "isExistUser": false,  |                           |  |                                      |
+                        |    "isExistClient": false,|                           |  |                                      |
+                        |    "authzMetadata": "..."}|                           |  |                                      |
                         |<--------------------------|    {"type":"register",    |  |                                      |
   isExistClient が false の場合は、                 |     "roomId": "...",      |  |                                      |
   offer を送らずに相手クライアントの                |     "clientId":"...",     |  |                                      |
@@ -110,8 +110,8 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
   setRemoteDescription で                           |                           |                                         |
   PeerConnection に適用させます                     |                           |                                         |
                      |  |                           |                           |                                         |
-                     |  |{"type":"candidate",       |                           |                                         |
-                     |  | "ice":{"candidate":"..."} |                           |                                         |
+                     |  | {"type":"candidate",      |                           |                                         |
+                     |  |  "ice":{"candidate":"..."}|                           |                                         |
                      |  |<--------------------------|                           |                                         |
   answer を作成します|  |                           |                           |                                         |
   作成した answer の SDP を                         |                           |                                         |
