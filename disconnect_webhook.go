@@ -31,7 +31,7 @@ func (c *client) disconnectWebhook() error {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c.errLog().Bytes("body", body).Err(err).Caller().Msg("DiconnectWebhookResponseError")
-		return err
+		return errDisconnectWebhookResponse
 	}
 
 	// ログ出力用

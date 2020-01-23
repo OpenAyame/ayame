@@ -39,7 +39,7 @@ func (c *client) authnWebhook() (*authnWebhookResponse, error) {
 	resp, err := c.postRequest(config.AuthnWebhookURL, req)
 	if err != nil {
 		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
-		return nil, err
+		return nil, errAuthnWebhook
 	}
 	// http://ikawaha.hateblo.jp/entry/2015/06/07/074155
 	defer resp.Body.Close()
