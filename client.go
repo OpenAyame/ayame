@@ -232,6 +232,11 @@ loop:
 	c.debugLog().Msg("EXITED-MAIN")
 	c.closeWs()
 	c.debugLog().Msg("EXIT-WS-RECV")
+
+	if err := c.disconnectWebhook(); err != nil {
+		c.errLog().Err(err).Caller().Msg("DisconnectWebhookError")
+		return
+	}
 }
 
 // メッセージ系のエラーログはここですべて取る
