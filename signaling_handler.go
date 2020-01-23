@@ -11,8 +11,6 @@ import (
 const (
 	writeWait = 10 * time.Second
 
-	pongWait = 10 * time.Second
-
 	// ws の読み込みは最大 1MByte までにする
 	readLimit = 1048576
 )
