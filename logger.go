@@ -42,25 +42,28 @@ func initLogger() (*zerolog.Logger, error) {
 	zerolog.TimeFieldFormat = time.RFC3339Nano
 
 	var writers io.Writer
+	output := zerolog.ConsoleWriter{Out: writer, NoColor: true, TimeFormat: "2006-01-02 15:04:05.000000Z"}
 	// デバッグが有効な時はコンソールにもだす
 	if config.Debug {
-		writers = io.MultiWriter(os.Stdout, writer)
+		stdout := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006-01-02 15:04:05.000000Z"}
+		writers = io.MultiWriter(stdout, output)
 	} else {
-		writers = writer
+		writers = output
 	}
 
-	output := zerolog.ConsoleWriter{Out: writers, TimeFormat: "2006-01-02 15:04:05.000000Z"}
-	output.FormatLevel = func(i interface{}) string {
-		return strings.ToUpper(fmt.Sprintf("[%s]", i))
-	}
-	output.FormatFieldName = func(i interface{}) string {
-		return fmt.Sprintf("%s=", i)
-	}
-	output.FormatFieldValue = func(i interface{}) string {
-		return fmt.Sprintf("%s", i)
-	}
-
-	logger := zerolog.New(output).With().Timestamp().Logger()
+	logger := zerolog.New(writers).With().Timestamp().Logger()
 
 	return &logger, nil
+}
+
+func format(w *zerolog.ConsoleWriter) {
+	w.FormatLevel = func(i interface{}) string {
+		return strings.ToUpper(fmt.Sprintf("[%s]", i))
+	}
+	w.FormatFieldName = func(i interface{}) string {
+		return fmt.Sprintf("%s=", i)
+	}
+	w.FormatFieldValue = func(i interface{}) string {
+		return fmt.Sprintf("%s", i)
+	}
 }
