@@ -34,13 +34,6 @@ func initLogger() (*zerolog.Logger, error) {
 		Compress:   true,
 	}
 
-	logLevel, err := parseLevel(config.LogLevel)
-	if err != nil {
-		return nil, err
-	}
-
-	zerolog.SetGlobalLevel(logLevel)
-
 	// https://github.com/rs/zerolog/issues/77
 	zerolog.TimestampFunc = func() time.Time {
 		return time.Now().UTC()
@@ -60,7 +53,12 @@ func initLogger() (*zerolog.Logger, error) {
 		writers = output
 	}
 
-	logger := zerolog.New(writers).With().Timestamp().Logger()
+	logLevel, err := parseLevel(config.LogLevel)
+	if err != nil {
+		return nil, err
+	}
+
+	logger := zerolog.New(writers).With().Timestamp().Logger().Level(logLevel)
 
 	return &logger, nil
 }
