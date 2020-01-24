@@ -34,6 +34,27 @@ func initLogger() (*zerolog.Logger, error) {
 		Compress:   true,
 	}
 
+	var logLevel zerolog.Level
+	// debug: true の場合の log_level は debug で固定
+	if config.Debug {
+		logLevel = zerolog.DebugLevel
+	} else {
+		switch config.LogLevel {
+		case "info":
+			logLevel = zerolog.InfoLevel
+		case "error":
+			logLevel = zerolog.ErrorLevel
+		case "fatal":
+			logLevel = zerolog.FatalLevel
+		case "debug":
+			logLevel = zerolog.DebugLevel
+		default:
+			return nil, errConfigInvalidLogLevel
+		}
+	}
+
+	zerolog.SetGlobalLevel(logLevel)
+
 	// https://github.com/rs/zerolog/issues/77
 	zerolog.TimestampFunc = func() time.Time {
 		return time.Now().UTC()

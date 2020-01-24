@@ -24,6 +24,8 @@ var (
 	errDisconnectWebhookResponse             = errors.New("DisconnectWebhookResponseError")
 	errDisconnectWebhookUnexpectedStatusCode = errors.New("DisconnectWebhookUnexpectedStatusCode")
 
+	errConfigInvalidLogLevel = errors.New("ConfigInvalidLogLevel")
+
 	errRoomFull = errors.New("RoomFull")
 	// 想定外のエラー
 	errInternalServer = errors.New("InternalServerError")
