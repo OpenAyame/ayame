@@ -43,9 +43,11 @@ func initLogger() (*zerolog.Logger, error) {
 
 	var writers io.Writer
 	output := zerolog.ConsoleWriter{Out: writer, NoColor: true, TimeFormat: "2006-01-02 15:04:05.000000Z"}
+	format(&output)
 	// デバッグが有効な時はコンソールにもだす
 	if config.Debug {
 		stdout := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006-01-02 15:04:05.000000Z"}
+		format(&stdout)
 		writers = io.MultiWriter(stdout, output)
 	} else {
 		writers = output
