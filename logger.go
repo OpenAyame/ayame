@@ -34,23 +34,9 @@ func initLogger() (*zerolog.Logger, error) {
 		Compress:   true,
 	}
 
-	var logLevel zerolog.Level
-	// debug: true の場合の log_level は debug で固定
-	if config.Debug {
-		logLevel = zerolog.DebugLevel
-	} else {
-		switch config.LogLevel {
-		case "info":
-			logLevel = zerolog.InfoLevel
-		case "error":
-			logLevel = zerolog.ErrorLevel
-		case "fatal":
-			logLevel = zerolog.FatalLevel
-		case "debug":
-			logLevel = zerolog.DebugLevel
-		default:
-			return nil, errConfigInvalidLogLevel
-		}
+	logLevel, err := parseLevel(config.LogLevel)
+	if err != nil {
+		return nil, err
 	}
 
 	zerolog.SetGlobalLevel(logLevel)
@@ -89,4 +75,24 @@ func format(w *zerolog.ConsoleWriter) {
 	w.FormatFieldValue = func(i interface{}) string {
 		return fmt.Sprintf("%s", i)
 	}
+}
+
+func parseLevel(l string) (zerolog.Level, error) {
+	// debug: true の場合の log_level は debug で固定
+	if config.Debug {
+		return zerolog.DebugLevel, nil
+	}
+
+	// 空文字列は NoLevel 扱いで ParseLevel でエラーにならないため事前に確認する
+	if l == "" {
+		return zerolog.NoLevel, errConfigInvalidLogLevel
+	}
+
+	logLevel, err := zerolog.ParseLevel(l)
+	if err != nil {
+		// err は継続するように読めるのでここで捨てる
+		return logLevel, errConfigInvalidLogLevel
+	}
+
+	return logLevel, nil
 }
