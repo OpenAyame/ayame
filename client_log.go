@@ -23,11 +23,3 @@ func (c *client) debugLog() *zerolog.Event {
 		Str("roomId", c.roomID).
 		Str("clientId", c.ID)
 }
-
-func (c *client) debugSignalingLog(rawMsg string) {
-	logger.Debug().
-		Str("roomId", c.roomID).
-		Str("clientId", c.ID).
-		Str("rawMsg", rawMsg).
-		Msg("SIGNALING")
-}
