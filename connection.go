@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"math/rand"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"github.com/oklog/ulid"
 )
 
 type connection struct {
@@ -263,11 +264,7 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 			return errInternalServer
 		}
 
-		u, err := uuid.NewRandom()
-		if err != nil {
-			return errInternalServer
-		}
-		c.ID = u.String()
+		c.ID = getULID()
 
 		registerMessage := &registerMessage{}
 		if err := json.Unmarshal(rawMessage, &registerMessage); err != nil {
@@ -399,4 +396,10 @@ func timerStop(timer *time.Timer) {
 		default:
 		}
 	}
+}
+
+func getULID() string {
+	t := time.Now()
+	entropy := ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0)
+	return ulid.MustNew(ulid.Timestamp(t), entropy).String()
 }

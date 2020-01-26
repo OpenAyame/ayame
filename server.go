@@ -26,17 +26,9 @@ func server() {
 			if ok {
 				// room があった
 				if len(r.connections) == 1 {
-					// room に 自分を追加する
-					// 登録しているのが同じ ID だった場合はエラーにする
-					_, ok := r.connections[c.ID]
-					if ok {
-						// 重複エラー
-						rch <- dup
-					} else {
-						r.connections[c.ID] = c
-						m[c.roomID] = r
-						rch <- two
-					}
+					r.connections[c.ID] = c
+					m[c.roomID] = r
+					rch <- two
 				} else {
 					// room あったけど満杯
 					rch <- full
