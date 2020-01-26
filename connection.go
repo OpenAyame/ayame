@@ -73,6 +73,7 @@ func (c *connection) sendCloseMessage(code int, reason string) error {
 func (c *connection) sendAcceptMessage(isExistClient bool, iceServers *[]iceServer, authzMetadata *interface{}) error {
 	msg := &acceptMessage{
 		Type:          "accept",
+		ConnectionID:  c.ID,
 		IsExistClient: isExistClient,
 		// 下位互換性
 		IsExistUser:   isExistClient,
