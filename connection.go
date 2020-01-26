@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/oklog/ulid"
+	"github.com/oklog/ulid/v2"
 )
 
 type connection struct {
