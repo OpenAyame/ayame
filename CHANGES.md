@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## feature/rewrite
+## develop
 
 - [ADD] register メッセージで key と signalingKey のどちらかを指定できるようにする
     - signalingKey が優先される

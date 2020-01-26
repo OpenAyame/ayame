@@ -8,7 +8,7 @@ type message struct {
 type registerMessage struct {
 	Type          string       `json:"type"`
 	RoomID        string       `json:"roomId"`
-	ClientID      string       `json:"clientId"`
+	ClientID      *string      `json:"clientId"`
 	AuthnMetadata *interface{} `json:"authnMetadata"`
 	SignalingKey  *string      `json:"signalingKey"`
 	// 後方互換性対応
@@ -29,6 +29,7 @@ type byeMessage struct {
 
 type acceptMessage struct {
 	Type          string       `json:"type"`
+	ConnectionID  string       `json:"connectionId"`
 	AuthzMetadata *interface{} `json:"authzMetadata,omitempty"`
 	IceServers    *[]iceServer `json:"iceServers,omitempty"`
 	IsExistClient bool         `json:"isExistClient"`

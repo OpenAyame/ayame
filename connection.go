@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -262,6 +263,12 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 			return errInternalServer
 		}
 
+		u, err := uuid.NewRandom()
+		if err != nil {
+			return errInternalServer
+		}
+		c.ID = u.String()
+
 		registerMessage := &registerMessage{}
 		if err := json.Unmarshal(rawMessage, &registerMessage); err != nil {
 			c.errLog().Err(err).Bytes("rawMessage", rawMessage).Msg("InvalidRegisterMessageJSON")
@@ -274,11 +281,11 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 		}
 		c.roomID = registerMessage.RoomID
 
-		if registerMessage.ClientID == "" {
-			c.errLog().Bytes("rawMessage", rawMessage).Msg("MissingClientID")
-			return errMissingClientID
+		c.clientID = registerMessage.ClientID
+		if registerMessage.ClientID == nil {
+			// clientID が nil だったら connecitonID を入れる
+			*c.clientID = c.ID
 		}
-		c.ID = registerMessage.ClientID
 
 		// 下位互換性
 		if registerMessage.Key != nil {
