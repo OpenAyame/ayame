@@ -32,9 +32,13 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 
 	req := &authnWebhookRequest{
 		RoomID:        c.roomID,
-		ClientID:      c.ID,
+		ClientID:      c.clientID,
+		ConnectionID:  c.ID,
 		SignalingKey:  c.signalingKey,
 		AuthnMetadata: c.authnMetadata,
+		AyameClient:   c.ayameClient,
+		Libwebrtc:     c.libwebrtc,
+		Environment:   c.environment,
 	}
 
 	resp, err := c.postRequest(config.AuthnWebhookURL, req)
