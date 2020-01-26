@@ -28,11 +28,14 @@ type byeMessage struct {
 }
 
 type acceptMessage struct {
-	Type          string       `json:"type"`
-	ConnectionID  string       `json:"connectionId"`
+	Type         string `json:"type"`
+	ConnectionID string `json:"connectionId"`
+	// WaitingOffer  bool         `json:"waitingOffer"`
 	AuthzMetadata *interface{} `json:"authzMetadata,omitempty"`
 	IceServers    *[]iceServer `json:"iceServers,omitempty"`
-	IsExistClient bool         `json:"isExistClient"`
+
+	// 後方互換性対応
+	IsExistClient bool `json:"isExistClient"`
 	// 後方互換性対応
 	IsExistUser bool `json:"isExistUser"`
 }
