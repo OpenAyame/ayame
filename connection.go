@@ -12,7 +12,7 @@ import (
 type connection struct {
 	ID            string
 	roomID        string
-	clientID      *string
+	clientID      string
 	authnMetadata *interface{}
 	signalingKey  *string
 
@@ -282,9 +282,9 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 		c.roomID = registerMessage.RoomID
 
 		c.clientID = registerMessage.ClientID
-		if registerMessage.ClientID == nil {
+		if registerMessage.ClientID == "" {
 			// clientID が nil だったら connecitonID を入れる
-			*c.clientID = c.ID
+			c.clientID = c.ID
 		}
 
 		// 下位互換性
