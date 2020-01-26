@@ -283,7 +283,6 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 
 		c.clientID = registerMessage.ClientID
 		if registerMessage.ClientID == "" {
-			// clientID が nil だったら connecitonID を入れる
 			c.clientID = c.ID
 		}
 
