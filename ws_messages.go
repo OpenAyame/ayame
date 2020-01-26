@@ -29,6 +29,7 @@ type byeMessage struct {
 
 type acceptMessage struct {
 	Type          string       `json:"type"`
+	ConnectionID  string       `json:"connectionId"`
 	AuthzMetadata *interface{} `json:"authzMetadata,omitempty"`
 	IceServers    *[]iceServer `json:"iceServers,omitempty"`
 	IsExistClient bool         `json:"isExistClient"`

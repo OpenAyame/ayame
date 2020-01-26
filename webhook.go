@@ -15,7 +15,7 @@ type httpResponse struct {
 }
 
 // JSON HTTP Request をするだけのラッパー
-func (c *client) postRequest(u string, body interface{}) (*http.Response, error) {
+func (c *connection) postRequest(u string, body interface{}) (*http.Response, error) {
 	reqJSON, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (c *client) postRequest(u string, body interface{}) (*http.Response, error)
 	return client.Do(req)
 }
 
-func (c *client) webhookLog(n string, v interface{}) {
+func (c *connection) webhookLog(n string, v interface{}) {
 	webhookLogger.Log().
 		Str("roomId", c.roomID).
 		Str("clientId", c.ID).

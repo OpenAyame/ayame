@@ -26,15 +26,15 @@ var (
 )
 
 func signalingHandler(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	conn.SetReadLimit(readLimit)
+	wsConn, err := upgrader.Upgrade(w, r, nil)
+	wsConn.SetReadLimit(readLimit)
 	if err != nil {
 		logger.Debug().Err(err).Caller().Msg("")
 		return
 	}
 	// ここで connectionId みたいなの作るべき
-	client := client{
-		conn: conn,
+	connection := connection{
+		wsConn: wsConn,
 		// 複数箇所でブロックした時を考えて少し余裕をもたせる
 		forwardChannel: make(chan forward, 100),
 	}
@@ -44,7 +44,7 @@ func signalingHandler(w http.ResponseWriter, r *http.Request) {
 
 	// ブロックしないよう余裕をもたせておく
 	messageChannel := make(chan []byte, 100)
-	go client.wsRecv(ctx, messageChannel)
-	go client.main(cancel, messageChannel)
+	go connection.wsRecv(ctx, messageChannel)
+	go connection.main(cancel, messageChannel)
 
 }

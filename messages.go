@@ -11,21 +11,19 @@ const (
 	// 満員だったので Reject か Error を返す
 	// 登録失敗
 	full
-	// clientID が重複している
-	dup
 )
 
 type register struct {
-	client        *client
+	connection    *connection
 	resultChannel chan int
 }
 
 // rawMessage には JOSN パース前の offer / answer / candidate が入る
 type forward struct {
-	client     *client
+	connection *connection
 	rawMessage []byte
 }
 
 type unregister struct {
-	client *client
+	connection *connection
 }

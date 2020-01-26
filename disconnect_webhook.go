@@ -5,18 +5,20 @@ import (
 )
 
 type disconnectWebhookRequest struct {
-	RoomID   string `json:"roomId"`
-	ClientID string `json:"clientId"`
+	RoomID       string `json:"roomId"`
+	ClientID     string `json:"clientId"`
+	ConnectionID string `json:"connectionId"`
 }
 
-func (c *client) disconnectWebhook() error {
+func (c *connection) disconnectWebhook() error {
 	if config.DisconnectWebhookURL == "" {
 		return nil
 	}
 
 	req := &disconnectWebhookRequest{
-		RoomID:   c.roomID,
-		ClientID: c.ID,
+		RoomID:       c.roomID,
+		ClientID:     c.clientID,
+		ConnectionID: c.ID,
 	}
 
 	resp, err := c.postRequest(config.DisconnectWebhookURL, req)

@@ -10,7 +10,7 @@ var (
 
 // roomId がキーになる
 type room struct {
-	clients map[string]*client
+	connections map[string]*connection
 }
 
 func server() {
@@ -20,51 +20,43 @@ func server() {
 	for {
 		select {
 		case register := <-registerChannel:
-			c := register.client
+			c := register.connection
 			rch := register.resultChannel
 			r, ok := m[c.roomID]
 			if ok {
 				// room があった
-				if len(r.clients) == 1 {
-					// room に 自分を追加する
-					// 登録しているのが同じ ID だった場合はエラーにする
-					_, ok := r.clients[c.ID]
-					if ok {
-						// 重複エラー
-						rch <- dup
-					} else {
-						r.clients[c.ID] = c
-						m[c.roomID] = r
-						rch <- two
-					}
+				if len(r.connections) == 1 {
+					r.connections[c.ID] = c
+					m[c.roomID] = r
+					rch <- two
 				} else {
 					// room あったけど満杯
 					rch <- full
 				}
 			} else {
 				// room がなかった
-				var clients = make(map[string]*client)
-				clients[c.ID] = c
+				var connections = make(map[string]*connection)
+				connections[c.ID] = c
 				// room を追加
 				m[c.roomID] = room{
-					clients: clients,
+					connections: connections,
 				}
 				c.debugLog().Msg("CREATED-ROOM")
 				rch <- one
 			}
 		case unregister := <-unregisterChannel:
-			c := unregister.client
+			c := unregister.connection
 			// room を探す
 			r, ok := m[c.roomID]
 			// room がない場合は何もしない
 			if ok {
-				_, ok := r.clients[c.ID]
+				_, ok := r.connections[c.ID]
 				if ok {
-					for _, client := range r.clients {
+					for _, connection := range r.connections {
 						// 両方の forwardChannel を閉じる
-						close(client.forwardChannel)
-						client.debugLog().Msg("CLOSED-FORWARD-CHANNEL")
-						client.debugLog().Msg("REMOVED-CLIENT")
+						close(connection.forwardChannel)
+						connection.debugLog().Msg("CLOSED-FORWARD-CHANNEL")
+						connection.debugLog().Msg("REMOVED-CLIENT")
 					}
 					// room を削除
 					delete(m, c.roomID)
@@ -72,13 +64,13 @@ func server() {
 				}
 			}
 		case forward := <-forwardChannel:
-			r, ok := m[forward.client.roomID]
+			r, ok := m[forward.connection.roomID]
 			// room がない場合は何もしない
 			if ok {
 				// room があった
-				for clientID, client := range r.clients {
+				for connectionID, client := range r.connections {
 					// 自分ではない方に投げつける
-					if clientID != forward.client.ID {
+					if connectionID != forward.connection.ID {
 						client.forwardChannel <- forward
 					}
 				}
