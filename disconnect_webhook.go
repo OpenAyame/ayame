@@ -9,7 +9,7 @@ type disconnectWebhookRequest struct {
 	ClientID string `json:"clientId"`
 }
 
-func (c *client) disconnectWebhook() error {
+func (c *connection) disconnectWebhook() error {
 	if config.DisconnectWebhookURL == "" {
 		return nil
 	}

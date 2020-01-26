@@ -8,9 +8,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type client struct {
+type connection struct {
 	ID            string
 	roomID        string
+	clientID      *string
 	authnMetadata *interface{}
 	signalingKey  *string
 
@@ -22,7 +23,7 @@ type client struct {
 	authzMetadata *interface{}
 
 	// WebSocket コネクション
-	conn *websocket.Conn
+	wsConn *websocket.Conn
 
 	// レジスターされているかどうか
 	registered bool
@@ -40,15 +41,15 @@ const (
 	pingInterval = 5
 )
 
-func (c *client) SendJSON(v interface{}) error {
-	if err := c.conn.WriteJSON(v); err != nil {
+func (c *connection) SendJSON(v interface{}) error {
+	if err := c.wsConn.WriteJSON(v); err != nil {
 		c.errLog().Err(err).Interface("msg", v).Msg("FailedToSendMsg")
 		return err
 	}
 	return nil
 }
 
-func (c *client) sendPingMessage() error {
+func (c *connection) sendPingMessage() error {
 	msg := &pingMessage{
 		Type: "ping",
 	}
@@ -61,13 +62,13 @@ func (c *client) sendPingMessage() error {
 }
 
 // reason の長さが不十分そうな場合は CloseMessage ではなく TextMessage を使用するように変更する
-func (c *client) sendCloseMessage(code int, reason string) error {
+func (c *connection) sendCloseMessage(code int, reason string) error {
 	deadline := time.Now().Add(writeWait)
 	closeMessage := websocket.FormatCloseMessage(code, reason)
-	return c.conn.WriteControl(websocket.CloseMessage, closeMessage, deadline)
+	return c.wsConn.WriteControl(websocket.CloseMessage, closeMessage, deadline)
 }
 
-func (c *client) sendAcceptMessage(isExistClient bool, iceServers *[]iceServer, authzMetadata *interface{}) error {
+func (c *connection) sendAcceptMessage(isExistClient bool, iceServers *[]iceServer, authzMetadata *interface{}) error {
 	msg := &acceptMessage{
 		Type:          "accept",
 		IsExistClient: isExistClient,
@@ -83,7 +84,7 @@ func (c *client) sendAcceptMessage(isExistClient bool, iceServers *[]iceServer, 
 	return nil
 }
 
-func (c *client) sendRejectMessage(reason string) error {
+func (c *connection) sendRejectMessage(reason string) error {
 	msg := &rejectMessage{
 		Type:   "reject",
 		Reason: reason,
@@ -95,7 +96,7 @@ func (c *client) sendRejectMessage(reason string) error {
 	return nil
 }
 
-func (c *client) sendByeMessage() error {
+func (c *connection) sendByeMessage() error {
 	msg := &byeMessage{
 		Type: "bye",
 	}
@@ -106,15 +107,15 @@ func (c *client) sendByeMessage() error {
 	return nil
 }
 
-func (c *client) closeWs() {
-	c.conn.Close()
+func (c *connection) closeWs() {
+	c.wsConn.Close()
 	c.debugLog().Msg("CLOSED-WS")
 }
 
-func (c *client) register() int {
+func (c *connection) register() int {
 	resultChannel := make(chan int)
 	registerChannel <- &register{
-		client:        c,
+		connection:    c,
 		resultChannel: resultChannel,
 	}
 	// ここはブロックする candidate とかを並列で来てるかもしれないが知らん
@@ -124,23 +125,23 @@ func (c *client) register() int {
 	return result
 }
 
-func (c *client) unregister() {
+func (c *connection) unregister() {
 	if c.registered {
 		unregisterChannel <- &unregister{
-			client: c,
+			connection: c,
 		}
 	}
 }
 
-func (c *client) forward(msg []byte) {
+func (c *connection) forward(msg []byte) {
 	// グローバルにあるチャンネルに対して投げ込む
 	forwardChannel <- forward{
-		client:     c,
+		connection: c,
 		rawMessage: msg,
 	}
 }
 
-func (c *client) main(cancel context.CancelFunc, messageChannel chan []byte) {
+func (c *connection) main(cancel context.CancelFunc, messageChannel chan []byte) {
 	pongTimeoutTimer := time.NewTimer(pongTimeout * time.Second)
 	pingTimer := time.NewTimer(pingInterval * time.Second)
 
@@ -192,7 +193,7 @@ loop:
 				c.debugLog().Msg("SENT-BYE-MESSAGE")
 				break loop
 			}
-			if err := c.conn.WriteMessage(websocket.TextMessage, forward.rawMessage); err != nil {
+			if err := c.wsConn.WriteMessage(websocket.TextMessage, forward.rawMessage); err != nil {
 				c.errLog().Err(err).Msg("FailedWriteMessage")
 				// 送れなかったら閉じるメッセージも送れないので return
 				return
@@ -209,15 +210,15 @@ loop:
 	c.debugLog().Msg("SENT-CLOSE-MESSAGE")
 }
 
-func (c *client) wsRecv(ctx context.Context, messageChannel chan []byte) {
+func (c *connection) wsRecv(ctx context.Context, messageChannel chan []byte) {
 loop:
 	for {
 		readDeadline := time.Now().Add(time.Duration(readTimeout) * time.Second)
-		if err := c.conn.SetReadDeadline(readDeadline); err != nil {
+		if err := c.wsConn.SetReadDeadline(readDeadline); err != nil {
 			c.errLog().Err(err).Msg("FailedSetReadDeadLine")
 			break loop
 		}
-		_, rawMessage, err := c.conn.ReadMessage()
+		_, rawMessage, err := c.wsConn.ReadMessage()
 		if err != nil {
 			// ここに来るのはほぼ WebSocket が切断されたとき
 			c.debugLog().Err(err).Msg("WS-READ-MESSAGE-ERROR")
@@ -240,7 +241,7 @@ loop:
 }
 
 // メッセージ系のエラーログはここですべて取る
-func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer) error {
+func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer) error {
 	message := &message{}
 	if err := json.Unmarshal(rawMessage, &message); err != nil {
 		c.errLog().Err(err).Bytes("rawMessage", rawMessage).Msg("InvalidJSON")
@@ -361,7 +362,7 @@ func (c *client) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer
 			}
 			return errRoomFull
 		case dup:
-			// clientID が重複してた
+			// connectionID が重複してた
 			c.errLog().Msg("DuplicatedClientID")
 			if err := c.sendRejectMessage("dup"); err != nil {
 				c.errLog().Err(err).Msg("FailedSendRejectMessage")

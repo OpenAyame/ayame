@@ -8,6 +8,7 @@ import (
 type authnWebhookRequest struct {
 	RoomID        string       `json:"roomId"`
 	ClientID      string       `json:"clientId"`
+	ConnectionID  string       `json:"connectionId"`
 	SignalingKey  *string      `json:"signalingKey,omitempty"`
 	AuthnMetadata *interface{} `json:"authnMetadata,omitempty"`
 	AyameClient   *string      `json:"ayameClient,omitempty"`
@@ -22,7 +23,7 @@ type authnWebhookResponse struct {
 	AuthzMetadata *interface{} `json:"authzMetadata"`
 }
 
-func (c *client) authnWebhook() (*authnWebhookResponse, error) {
+func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 	if config.AuthnWebhookURL == "" {
 		var allowed = true
 		authnWebhookResponse := &authnWebhookResponse{Allowed: &allowed}
