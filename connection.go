@@ -364,14 +364,6 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 				return err
 			}
 			return errRoomFull
-		case dup:
-			// connectionID が重複してた
-			c.errLog().Msg("DuplicatedClientID")
-			if err := c.sendRejectMessage("dup"); err != nil {
-				c.errLog().Err(err).Msg("FailedSendRejectMessage")
-				return err
-			}
-			return errDuplicateClientID
 		}
 	case "offer", "answer", "candidate":
 		// register が完了していない

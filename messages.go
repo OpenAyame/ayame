@@ -11,8 +11,6 @@ const (
 	// 満員だったので Reject か Error を返す
 	// 登録失敗
 	full
-	// clientID が重複している
-	dup
 )
 
 type register struct {
