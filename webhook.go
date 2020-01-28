@@ -1,57 +1,46 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
-	"errors"
+	"net/http"
+	"time"
 )
 
-// webhook リクエスト
-type WebhookRequest struct {
-	Key    *string `json:"key,omitempty"`
-	RoomId string  `json:"room_id"`
+type httpResponse struct {
+	Status string      `json:"status"`
+	Proto  string      `json:"proto"`
+	Header http.Header `json:"header"`
+	Body   string      `json:"body"`
 }
 
-// webhook レスポンス
-type WebhookResponse struct {
-	Allowed       bool          `json:"allowed"`
-	IceServers    []interface{} `json:"iceServers,omitempty"`
-	WebhookUrl    *string       `json:"auth_webhook_url,omitempty"`
-	Reason        string        `json:"reason"`
-	AuthzMetadata interface{}   `json:"authz_metadata"`
-}
-
-// TODO(kdxu): 送信するデータを吟味する
-type TwoAuthnRequest struct {
-	Host          *string     `json:"host"`
-	AuthnMetadata interface{} `json:"authn_metadata"`
-}
-
-func AuthWebhookRequest(key *string, roomId string, metadata interface{}, host string) (*WebhookResponse, error) {
-	webhookReq := &WebhookRequest{Key: key, RoomId: roomId}
-	respBytes, err := PostRequest(Options.AuthWebhookUrl, webhookReq)
-	whResp := WebhookResponse{}
-	err = json.Unmarshal(respBytes, &whResp)
+// JSON HTTP Request をするだけのラッパー
+func (c *connection) postRequest(u string, body interface{}) (*http.Response, error) {
+	reqJSON, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
-	if !whResp.Allowed {
-		logger.Info("authn webhook not allowed, resp=", &whResp)
-		return &whResp, errors.New("Not Allowed")
+
+	req, err := http.NewRequest(
+		"POST",
+		u,
+		bytes.NewBuffer([]byte(reqJSON)),
+	)
+	if err != nil {
+		return nil, err
 	}
-	if whResp.WebhookUrl != nil {
-		respBytes, err := PostRequest(*whResp.WebhookUrl, &TwoAuthnRequest{Host: &host, AuthnMetadata: metadata})
-		twoAuthnResp := WebhookResponse{IceServers: whResp.IceServers}
-		err = json.Unmarshal(respBytes, &twoAuthnResp)
-		if err != nil {
-			return &whResp, err
-		}
-		if !twoAuthnResp.Allowed {
-			logger.Info("two authn webhook not allowed, resp=", &twoAuthnResp)
-			return &twoAuthnResp, errors.New("Not Allowed")
-		}
-		logger.Info("two authn webhook allowed, resp=", &twoAuthnResp)
-		return &twoAuthnResp, nil
-	}
-	logger.Info("auth webhook allowed, resp=", whResp)
-	return &whResp, nil
+	req.Header.Set("Content-Type", "application/json")
+
+	timeout := time.Duration(config.WebhookRequestTimeoutSec) * time.Second
+
+	client := &http.Client{Timeout: timeout}
+	return client.Do(req)
+}
+
+func (c *connection) webhookLog(n string, v interface{}) {
+	webhookLogger.Log().
+		Str("roomId", c.roomID).
+		Str("clientId", c.ID).
+		Interface(n, v).
+		Msg("")
 }
