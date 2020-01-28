@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2020.1
 
 - [ADD] register メッセージで key と signalingKey のどちらかを指定できるようにする
     - signalingKey が優先される
