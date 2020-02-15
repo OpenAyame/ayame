@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2020.1
 
 - [ADD] register メッセージで key と signalingKey のどちらかを指定できるようにする
     - signalingKey が優先される
@@ -56,3 +56,7 @@
     - @voluntas @Hexa
 - [FIX] ウェブソケットの最大メッセージを 1MB に制限する
     - @voluntas
+- [FIX] ayame.log にターミナル用のカラーコードを含めないようにする
+    - @Hexa
+- [CHANGE] 指定したログレベルでの ayamne.log へのログ出力に対応する
+    - @Hexa

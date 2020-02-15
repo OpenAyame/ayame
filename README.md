@@ -10,8 +10,6 @@ WebRTC Signaling Server Ayame は WebRTC 向けのシグナリングサーバで
 
 WebRTC の P2P でのみ動作します。また動作を 1 ルームを最大 2 名に制限することでコードを小さく保っています。
 
-AppRTC 互換のルーム機能を持っており、ルーム数はサーバスペックに依存しますが 1 万までは処理できるようにできてます。
-
 ## OpenAyame プロジェクトについて
 
 OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公開し、
