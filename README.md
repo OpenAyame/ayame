@@ -23,8 +23,6 @@ OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公
 
 - Ayame は P2P にしか対応していません
 - Ayame は 1 ルーム最大 2 名までしか対応していません
-- Ayame は Origin チェック機能を保持していません
-    - 今後提供予定です
 
 ## 使ってみる
 
@@ -89,7 +87,8 @@ https://discord.gg/mDesh2E
 Apache License 2.0
 
 ```
-Copyright 2019, Shiguredo Inc, Kyoko Kadowaki (kdxu)
+Copyright 2019, Kyoko Kadowaki aka kdxu (Original Author)
+Copyright 2019-2020, Shiguredo Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
