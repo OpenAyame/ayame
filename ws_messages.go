@@ -6,8 +6,8 @@ type message struct {
 }
 
 type registerMessage struct {
-	Type          string       `json:"type"`
-	RoomID        string       `json:"roomId"`
+	Type          string       `json:"type" binding:"required"`
+	RoomID        string       `json:"roomId" binding:"required"`
 	ClientID      string       `json:"clientId"`
 	AuthnMetadata *interface{} `json:"authnMetadata"`
 	SignalingKey  *string      `json:"signalingKey"`
