@@ -60,6 +60,18 @@ Ayame を利用した無料で TURN サーバまで利用可能なシグナリ�
 
 [hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
 
+## Discord
+
+アドバイスはしますが、サポートはしません
+
+最新の状況などは Discord でのみ共有しています。質疑応答やバグ報告も Discord でのみ受け付けています
+
+https://discord.gg/mDesh2E
+
+## サポート
+
+提供していません。
+
 ## 開発について
 
 Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
@@ -69,18 +81,7 @@ Ayame はオープンソースソフトウェアですが、開発について�
 
 ## バグ報告
 
-WebRTC Signaling Server Ayame に関するバグ報告は GitHub Issues へお願いします。
-
-https://github.com/OpenAyame/ayame/issues
-
-## Discord
-
-アドバイスはしますが、サポートはしません
-
-最新の状況などはこちらで共有しています。質疑応答もこちらでのみ受け付けています
-GitHub Issues を利用する前にまずは Discord へ質問をお願いします。
-
-https://discord.gg/mDesh2E
+WebRTC Signaling Server Ayame に関するバグ報告はまずは Discord へお願いします。
 
 ## ライセンス
 
