@@ -246,6 +246,10 @@ loop:
 // メッセージ系のエラーログはここですべて取る
 func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.Timer) error {
 	message := &message{}
+	if string(rawMessage) == "null" {
+		c.errLog().Bytes("rawMessage", rawMessage).Msg("InvalidJSON")
+		return errInvalidJSON
+	}
 	if err := json.Unmarshal(rawMessage, &message); err != nil {
 		c.errLog().Err(err).Bytes("rawMessage", rawMessage).Msg("InvalidJSON")
 		return errInvalidJSON
