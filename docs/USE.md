@@ -1,10 +1,6 @@
 # Ayame を使ってみる
 
-## ビルド済みバイナリを利用する
-
-https://github.com/OpenAyame/ayame/releases から最新のバイナリをダウンロードしてください。
-
-## 自前でビルドする
+## ビルドする
 
 まずはこのリポジトリをクローンします。
 
@@ -12,7 +8,7 @@ https://github.com/OpenAyame/ayame/releases から最新のバイナリをダウ
 
 推奨バージョンは以下のようになります。
 ```
-go 1.13
+go 1.14
 ```
 
 ### ビルドする
@@ -60,7 +56,7 @@ http://127.0.0.1:5000/sendrecv.html をブラウザタブで２つ開いて接�
 
 ```
 $ ./ayame version
-WebRTC Signaling Server Ayame version 2020.1
+WebRTC Signaling Server Ayame version 2020.1.1
 ```
 
 ```

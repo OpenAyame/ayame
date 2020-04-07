@@ -251,6 +251,11 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 		return errInvalidJSON
 	}
 
+	if message == nil {
+		c.errLog().Bytes("rawMessage", rawMessage).Msg("UnexpectedJSON")
+		return errUnexpectedJSON
+	}
+
 	// 受信したメッセージで message type がパースできたものをログとして保存する
 	c.signalingLog(*message, rawMessage)
 

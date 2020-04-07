@@ -51,3 +51,5 @@
 
 - API の利用を想定する
     - 指定した roomId を切断する
+- ConnectionID を UUIDv4 + Clockford Base32 に切り替える
+    - ULID の意味があまりない
