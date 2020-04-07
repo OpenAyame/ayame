@@ -56,7 +56,7 @@ http://127.0.0.1:5000/sendrecv.html をブラウザタブで２つ開いて接�
 
 ```
 $ ./ayame version
-WebRTC Signaling Server Ayame version 2020.1
+WebRTC Signaling Server Ayame version 2020.1.1
 ```
 
 ```

@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## 2020.1.1
+
+- [FIX] 受信したメッセージが null の場合に落ちるため、nil チェックを追加する
+    - @kadoshita @Hexa
+
 ## 2020.1
 
 - [ADD] register メッセージで key と signalingKey のどちらかを指定できるようにする
