@@ -42,7 +42,9 @@ Ayame を使ってみたい人は [USE.md](docs/USE.md) をお読みください
 
 ## React Native サンプルを使ってみる
 
-[Ayame React Native サンプル](https://github.com/OpenAyame/ayame-react-native-sample)
+[React Native WebRTC Kit のサンプルアプリケーション集](https://github.com/react-native-webrtc-kit/react-native-webrtc-kit-samples)
+
+こちらのリポジトリの `./HelloAyame/` ディレクトリ下に Ayame の React Native サンプルがあります。
 
 [React Native 用 WebRTC ライブラリ](https://github.com/shiguredo/react-native-webrtc-kit) を利用しています。
 
