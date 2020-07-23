@@ -19,6 +19,12 @@ OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公
 
 [OpenAyame プロジェクト](http://bit.ly/OpenAyame)
 
+## 方針
+
+- シグナリングの仕様の破壊的変更を可能な限り行わない
+- Go のバージョンは定期的にアップデートを行う
+- 依存ライブラリは定期的にアップデートを行う
+
 ## 注意
 
 - Ayame は P2P にしか対応していません
