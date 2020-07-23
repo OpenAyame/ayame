@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2020.1.3
+
 - [UPDATE] rs/zerolog を v1.19.0 に上げる
 - [UPDATE] gorilla/websocket を v1.4.2 に上げる
 - [UPDATE] yaml を v2.3.0 に上げる
