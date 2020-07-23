@@ -9,6 +9,12 @@
 - FIX
     - バグ修正
 
+## develop
+
+- [UPDATE] rs/zerolog を v1.19.0 に上げる
+- [UPDATE] gorilla/websocket を v1.4.2 に上げる
+- [UPDATE] yaml を v2.3.0 に上げる
+
 ## 2020.1.2
 
 **昔にリリースミスが発覚したため、master を 19.08.0 まで戻してから再度リリースを行った**
