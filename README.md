@@ -56,7 +56,7 @@ Ayame の詳細を知りたい人は [SPEC.md](docs/SPEC.md) をお読みくだ�
 
 Ayame を利用した無料で TURN サーバまで利用可能なシグナリングサービスを時雨堂が提供しています。
 
-[Ayame Lite)](https://ayame-lite.shiguredo.jp/beta)
+[Ayame Lite](https://ayame-lite.shiguredo.jp/beta)
 
 ## 関連プロダクト
 
