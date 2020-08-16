@@ -11,6 +11,13 @@
 
 ## develop
 
+## 2020.1.4
+
+- [ADD] 起動時に INFO で Ayame のバージョンをログに書く仕組みを追加
+- [ADD] GitHub Actions でリリースファイルをアップロードする仕組みを追加
+    - 古い仕組みを整理
+- [UPDATE] go.mod を Go 1.15 に上げる
+
 ## 2020.1.3
 
 - [UPDATE] rs/zerolog を v1.19.0 に上げる

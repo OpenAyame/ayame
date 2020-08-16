@@ -4,6 +4,10 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Actions Status](https://github.com/OpenAyame/ayame/workflows/Go%20Build%20&%20Format/badge.svg)](https://github.com/OpenAyame/ayame/actions)
 
+## 時雨堂のオープンソースソフトウェアについて
+
+利用前に https://github.com/shiguredo/oss をお読みください。
+
 ## WebRTC Signaling Server Ayame について
 
 WebRTC Signaling Server Ayame は WebRTC 向けのシグナリングサーバです。
@@ -18,6 +22,12 @@ OpenAyame は WebRTC Signaling Server Ayame をオープンソースとして公
 詳細については下記をご確認ください。
 
 [OpenAyame プロジェクト](http://bit.ly/OpenAyame)
+
+## 方針
+
+- シグナリングの仕様の破壊的変更を可能な限り行わない
+- Go のバージョンは定期的にアップデートを行う
+- 依存ライブラリは定期的にアップデートを行う
 
 ## 注意
 
@@ -62,28 +72,6 @@ Ayame を利用した無料で TURN サーバまで利用可能なシグナリ�
 
 [hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
 
-## Discord
-
-アドバイスはしますが、サポートはしません
-
-最新の状況などは Discord でのみ共有しています。質疑応答やバグ報告も Discord でのみ受け付けています
-
-https://discord.gg/mDesh2E
-
-## サポート
-
-提供していません。
-
-## 開発について
-
-Ayame はオープンソースソフトウェアですが、開発についてはオープンではありません。
-そのためコメントやプルリクエストを頂いてもすぐには採用はしません。
-
-まずは Discord にてご連絡ください。
-
-## バグ報告
-
-WebRTC Signaling Server Ayame に関するバグ報告はまずは Discord へお願いします。
 
 ## ライセンス
 
