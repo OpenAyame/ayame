@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] 要求バージョンを Go 1.15 に上げる
+
 ## 2020.1.3
 
 - [UPDATE] rs/zerolog を v1.19.0 に上げる
