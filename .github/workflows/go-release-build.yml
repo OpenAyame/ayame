@@ -22,10 +22,10 @@ jobs:
       run: |
         go get -u github.com/mitchellh/gox
         go get -u github.com/tcnksm/ghr
-        go get -u github.com/stevenmatthewt/semantics
     - name: cross compile
       run: |
-         gox -os="linux darwin windows" -arch="amd64" -output="dist/ayame_{{.OS}}_{{.Arch}}"
+         gox -os="linux windows" -arch="amd64 arm" -output="dist/ayame_{{.OS}}_{{.Arch}}"
+         gox -os="darwin" -arch="amd64" -output="dist/ayame_{{.OS}}_{{.Arch}}"
          cd dist/ && gzip *
     - name: create release
       env:
