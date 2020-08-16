@@ -48,6 +48,9 @@ func init() {
 		log.Fatal(err)
 	}
 
+	// バージョンをロギング
+	logger.Info().Str("version", ayameVersion).Msg("AyameVersion")
+
 	setDefaultsConfig()
 
 	// グローバルの signalingLogger に代入する
