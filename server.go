@@ -16,9 +16,7 @@ type room struct {
 func server() {
 	// room を管理するマップはここに用意する
 	var m = make(map[string]room)
-	// ここはシングルなのでmap読み書きに関してロックは不要
-	// 他スレッド間と共有されるregister, unregisterに関しては参照のみ行うので、このスレッドは他スレッドに影響及ぼさない
-	// また、connectionの状態変化は限定的(register時のみ)なので、外部スレッドもこのスレッドに影響を及ぼさない
+	// ここはシングルなのでロックは不要
 	for {
 		select {
 		case register := <-registerChannel:
