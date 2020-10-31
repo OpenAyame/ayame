@@ -62,11 +62,11 @@ Ayame を使ってみたい人は [USE.md](docs/USE.md) をお読みください
 
 Ayame の詳細を知りたい人は [SPEC.md](docs/SPEC.md) をお読みください。
 
-## WebRTC シグナリングサービス Ayame Lite を使ってみる
+## Ayame Labo を使ってみる
 
-Ayame を利用した無料で TURN サーバまで利用可能なシグナリングサービスを時雨堂が提供しています。
+Ayame と完全互換な STUN/TURN サーバやルーム認証を組み込んだ無料で利用可能なシグナリングサービスを時雨堂が提供しています。
 
-[Ayame Lite](https://ayame-lite.shiguredo.jp/beta)
+[Ayame Labo](https://ayame-labo.shiguredo.jp/)
 
 ## 関連プロダクト
 
