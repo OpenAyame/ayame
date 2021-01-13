@@ -46,18 +46,6 @@ Ayame を使ってみたい人は [USE.md](docs/USE.md) をお読みください
 
 [Ayame Web SDK サンプル](https://github.com/OpenAyame/ayame-web-sdk-samples)
 
-## React サンプルを使ってみる
-
-[OpenAyame/ayame\-react\-sample](https://github.com/OpenAyame/ayame-react-sample)
-
-## React Native サンプルを使ってみる
-
-[React Native WebRTC Kit のサンプルアプリケーション集](https://github.com/react-native-webrtc-kit/react-native-webrtc-kit-samples)
-
-こちらのリポジトリの `./HelloAyame/` ディレクトリ下に Ayame の React Native サンプルがあります。
-
-[React Native 用 WebRTC ライブラリ](https://github.com/shiguredo/react-native-webrtc-kit) を利用しています。
-
 ## 仕組みの詳細を知りたい
 
 Ayame の詳細を知りたい人は [SPEC.md](docs/SPEC.md) をお読みください。
@@ -71,7 +59,6 @@ Ayame と完全互換な STUN/TURN サーバやルーム認証を組み込んだ
 ## 関連プロダクト
 
 [hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
-
 
 ## ライセンス
 
@@ -93,3 +80,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
+## 利用例
+
+- [kadoshita/kisei\-online: 手軽に使える，オンライン帰省用ビデオ通話ツール](https://github.com/kadoshita/kisei-online)
