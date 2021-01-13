@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2020.1.5
+
 - [UPDATE] rs/zerolog を v1.20.0 に上げる
     - @voluntas
 - [UPDATE] yaml を v2.4.0 に上げる
