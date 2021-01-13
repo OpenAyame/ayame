@@ -46,6 +46,8 @@
 
 ## 2020.1
 
+**全て 1 から書き直している**
+
 - [ADD] register メッセージで key と signalingKey のどちらかを指定できるようにする
     - signalingKey が優先される
     - 将来的に signalingKey のみになる
