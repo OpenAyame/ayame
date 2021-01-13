@@ -56,10 +56,6 @@ Ayame と完全互換な STUN/TURN サーバやルーム認証を組み込んだ
 
 [Ayame Labo](https://ayame-labo.shiguredo.jp/)
 
-## 関連プロダクト
-
-[hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)が Ayame の互換サーバとして公開/開発されています。AWS によってサーバレスを実現した WebRTC P2P Signaling Server です。
-
 ## ライセンス
 
 Apache License 2.0
@@ -82,4 +78,9 @@ limitations under the License.
 
 ## 利用例
 
+- [tarukosu/MixedReality\-WebRTC\-ayame: MixedReality\-WebRTC にて、シグナリングサーバとして Ayame を利用するためのコード](https://github.com/tarukosu/MixedReality-WebRTC-ayame)
 - [kadoshita/kisei\-online: 手軽に使える，オンライン帰省用ビデオ通話ツール](https://github.com/kadoshita/kisei-online)
+- [hakobera/serverless-webrtc-signaling-server](https://github.com/hakobera/serverless-webrtc-signaling-server)
+    - Ayame の互換サーバとして公開/開発されています
+    - AWS によってサーバレスを実現した WebRTC P2P Signaling Server です
+
