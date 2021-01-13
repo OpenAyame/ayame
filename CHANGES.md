@@ -11,18 +11,31 @@
 
 ## develop
 
+## 2020.1.5
+
+- [UPDATE] rs/zerolog を v1.20.0 に上げる
+    - @voluntas
+- [UPDATE] yaml を v2.4.0 に上げる
+    - @voluntas
+
 ## 2020.1.4
 
 - [ADD] 起動時に INFO で Ayame のバージョンをログに書く仕組みを追加
+    - @voluntas
 - [ADD] GitHub Actions でリリースファイルをアップロードする仕組みを追加
     - 古い仕組みを整理
+    - @voluntas
 - [UPDATE] go.mod を Go 1.15 に上げる
+    - @voluntas
 
 ## 2020.1.3
 
 - [UPDATE] rs/zerolog を v1.19.0 に上げる
+    - @voluntas
 - [UPDATE] gorilla/websocket を v1.4.2 に上げる
+    - @voluntas
 - [UPDATE] yaml を v2.3.0 に上げる
+    - @voluntas
 
 ## 2020.1.2
 
@@ -34,6 +47,8 @@
     - @kadoshita @Hexa
 
 ## 2020.1
+
+**全て 1 から書き直している**
 
 - [ADD] register メッセージで key と signalingKey のどちらかを指定できるようにする
     - signalingKey が優先される

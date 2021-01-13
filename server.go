@@ -16,7 +16,7 @@ type room struct {
 func server() {
 	// room を管理するマップはここに用意する
 	var m = make(map[string]room)
-	// ここはシングルなのでロックは不要、多分
+	// ここはシングルなのでロックは不要
 	for {
 		select {
 		case register := <-registerChannel:
