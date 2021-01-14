@@ -82,4 +82,5 @@ limitations under the License.
 - [tarukosu/MixedReality\-WebRTC\-ayame: MixedReality\-WebRTC にて、シグナリングサーバとして Ayame を利用するためのコード](https://github.com/tarukosu/MixedReality-WebRTC-ayame)
 - [kadoshita/kisei\-online: 手軽に使える，オンライン帰省用ビデオ通話ツール](https://github.com/kadoshita/kisei-online)
 - [hakobera/serverless\-webrtc\-signaling\-server: Serverless WebRTC Signaling Server only works for WebRTC P2P\.](https://github.com/hakobera/serverless-webrtc-signaling-server)
+- [mganeko/react\_ts\_ayame: React\.js and Typescript example for Ayame Labo \(WebRTC signaling\)](https://github.com/mganeko/react_ts_ayame)
 - [mganeko/react\_ts\_ayame\_recv: React\.js and Typescript example for Ayame Labo \(WebRTC signaling\)](https://github.com/mganeko/react_ts_ayame_recv)
