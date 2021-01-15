@@ -4,6 +4,12 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Actions Status](https://github.com/OpenAyame/ayame/workflows/Go%20Build%20&%20Format/badge.svg)](https://github.com/OpenAyame/ayame/actions)
 
+## About Shiguredo's open source software
+
+We will not respond to PRs or issues that have not been discussed on Discord. Also, Discord is only available in Japanese.
+
+Please read https://github.com/shiguredo/oss before use.
+
 ## 時雨堂のオープンソースソフトウェアについて
 
 利用前に https://github.com/shiguredo/oss をお読みください。
