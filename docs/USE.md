@@ -8,7 +8,7 @@
 
 推奨バージョンは以下のようになります。
 ```
-go 1.14
+go 1.15
 ```
 
 ### ビルドする
@@ -56,7 +56,7 @@ http://127.0.0.1:5000/sendrecv.html をブラウザタブで２つ開いて接�
 
 ```
 $ ./ayame version
-WebRTC Signaling Server Ayame version 2020.1.2
+WebRTC Signaling Server Ayame version 2020.1.5
 ```
 
 ```
