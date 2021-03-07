@@ -54,7 +54,7 @@ Ayame を使ってみたい人は [USE.md](docs/USE.md) をお読みください
 
 ## 仕組みの詳細を知りたい
 
-Ayame の詳細を知りたい人は [SPEC.md](docs/SPEC.md) をお読みください。
+Ayame の仕組みを知りたい人は [OpenAyame/ayame\-spec](https://github.com/OpenAyame/ayame-spec) をお読みください。
 
 ## Ayame Labo を使ってみる
 
