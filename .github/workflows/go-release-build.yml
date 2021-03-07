@@ -8,11 +8,16 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - run: echo "::set-env name=TAG::${GITHUB_REF#refs/tags/}"
       - uses: actions/setup-go@v2
         with:
-          go-version: '1.15'
+          go-version: '1.16'
       - uses: actions/checkout@v2
+      - name: Set version
+        id: version
+        run: |
+          VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
+          echo ::set-output name=version::$VERSION
+          echo "Version $VERSION"
       - run: go build -v .
       - run: |
           go get -u github.com/mitchellh/gox
@@ -21,4 +26,4 @@ jobs:
            gox -os="linux" -arch="amd64 arm" -output="dist/ayame_{{.OS}}_{{.Arch}}"
            gox -os="darwin windows" -arch="amd64" -output="dist/ayame_{{.OS}}_{{.Arch}}"
            cd dist/ && gzip *
-      - run: ghr -t "${{ github.token }}" -u "${{ github.repository_owner }}" -r "ayame" --replace "${{ env.TAG }}" dist/
+      - run: ghr -t "${{ secrets.GITHUB_TOKEN }}" -u "${{ github.repository_owner }}" -r "ayame" --replace "${{ steps.version.outputs.version }}" dist/
