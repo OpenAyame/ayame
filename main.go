@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/goccy/go-yaml"
 	"github.com/rs/zerolog"
-	"gopkg.in/yaml.v2"
 )
 
 const (
