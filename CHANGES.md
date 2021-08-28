@@ -11,6 +11,19 @@
 
 ## develop
 
+## 2021.2
+
+- [UPDATE] go.mod を Go 1.17 に上げる
+    - @voluntas
+- [UPDATE] GitHub Actions の Go を 1.17 に上げる
+    - @voluntas
+- [UPDATE] rs/zerolog を v1.21.0 に上げる
+    - @voluntas
+- [UPDATE] rs/zerolog を v1.24.0 に上げる
+    - @voluntas
+- [CHANGE] "github.com/goccy/go-yam" に変更する
+    - @voluntas
+
 ## 2021.1
 
 - [ADD] GitHub Actions の Go を 1.16 に上げる

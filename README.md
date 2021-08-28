@@ -8,7 +8,7 @@
 
 We will not respond to PRs or issues that have not been discussed on Discord. Also, Discord is only available in Japanese.
 
-Please read https://github.com/shiguredo/oss before use.
+Please read https://github.com/shiguredo/oss/blob/master/README.en.md before use.
 
 ## 時雨堂のオープンソースソフトウェアについて
 
@@ -54,11 +54,11 @@ Ayame を使ってみたい人は [USE.md](docs/USE.md) をお読みください
 
 ## 仕組みの詳細を知りたい
 
-Ayame の詳細を知りたい人は [SPEC.md](docs/SPEC.md) をお読みください。
+Ayame の仕組みを知りたい人は [OpenAyame/ayame\-spec](https://github.com/OpenAyame/ayame-spec) をお読みください。
 
 ## Ayame Labo を使ってみる
 
-Ayame と完全互換な STUN/TURN サーバやルーム認証を組み込んだ無料で利用可能なシグナリングサービスを時雨堂が提供しています。
+Ayame 仕様と完全互換な STUN/TURN サーバやルーム認証を組み込んだ無料で利用可能なシグナリングサービスを時雨堂が提供しています。
 
 [Ayame Labo](https://ayame-labo.shiguredo.jp/)
 
