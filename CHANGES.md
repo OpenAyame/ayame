@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2021.2.1
+
 - [UPDATE] GitHub Actions の Go を 1.17.1 に上げる
     - @voluntas
 
