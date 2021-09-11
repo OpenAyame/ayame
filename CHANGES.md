@@ -11,6 +11,9 @@
 
 ## develop
 
+- [UPDATE] GitHub Actions の Go を 1.17.1 に上げる
+    - @voluntas
+
 ## 2021.2
 
 - [UPDATE] go.mod を Go 1.17 に上げる
