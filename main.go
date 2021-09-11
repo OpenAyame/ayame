@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/goccy/go-yaml"
 	"github.com/rs/zerolog"
+	"gopkg.in/yaml.v3"
 )
 
 const (
-	ayameVersion = "2021.2"
+	ayameVersion = "2021.2.1"
 	// timeout は暫定的に 10 sec
 	readHeaderTimeout = 10 * time.Second
 )
