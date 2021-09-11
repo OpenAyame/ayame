@@ -17,7 +17,7 @@
     - @voluntas
 - [UPDATE] rs/zerolog を v1.25.0 に上げる
     - @voluntas
-- [UPDATE] goccy/go-yaml を v1.9.3 に上げる
+- [UPDATE] yaml.v3 に戻す
     - @voluntas
 
 ## 2021.2
