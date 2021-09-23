@@ -31,4 +31,4 @@ fmt:
 .PHONY: init
 
 init:
-	cp -n ayame.yaml.example ayame.yaml
+	cp -n ayame.example.yaml ayame.yaml
