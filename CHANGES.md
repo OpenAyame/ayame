@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] rs/zerolog を v1.26.1 に上げる
+
 ## 2021.2.1
 
 - [UPDATE] GitHub Actions の Go を 1.17.1 に上げる
