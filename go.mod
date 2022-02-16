@@ -3,7 +3,7 @@ module github.com/OpenAyame/ayame
 go 1.17
 
 require (
-	github.com/gorilla/websocket v1.4.2
+	github.com/gorilla/websocket v1.5.0
 	github.com/oklog/ulid/v2 v2.0.2
 	github.com/rs/zerolog v1.26.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
