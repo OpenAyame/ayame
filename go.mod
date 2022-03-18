@@ -1,6 +1,6 @@
 module github.com/OpenAyame/ayame
 
-go 1.17
+go 1.18
 
 require (
 	github.com/gorilla/websocket v1.5.0
@@ -11,6 +11,6 @@ require (
 )
 
 require (
-	github.com/BurntSushi/toml v0.4.1 // indirect
+	github.com/BurntSushi/toml v1.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
