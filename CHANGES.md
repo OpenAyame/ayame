@@ -11,6 +11,11 @@
 
 ## develop
 
+## 2022.1.1
+
+- [CHANGE] gox を利用しないリリース方式に変更する
+- [UPDATE] ビルドテストを Go 1.18 以上にする
+
 ## 2022.1.0
 
 - [UPDATE] actions/checkout@v3 に上げる
