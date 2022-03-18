@@ -18,10 +18,7 @@ jobs:
           VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
           echo ::set-output name=version::$VERSION
           echo "Version $VERSION"
-      - run: go build -v .
-      - run: |
-          go get -u github.com/mitchellh/gox
-          go get -u github.com/tcnksm/ghr
+      - run: go install github.com/tcnksm/ghr@latest
       - run: |
           GOOS=linux GOARCH=amd64 go build -o dist/ayame_linux_amd64 *.go
           GOOS=darwin GOARCH=amd64 go build -o dist/ayame_darwin_amd64 *.go
