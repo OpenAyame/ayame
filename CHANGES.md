@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2022.1.0
+
 - [UPDATE] actions/checkout@v3 に上げる
     - @voluntas
 - [UPDATE] GitHub Actions の Go を 1.18 に上げる
