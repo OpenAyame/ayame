@@ -11,7 +11,14 @@
 
 ## develop
 
+- [UPDATE] actions/checkout@v3 に上げる
+    - @voluntas
+- [UPDATE] GitHub Actions の Go を 1.18 に上げる
+    - @voluntas
+- [UPDATE] toml を v1.0.0 に上げる
+    - @voluntas
 - [UPDATE] rs/zerolog を v1.26.1 に上げる
+    - @voluntas
 
 ## 2021.2.1
 
