@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] lumberjack を shiguredo/lumberjack/v3 に変更する
+    - @voluntas
+
 ## 2022.1.3
 
 - [FIX] リリースバイナリが生成されないのを修正する
