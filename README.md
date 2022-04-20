@@ -60,7 +60,7 @@ Ayame の仕組みを知りたい人は [OpenAyame/ayame\-spec](https://github.c
 
 Ayame 仕様と完全互換な STUN/TURN サーバやルーム認証を組み込んだ無料で利用可能なシグナリングサービスを時雨堂が提供しています。
 
-[Ayame Labo](https://ayame-labo.shiguredo.jp/)
+[Ayame Labo](https://ayame-labo.shiguredo.app/)
 
 ## ライセンス
 
