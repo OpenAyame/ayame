@@ -7,5 +7,5 @@ require (
 	github.com/oklog/ulid/v2 v2.0.2
 	github.com/rs/zerolog v1.26.1
 	github.com/shiguredo/lumberjack/v3 v3.0.0
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	gopkg.in/yaml.v3 v3.0.1
 )
