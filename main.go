@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"testing"
 	"time"
 
@@ -33,7 +33,7 @@ func init() {
 	configFilePath := flag.String("c", "./ayame.yaml", "ayame の設定ファイルへのパス(yaml)")
 	flag.Parse()
 	// yaml ファイルを読み込み
-	buf, err := ioutil.ReadFile(*configFilePath)
+	buf, err := os.ReadFile(*configFilePath)
 	if err != nil {
 		// 読み込めない場合 Fatal で終了
 		log.Fatal("Cannot open config file, err=", err)

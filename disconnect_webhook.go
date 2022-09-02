@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"io"
 )
 
 type disconnectWebhookRequest struct {
@@ -30,7 +30,7 @@ func (c *connection) disconnectWebhook() error {
 
 	c.webhookLog("disconnectReq", req)
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		c.errLog().Bytes("body", body).Err(err).Caller().Msg("DiconnectWebhookResponseError")
 		return errDisconnectWebhookResponse
