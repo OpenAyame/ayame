@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	zlog "github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
 
@@ -22,7 +23,6 @@ const (
 
 var (
 	config          *ayameConfig
-	logger          *zerolog.Logger
 	signalingLogger *zerolog.Logger
 	webhookLogger   *zerolog.Logger
 )
@@ -43,13 +43,13 @@ func init() {
 	}
 
 	// グローバルの logger に代入する
-	logger, err = initLogger()
+	err = initLogger()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// バージョンをロギング
-	logger.Info().Str("version", ayameVersion).Msg("AyameVersion")
+	zlog.Info().Str("version", ayameVersion).Send()
 
 	setDefaultsConfig()
 
@@ -99,6 +99,6 @@ func main() {
 	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: readHeaderTimeout}
 
 	if err := server.ListenAndServe(); err != nil {
-		logger.Fatal().Err(err)
+		zlog.Fatal().Err(err).Send()
 	}
 }

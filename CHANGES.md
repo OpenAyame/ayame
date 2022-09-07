@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] ログに github.com/rs/zerolog/log を利用するように変更する
+    - @voluntas
 - [CHANGE] lumberjack を shiguredo/lumberjack/v3 に変更する
     - @voluntas
 

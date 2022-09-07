@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/shiguredo/lumberjack/v3"
 )
 
@@ -19,9 +20,9 @@ var (
 	logRotateMaxAge = 30
 )
 
-func initLogger() (*zerolog.Logger, error) {
+func initLogger() error {
 	if f, err := os.Stat(config.LogDir); os.IsNotExist(err) || !f.IsDir() {
-		return nil, err
+		return err
 	}
 
 	logPath := fmt.Sprintf("%s/%s", config.LogDir, config.LogName)
@@ -55,12 +56,12 @@ func initLogger() (*zerolog.Logger, error) {
 
 	logLevel, err := parseLevel(config.LogLevel)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	logger := zerolog.New(writers).With().Timestamp().Logger().Level(logLevel)
+	log.Logger = zerolog.New(writers).With().Caller().Timestamp().Logger().Level(logLevel)
 
-	return &logger, nil
+	return nil
 }
 
 func format(w *zerolog.ConsoleWriter) {
