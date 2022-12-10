@@ -15,6 +15,8 @@
     - @voluntas
 - [CHANGE] lumberjack を shiguredo/lumberjack/v3 に変更する
     - @voluntas
+- [CHANGE] websocket を shiguredo/websocket v1.6.0 に変更する
+    - @voluntas
 
 ## 2022.1.3
 
