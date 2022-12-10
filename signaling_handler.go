@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/websocket"
 	zlog "github.com/rs/zerolog/log"
+	"github.com/shiguredo/websocket"
 )
 
 const (
