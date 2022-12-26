@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	ayameVersion = "2022.1.3"
+	ayameVersion = "2022.2.0"
 	// timeout は暫定的に 10 sec
 	readHeaderTimeout = 10 * time.Second
 )
