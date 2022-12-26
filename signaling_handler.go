@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/websocket"
+	zlog "github.com/rs/zerolog/log"
+	"github.com/shiguredo/websocket"
 )
 
 const (
@@ -29,7 +30,7 @@ func signalingHandler(w http.ResponseWriter, r *http.Request) {
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	wsConn.SetReadLimit(readLimit)
 	if err != nil {
-		logger.Debug().Err(err).Caller().Msg("")
+		zlog.Debug().Err(err).Caller().Msg("")
 		return
 	}
 	// ここで connectionId みたいなの作るべき

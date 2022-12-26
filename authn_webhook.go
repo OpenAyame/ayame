@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 )
 
 type authnWebhookRequest struct {
@@ -51,7 +51,7 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 
 	c.webhookLog("authnReq", req)
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		c.errLog().Bytes("body", body).Err(err).Caller().Msg("AuthnWebhookResponseError")
 		return nil, err

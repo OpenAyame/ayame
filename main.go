@@ -3,26 +3,26 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/rs/zerolog"
+	zlog "github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
 
 const (
-	ayameVersion = "2022.1.3"
+	ayameVersion = "2022.2.0"
 	// timeout は暫定的に 10 sec
 	readHeaderTimeout = 10 * time.Second
 )
 
 var (
 	config          *ayameConfig
-	logger          *zerolog.Logger
 	signalingLogger *zerolog.Logger
 	webhookLogger   *zerolog.Logger
 )
@@ -33,7 +33,7 @@ func init() {
 	configFilePath := flag.String("c", "./ayame.yaml", "ayame の設定ファイルへのパス(yaml)")
 	flag.Parse()
 	// yaml ファイルを読み込み
-	buf, err := ioutil.ReadFile(*configFilePath)
+	buf, err := os.ReadFile(*configFilePath)
 	if err != nil {
 		// 読み込めない場合 Fatal で終了
 		log.Fatal("Cannot open config file, err=", err)
@@ -43,13 +43,13 @@ func init() {
 	}
 
 	// グローバルの logger に代入する
-	logger, err = initLogger()
+	err = initLogger()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// バージョンをロギング
-	logger.Info().Str("version", ayameVersion).Msg("AyameVersion")
+	zlog.Info().Str("version", ayameVersion).Send()
 
 	setDefaultsConfig()
 
@@ -99,6 +99,6 @@ func main() {
 	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: readHeaderTimeout}
 
 	if err := server.ListenAndServe(); err != nil {
-		logger.Fatal().Err(err)
+		zlog.Fatal().Err(err).Send()
 	}
 }

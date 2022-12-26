@@ -1,5 +1,9 @@
 package main
 
+import (
+	zlog "github.com/rs/zerolog/log"
+)
+
 const (
 	defaultLogDir                = "."
 	defaultLogName               = "ayame.log"
@@ -46,15 +50,15 @@ func setDefaultsConfig() {
 		config.WebhookRequestTimeoutSec = defaultWebhookRequestTimeout
 	}
 
-	logger.Info().Bool("debug", config.Debug).Msg("AyameConf")
-	logger.Info().Str("log_dir", config.LogDir).Msg("AyameConf")
-	logger.Info().Str("log_name", config.LogName).Msg("AyameConf")
-	logger.Info().Str("log_level", config.LogLevel).Msg("AyameConf")
-	logger.Info().Str("signaling_log_name", config.SignalingLogName).Msg("AyameConf")
-	logger.Info().Str("listen_ipv4_address", config.ListenIPv4Address).Msg("AyameConf")
-	logger.Info().Int("listen_port_number", config.ListenPortNumber).Msg("AyameConf")
-	logger.Info().Str("authn_webhook_url", config.AuthnWebhookURL).Msg("AyameConf")
-	logger.Info().Str("disconnect_webhook_url", config.DisconnectWebhookURL).Msg("AyameConf")
-	logger.Info().Str("webhook_log_name", config.WebhookLogName).Msg("AyameConf")
-	logger.Info().Uint("webhook_request_timeout_sec", config.WebhookRequestTimeoutSec).Msg("AyameConf")
+	zlog.Info().Bool("debug", config.Debug).Msg("AyameConf")
+	zlog.Info().Str("log_dir", config.LogDir).Msg("AyameConf")
+	zlog.Info().Str("log_name", config.LogName).Msg("AyameConf")
+	zlog.Info().Str("log_level", config.LogLevel).Msg("AyameConf")
+	zlog.Info().Str("signaling_log_name", config.SignalingLogName).Msg("AyameConf")
+	zlog.Info().Str("listen_ipv4_address", config.ListenIPv4Address).Msg("AyameConf")
+	zlog.Info().Int("listen_port_number", config.ListenPortNumber).Msg("AyameConf")
+	zlog.Info().Str("authn_webhook_url", config.AuthnWebhookURL).Msg("AyameConf")
+	zlog.Info().Str("disconnect_webhook_url", config.DisconnectWebhookURL).Msg("AyameConf")
+	zlog.Info().Str("webhook_log_name", config.WebhookLogName).Msg("AyameConf")
+	zlog.Info().Uint("webhook_request_timeout_sec", config.WebhookRequestTimeoutSec).Msg("AyameConf")
 }

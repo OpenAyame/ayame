@@ -11,6 +11,15 @@
 
 ## develop
 
+## 2022.2.0
+
+- [CHANGE] ログに github.com/rs/zerolog/log を利用するように変更する
+    - @voluntas
+- [CHANGE] lumberjack を shiguredo/lumberjack/v3 に変更する
+    - @voluntas
+- [CHANGE] websocket を shiguredo/websocket v1.6.0 に変更する
+    - @voluntas
+
 ## 2022.1.3
 
 - [FIX] リリースバイナリが生成されないのを修正する

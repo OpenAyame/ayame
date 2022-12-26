@@ -1,6 +1,9 @@
 package main
 
-import "github.com/rs/zerolog"
+import (
+	"github.com/rs/zerolog"
+	zlog "github.com/rs/zerolog/log"
+)
 
 func (c *connection) signalingLog(message message, rawMessage []byte) {
 	if message.Type != "pong" {
@@ -14,14 +17,14 @@ func (c *connection) signalingLog(message message, rawMessage []byte) {
 }
 
 func (c *connection) errLog() *zerolog.Event {
-	return logger.Error().
+	return zlog.Error().
 		Str("roomId", c.roomID).
 		Str("clientID", c.clientID).
 		Str("connectionId", c.ID)
 }
 
 func (c *connection) debugLog() *zerolog.Event {
-	return logger.Debug().
+	return zlog.Debug().
 		Str("roomId", c.roomID).
 		Str("clientID", c.clientID).
 		Str("connectionId", c.ID)
