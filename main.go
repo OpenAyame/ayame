@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"testing"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -29,7 +28,6 @@ var (
 
 // 初期化処理
 func init() {
-	testing.Init()
 	configFilePath := flag.String("c", "./ayame.yaml", "ayame の設定ファイルへのパス(yaml)")
 	flag.Parse()
 	// yaml ファイルを読み込み
