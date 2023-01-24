@@ -5,9 +5,6 @@
   ],
   "dependencyDashboard": false,
   "timezone": "Asia/Tokyo",
-  "schedule": [
-    "before 10am on Monday"
-  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
