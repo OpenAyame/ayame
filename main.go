@@ -91,9 +91,8 @@ func main() {
 
 	go server()
 
-	http.HandleFunc("/signaling", func(w http.ResponseWriter, r *http.Request) {
-		signalingHandler(w, r)
-	})
+	http.HandleFunc("/signaling", signalingHandler)
+	http.HandleFunc("/.ok", healthcheckHandler)
 	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: readHeaderTimeout}
 
 	if err := server.ListenAndServe(); err != nil {

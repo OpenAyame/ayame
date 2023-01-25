@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -32,6 +33,9 @@ type connection struct {
 
 	// 転送用のチャネル
 	forwardChannel chan forward
+
+	// standalone mode
+	standalone bool
 }
 
 const (
@@ -164,14 +168,18 @@ loop:
 	for {
 		select {
 		case <-pingTimer.C:
-			if err := c.sendPingMessage(); err != nil {
-				break loop
+			if !c.standalone {
+				if err := c.sendPingMessage(); err != nil {
+					break loop
+				}
 			}
 			pingTimer.Reset(pingInterval * time.Second)
 		case <-pongTimeoutTimer.C:
-			// タイマーが発火してしまったので切断する
-			c.errLog().Msg("PongTimeout")
-			break loop
+			if !c.standalone {
+				// タイマーが発火してしまったので切断する
+				c.errLog().Msg("PongTimeout")
+				break loop
+			}
 		case rawMessage, ok := <-messageChannel:
 			// message チャンネルが閉じられた、main 終了待ち
 			if !ok {
@@ -188,12 +196,14 @@ loop:
 			if !ok {
 				// server 側で forwardChannel を閉じた
 				c.debugLog().Msg("UNREGISTERED")
-				if err := c.sendByeMessage(); err != nil {
-					c.errLog().Err(err).Msg("FailedSendByeMessage")
-					// 送れなかったら閉じるメッセージも送れないので return
-					return
+				if !c.standalone {
+					if err := c.sendByeMessage(); err != nil {
+						c.errLog().Err(err).Msg("FailedSendByeMessage")
+						// 送れなかったら閉じるメッセージも送れないので return
+						return
+					}
+					c.debugLog().Msg("SENT-BYE-MESSAGE")
 				}
-				c.debugLog().Msg("SENT-BYE-MESSAGE")
 				break loop
 			}
 			if err := c.wsConn.WriteMessage(websocket.TextMessage, forward.rawMessage); err != nil {
@@ -234,7 +244,9 @@ loop:
 	// メインが死ぬまで待つ
 	<-ctx.Done()
 	c.debugLog().Msg("EXITED-MAIN")
-	c.closeWs()
+	if !c.standalone {
+		c.closeWs()
+	}
 	c.debugLog().Msg("EXIT-WS-RECV")
 
 	if err := c.disconnectWebhook(); err != nil {
@@ -299,6 +311,7 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 		}
 
 		c.authnMetadata = registerMessage.AuthnMetadata
+		c.standalone = registerMessage.Standalone
 
 		// クライアント情報の登録
 		c.ayameClient = registerMessage.AyameClient
@@ -378,6 +391,18 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 			return errRegistrationIncomplete
 		}
 		c.forward(rawMessage)
+	case "connected":
+		// register が完了していない
+		if !c.registered {
+			c.errLog().Msg("RegistrationIncomplete")
+			return errRegistrationIncomplete
+		}
+		// TODO: c.standalone == false で type: connected を受信した場合はエラーにするか検討する
+		if c.standalone {
+			err := fmt.Errorf("WS-CONNECTED")
+			c.errLog().Err(err).Send()
+			return err
+		}
 	default:
 		c.errLog().Msg("InvalidMessageType")
 		return errInvalidMessageType

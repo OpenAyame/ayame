@@ -17,6 +17,7 @@ type registerMessage struct {
 	AyameClient *string `json:"ayameClient"`
 	Libwebrtc   *string `json:"libwebrtc"`
 	Environment *string `json:"environment"`
+	Standalone  bool    `json:"standalone"`
 }
 
 type pingMessage struct {
