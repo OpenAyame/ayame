@@ -13,6 +13,8 @@ github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINE
 github.com/rs/xid v1.4.0/go.mod h1:trrq9SKmegXys3aeAKXMUTdJsYXVwGY3RLcfgqegfbg=
 github.com/rs/zerolog v1.28.0 h1:MirSo27VyNi7RJYP3078AA1+Cyzd2GB66qy3aUHvsWY=
 github.com/rs/zerolog v1.28.0/go.mod h1:NILgTygv/Uej1ra5XxGf82ZFSLk58MFGAUS2o6usyD0=
+github.com/rs/zerolog v1.29.0 h1:Zes4hju04hjbvkVkOhdl2HpZa+0PmVwigmo8XoORE5w=
+github.com/rs/zerolog v1.29.0/go.mod h1:NILgTygv/Uej1ra5XxGf82ZFSLk58MFGAUS2o6usyD0=
 github.com/shiguredo/lumberjack/v3 v3.0.0 h1:IkhnjVTpg7Fl2fNAfsMn7R+No9SrnFdN5wEWBY2KOT8=
 github.com/shiguredo/lumberjack/v3 v3.0.0/go.mod h1:zrQSStRcwpVudSkotZINDGYm8x03gnEQd7M+Y0OzPp0=
 github.com/shiguredo/websocket v1.6.0 h1:TDogwJfOEyMY/gV6vwckgy3VA7e9FP3YoK3j6i2zh+g=
