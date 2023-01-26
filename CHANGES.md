@@ -11,6 +11,14 @@
 
 ## develop
 
+- [ADD] standalone モードを追加する
+    - standalone モード時に、type: connected を受信した場合は WebSocket を切断する
+    - standalone モードでは WebSocket を切断するため、PING を送信しないようにする
+    - @Hexa
+- [ADD] ヘルスチェック用の URL を追加する
+    - @Hexa
+
+
 ## 2022.2.0
 
 - [CHANGE] ログに github.com/rs/zerolog/log を利用するように変更する
