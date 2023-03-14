@@ -8,7 +8,6 @@ import (
 
 	"github.com/OpenAyame/ayame"
 	"golang.org/x/sync/errgroup"
-	"gopkg.in/ini.v1"
 )
 
 const (
@@ -28,22 +27,15 @@ func main() {
 	configFilePath := flag.String("c", "./ayame.ini", "ayame の設定ファイルへのパス(ini)")
 	flag.Parse()
 
-	iniConfig, err := ini.InsensitiveLoad(*configFilePath)
+	config, err := ayame.NewConfig(*configFilePath)
 	if err != nil {
-		log.Fatal("Cannot parse config file, err=", err)
-	}
-
-	config := new(ayame.Config)
-	if err := ayame.InitConfig(*iniConfig, config); err != nil {
 		log.Fatal(err)
 	}
 
 	// グローバルの logger に代入する
-	if err := ayame.InitLogger(*config); err != nil {
+	if err := ayame.InitLogger(config); err != nil {
 		log.Fatal(err)
 	}
-
-	ayame.SetDefaultsConfig(*config)
 
 	server, err := ayame.NewServer(config)
 	if err != nil {

@@ -20,7 +20,7 @@ var (
 	logRotateMaxAge = 30
 )
 
-func InitLogger(config Config) error {
+func InitLogger(config *Config) error {
 	if f, err := os.Stat(config.LogDir); os.IsNotExist(err) || !f.IsDir() {
 		return err
 	}
@@ -54,7 +54,7 @@ func InitLogger(config Config) error {
 		writers = output
 	}
 
-	logLevel, err := parseLevel(config)
+	logLevel, err := parseLevel(*config)
 	if err != nil {
 		return err
 	}

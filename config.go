@@ -32,27 +32,36 @@ type Config struct {
 	WebhookRequestTimeoutSec int32  `ini:"webhook_request_timeout_sec"`
 }
 
-func InitConfig(iniConfig ini.File, config *Config) error {
+func NewConfig(configFilePath string) (*Config, error) {
+	config := new(Config)
+
+	iniConfig, err := ini.InsensitiveLoad(configFilePath)
+	if err != nil {
+		return nil, err
+	}
+
 	if err := iniConfig.MapTo(config); err != nil {
-		return err
+		return nil, err
 	}
 
 	if config.AuthnWebhookURL != "" {
 		if _, err := url.ParseRequestURI(config.AuthnWebhookURL); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	if config.DisconnectWebhookURL != "" {
 		if _, err := url.ParseRequestURI(config.DisconnectWebhookURL); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	return nil
+	setDefaultsConfig(config)
+
+	return config, nil
 }
 
-func SetDefaultsConfig(config Config) {
+func setDefaultsConfig(config *Config) {
 	if config.LogDir == "" {
 		config.LogDir = defaultLogDir
 	}
