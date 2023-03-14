@@ -17,6 +17,3 @@ var (
 	signalingLogger *zerolog.Logger
 	webhookLogger   *zerolog.Logger
 )
-
-func main() {
-}

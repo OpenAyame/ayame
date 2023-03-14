@@ -18,25 +18,26 @@ type Server struct {
 	http.Server
 }
 
-func NewServer(c *Config) (*Server, error) {
-	signalingLogger, err := InitSignalingLogger(*c)
+func NewServer(config *Config) (*Server, error) {
+	signalingLogger, err := InitSignalingLogger(config)
 	if err != nil {
 		return nil, err
 	}
 
-	webhookLogger, err = InitWebhookLogger(*c)
+	webhookLogger, err = InitWebhookLogger(config)
 	if err != nil {
 		return nil, err
 	}
 
 	s := &Server{
-		config:          c,
+		config:          config,
 		signalingLogger: signalingLogger,
 		webhookLogger:   webhookLogger,
 	}
 	return s, nil
 }
 
+// TODO: echo 化したい
 func (s *Server) Start(ctx context.Context) error {
 	// URL の生成
 	url := fmt.Sprintf("%s:%d", s.config.ListenIPv4Address, s.config.ListenPortNumber)

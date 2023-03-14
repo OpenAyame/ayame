@@ -9,8 +9,7 @@ import (
 	"github.com/shiguredo/lumberjack/v3"
 )
 
-func InitSignalingLogger(config Config) (*zerolog.Logger, error) {
-
+func InitSignalingLogger(config *Config) (*zerolog.Logger, error) {
 	if f, err := os.Stat(config.LogDir); os.IsNotExist(err) || !f.IsDir() {
 		return nil, err
 	}
