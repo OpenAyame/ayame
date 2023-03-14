@@ -3,7 +3,7 @@ LDFLAGS = -ldflags '-w -s'
 .PHONY: ayame
 
 ayame:
-	go build $(LDFLAGS) -o $@
+	go build $(LDFLAGS) -o bin/$@
 
 .PHONY: darwin linux
 
@@ -11,7 +11,7 @@ GOOS = $@
 GOARCH = amd64
 
 linux darwin:
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ayame-$(GOOS)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o bin/ayame-$(GOOS)
 
 check:
 	go test ./...

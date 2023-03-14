@@ -1,6 +1,5 @@
 # ayame binary
-dist/*
-ayame
+bin/*
 ayame.yaml
 # log file
 *.log
