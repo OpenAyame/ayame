@@ -1,80 +1,69 @@
-package main
+package ayame
 
-var (
-	// register/unregister は待たせる
-	registerChannel   = make(chan *register)
-	unregisterChannel = make(chan *unregister)
-	// ブロックされたくないので 100 に設定
-	forwardChannel = make(chan forward, 100)
+import (
+	"context"
+	"fmt"
+	"net/http"
+
+	"github.com/rs/zerolog"
+	zlog "github.com/rs/zerolog/log"
 )
 
-// roomId がキーになる
-type room struct {
-	connections map[string]*connection
+type Server struct {
+	config *Config
+
+	signalingLogger *zerolog.Logger
+	webhookLogger   *zerolog.Logger
+
+	http.Server
 }
 
-func server() {
-	// room を管理するマップはここに用意する
-	var m = make(map[string]room)
-	// ここはシングルなのでロックは不要
-	for {
-		select {
-		case register := <-registerChannel:
-			c := register.connection
-			rch := register.resultChannel
-			r, ok := m[c.roomID]
-			if ok {
-				// room があった
-				if len(r.connections) == 1 {
-					r.connections[c.ID] = c
-					m[c.roomID] = r
-					rch <- two
-				} else {
-					// room あったけど満杯
-					rch <- full
-				}
-			} else {
-				// room がなかった
-				var connections = make(map[string]*connection)
-				connections[c.ID] = c
-				// room を追加
-				m[c.roomID] = room{
-					connections: connections,
-				}
-				c.debugLog().Msg("CREATED-ROOM")
-				rch <- one
-			}
-		case unregister := <-unregisterChannel:
-			c := unregister.connection
-			// room を探す
-			r, ok := m[c.roomID]
-			// room がない場合は何もしない
-			if ok {
-				_, ok := r.connections[c.ID]
-				if ok {
-					for _, connection := range r.connections {
-						// 両方の forwardChannel を閉じる
-						close(connection.forwardChannel)
-						connection.debugLog().Msg("CLOSED-FORWARD-CHANNEL")
-						connection.debugLog().Msg("REMOVED-CLIENT")
-					}
-					// room を削除
-					delete(m, c.roomID)
-					c.debugLog().Msg("DELETED-ROOM")
-				}
-			}
-		case forward := <-forwardChannel:
-			r, ok := m[forward.connection.roomID]
-			// room がない場合は何もしない
-			if ok {
-				// room があった
-				for connectionID, client := range r.connections {
-					// 自分ではない方に投げつける
-					if connectionID != forward.connection.ID {
-						client.forwardChannel <- forward
-					}
-				}
-			}
+func NewServer(c *Config) (*Server, error) {
+	signalingLogger, err := InitSignalingLogger(*c)
+	if err != nil {
+		return nil, err
+	}
+
+	webhookLogger, err = InitWebhookLogger(*c)
+	if err != nil {
+		return nil, err
+	}
+
+	s := &Server{
+		config:          c,
+		signalingLogger: signalingLogger,
+		webhookLogger:   webhookLogger,
+	}
+	return s, nil
+}
+
+func (s *Server) Start(ctx context.Context) error {
+	// URL の生成
+	url := fmt.Sprintf("%s:%d", s.config.ListenIPv4Address, s.config.ListenPortNumber)
+
+	// websocket server
+	http.HandleFunc("/signaling", s.signalingHandler)
+	http.HandleFunc("/.ok", s.okHandler)
+	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: readHeaderTimeout}
+
+	ch := make(chan error)
+	go func() {
+		defer close(ch)
+		if err := server.ListenAndServe(); err != nil {
+			ch <- err
 		}
+	}()
+
+	defer func() {
+		if err := s.Shutdown(ctx); err != nil {
+			zlog.Error().Err(err).Send()
+		}
+	}()
+
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case err := <-ch:
+		return err
 	}
 }

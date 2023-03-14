@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"github.com/rs/zerolog"

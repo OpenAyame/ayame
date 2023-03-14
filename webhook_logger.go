@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/shiguredo/lumberjack/v3"
 )
 
-func initWebhookLogger() (*zerolog.Logger, error) {
+func InitWebhookLogger(config Config) (*zerolog.Logger, error) {
 
 	if f, err := os.Stat(config.LogDir); os.IsNotExist(err) || !f.IsDir() {
 		return nil, err

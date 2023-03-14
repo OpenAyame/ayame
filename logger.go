@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ var (
 	logRotateMaxAge = 30
 )
 
-func initLogger() error {
+func InitLogger(config Config) error {
 	if f, err := os.Stat(config.LogDir); os.IsNotExist(err) || !f.IsDir() {
 		return err
 	}

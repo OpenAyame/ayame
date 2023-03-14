@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"context"
@@ -26,7 +26,7 @@ var (
 	}
 )
 
-func signalingHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) signalingHandler(w http.ResponseWriter, r *http.Request) {
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	wsConn.SetReadLimit(readLimit)
 	if err != nil {
