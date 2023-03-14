@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rs/zerolog"
 	zlog "github.com/rs/zerolog/log"
@@ -24,7 +25,7 @@ func NewServer(config *Config) (*Server, error) {
 		return nil, err
 	}
 
-	webhookLogger, err = InitWebhookLogger(config)
+	webhookLogger, err := InitWebhookLogger(config)
 	if err != nil {
 		return nil, err
 	}
@@ -36,6 +37,8 @@ func NewServer(config *Config) (*Server, error) {
 	}
 	return s, nil
 }
+
+const readHeaderTimeout = 10 * time.Second
 
 // TODO: echo 化したい
 func (s *Server) Start(ctx context.Context) error {

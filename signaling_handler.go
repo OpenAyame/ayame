@@ -30,7 +30,7 @@ func (s *Server) signalingHandler(w http.ResponseWriter, r *http.Request) {
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	wsConn.SetReadLimit(readLimit)
 	if err != nil {
-		zlog.Debug().Err(err).Caller().Msg("")
+		zlog.Debug().Err(err).Send()
 		return
 	}
 	// ここで connectionId みたいなの作るべき
@@ -40,7 +40,9 @@ func (s *Server) signalingHandler(w http.ResponseWriter, r *http.Request) {
 		forwardChannel: make(chan forward, 100),
 
 		// config を connection でも触れるように渡しておく
-		config: *s.config,
+		config:          *s.config,
+		signalingLogger: *s.signalingLogger,
+		webhookLogger:   *s.webhookLogger,
 	}
 	// client.conn.SetCloseHandler(client.closeHandler)
 	ctx := context.Background()

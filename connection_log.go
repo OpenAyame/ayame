@@ -7,7 +7,7 @@ import (
 
 func (c *connection) signalingLog(message message, rawMessage []byte) {
 	if message.Type != "pong" {
-		signalingLogger.Log().
+		c.signalingLogger.Log().
 			Str("roomId", c.roomID).
 			Str("clientID", c.clientID).
 			Str("connectionId", c.ID).

@@ -38,7 +38,7 @@ func (c *connection) postRequest(u string, body interface{}) (*http.Response, er
 }
 
 func (c *connection) webhookLog(n string, v interface{}) {
-	webhookLogger.Log().
+	c.webhookLogger.Log().
 		Str("roomId", c.roomID).
 		Str("clientId", c.ID).
 		Interface(n, v).

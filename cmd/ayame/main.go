@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/OpenAyame/ayame"
 	"golang.org/x/sync/errgroup"
@@ -14,8 +13,6 @@ import (
 
 const (
 	ayameVersion = "2022.2.0"
-	// timeout は暫定的に 10 sec
-	readHeaderTimeout = 10 * time.Second
 )
 
 func main() {
