@@ -34,6 +34,9 @@ type connection struct {
 	// 転送用のチャネル
 	forwardChannel chan forward
 
+	// config
+	config Config
+
 	// standalone mode
 	standalone bool
 }

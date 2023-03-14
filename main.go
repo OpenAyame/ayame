@@ -13,7 +13,6 @@ const (
 )
 
 var (
-	config          *Config
 	signalingLogger *zerolog.Logger
 	webhookLogger   *zerolog.Logger
 )

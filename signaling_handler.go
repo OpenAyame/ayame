@@ -38,6 +38,9 @@ func (s *Server) signalingHandler(w http.ResponseWriter, r *http.Request) {
 		wsConn: wsConn,
 		// 複数箇所でブロックした時を考えて少し余裕をもたせる
 		forwardChannel: make(chan forward, 100),
+
+		// config を connection でも触れるように渡しておく
+		config: *s.config,
 	}
 	// client.conn.SetCloseHandler(client.closeHandler)
 	ctx := context.Background()

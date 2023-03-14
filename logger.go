@@ -54,7 +54,7 @@ func InitLogger(config Config) error {
 		writers = output
 	}
 
-	logLevel, err := parseLevel(config.LogLevel)
+	logLevel, err := parseLevel(config)
 	if err != nil {
 		return err
 	}
@@ -76,18 +76,18 @@ func format(w *zerolog.ConsoleWriter) {
 	}
 }
 
-func parseLevel(l string) (zerolog.Level, error) {
+func parseLevel(config Config) (zerolog.Level, error) {
 	// debug: true の場合の log_level は debug で固定
 	if config.Debug {
 		return zerolog.DebugLevel, nil
 	}
 
 	// 空文字列は NoLevel 扱いで ParseLevel でエラーにならないため事前に確認する
-	if l == "" {
+	if config.LogLevel == "" {
 		return zerolog.NoLevel, errConfigInvalidLogLevel
 	}
 
-	logLevel, err := zerolog.ParseLevel(l)
+	logLevel, err := zerolog.ParseLevel(config.LogLevel)
 	if err != nil {
 		// err は継続するように読めるのでここで捨てる
 		return logLevel, errConfigInvalidLogLevel
