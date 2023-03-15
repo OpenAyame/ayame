@@ -9,7 +9,6 @@ import (
 var (
 	errInvalidMessageType = errors.New("InvalidMessageType")
 	errMissingRoomID      = errors.New("MissingRoomID")
-	errMissingClientID    = errors.New("MissingClientID")
 	errInvalidJSON        = errors.New("InvalidJSON")
 	errUnexpectedJSON     = errors.New("UnexpectedJSON")
 
