@@ -8,7 +8,7 @@
 
 推奨バージョンは以下のようになります。
 ```
-go 1.18
+go 1.20
 ```
 
 ### パッケージのインストール
@@ -34,7 +34,7 @@ $ make init
 ビルドに成功したら、以下のコマンドで Ayame サーバーを起動することができます。
 
 ```
-$ ./ayame
+$ ./bin/ayame
 ```
 
 ## Ayame Web SDK サンプルを利用して動作確認をする
@@ -61,12 +61,12 @@ http://127.0.0.1:5000/sendrecv.html をブラウザタブで２つ開いて接�
 ## コマンド
 
 ```
-$ ./ayame version
+$ ./bin/ayame version
 WebRTC Signaling Server Ayame version 2020.1.5
 ```
 
 ```
-$ ./ayame
+$ ./bin/ayame
 2020-01-08 07:04:58.392536Z [INFO] AyameConf debug=true
 2020-01-08 07:04:58.392685Z [INFO] AyameConf log_dir=.
 2020-01-08 07:04:58.392714Z [INFO] AyameConf log_name=ayame.log
@@ -81,10 +81,10 @@ $ ./ayame
 ```
 
 ```
-$ ./ayame -help
-Usage of ./ayame:
+$ ./bin/ayame -help
+Usage of ./bin/ayame:
   -c string
-    	ayame の設定ファイルへのパス(yaml) (default "./ayame.yaml")
+       ayame の設定ファイルへのパス(ini) (default "./ayame.ini")
 ```
 
 ## `register` メッセージについて
@@ -103,8 +103,8 @@ register で送信できるプロパティは以下になります。
 
 ## 認証ウェブフックの `auth_webhook_url` オプションについて
 
-`ayame.yaml` にて `auth_webhook_url` を指定している場合、
-ayame は client が `{"type": "register" }` メッセージを送信してきた際に `ayame.yaml` に指定した `auth_webhook_url` に対して認証リクエストを JSON 形式で POST します。
+`ayame.ini` にて `auth_webhook_url` を指定している場合、
+ayame は client が `{"type": "register" }` メッセージを送信してきた際に `ayame.ini` に指定した `auth_webhook_url` に対して認証リクエストを JSON 形式で POST します。
 
 また、 認証リクエストの返り値は JSON 形式で、以下のように想定されています。
 
