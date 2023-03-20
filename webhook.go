@@ -42,5 +42,5 @@ func (c *connection) webhookLog(n string, v interface{}) {
 		Str("roomId", c.roomID).
 		Str("clientId", c.ID).
 		Interface(n, v).
-		Msg("")
+		Send()
 }
