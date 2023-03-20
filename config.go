@@ -40,7 +40,7 @@ func NewConfig(configFilePath string) (*Config, error) {
 		return nil, err
 	}
 
-	if err := iniConfig.MapTo(config); err != nil {
+	if err := iniConfig.StrictMapTo(config); err != nil {
 		return nil, err
 	}
 
