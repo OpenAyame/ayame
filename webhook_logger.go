@@ -31,10 +31,10 @@ func InitWebhookLogger(config *Config) (*zerolog.Logger, error) {
 		Compress:   true,
 	}
 
-	var writers io.Writer
+	writers := io.MultiWriter(writer)
 	// デバッグが有効な時はコンソールにもだす
 	if config.Debug {
-		writers = io.MultiWriter(os.Stdout, writer)
+		writers = io.MultiWriter(writers, writer)
 	}
 
 	logger := zerolog.New(writers).With().Timestamp().Logger()
