@@ -42,14 +42,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	g, ctx := errgroup.WithContext(context.Background())
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	g, ctx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		return server.Start(ctx)
 	})
 
 	g.Go(func() error {
-		return server.StartMatchServer()
+		return server.StartMatchServer(ctx)
 	})
 
 	if err := g.Wait(); err != nil {

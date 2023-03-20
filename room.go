@@ -1,5 +1,7 @@
 package ayame
 
+import "context"
+
 var (
 	// register/unregister は待たせる
 	registerChannel   = make(chan *register)
@@ -13,12 +15,14 @@ type room struct {
 	connections map[string]*connection
 }
 
-func (s *Server) StartMatchServer() error {
+func (s *Server) StartMatchServer(ctx context.Context) error {
 	// room を管理するマップはここに用意する
 	var m = make(map[string]room)
 	// ここはシングルなのでロックは不要
 	for {
 		select {
+		case <-ctx.Done():
+			return ctx.Err()
 		case register := <-registerChannel:
 			c := register.connection
 			rch := register.resultChannel
