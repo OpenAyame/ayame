@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"io"
@@ -11,7 +11,7 @@ type disconnectWebhookRequest struct {
 }
 
 func (c *connection) disconnectWebhook() error {
-	if config.DisconnectWebhookURL == "" {
+	if c.config.DisconnectWebhookURL == "" {
 		return nil
 	}
 
@@ -21,7 +21,7 @@ func (c *connection) disconnectWebhook() error {
 		ConnectionID: c.ID,
 	}
 
-	resp, err := c.postRequest(config.DisconnectWebhookURL, req)
+	resp, err := c.postRequest(c.config.DisconnectWebhookURL, req)
 	if err != nil {
 		c.errLog().Err(err).Caller().Msg("DiconnectWebhookError")
 		return errDisconnectWebhook

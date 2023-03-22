@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"encoding/json"
@@ -24,7 +24,7 @@ type authnWebhookResponse struct {
 }
 
 func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
-	if config.AuthnWebhookURL == "" {
+	if c.config.AuthnWebhookURL == "" {
 		var allowed = true
 		authnWebhookResponse := &authnWebhookResponse{Allowed: &allowed}
 		return authnWebhookResponse, nil
@@ -41,7 +41,7 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 		Environment:   c.environment,
 	}
 
-	resp, err := c.postRequest(config.AuthnWebhookURL, req)
+	resp, err := c.postRequest(c.config.AuthnWebhookURL, req)
 	if err != nil {
 		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
 		return nil, errAuthnWebhook

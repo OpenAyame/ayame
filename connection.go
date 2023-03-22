@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/oklog/ulid/v2"
+	"github.com/rs/zerolog"
 	"github.com/shiguredo/websocket"
 )
 
@@ -33,6 +34,12 @@ type connection struct {
 
 	// 転送用のチャネル
 	forwardChannel chan forward
+
+	// config
+	config Config
+
+	signalingLogger zerolog.Logger
+	webhookLogger   zerolog.Logger
 
 	// standalone mode
 	standalone bool

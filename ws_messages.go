@@ -1,4 +1,4 @@
-package main
+package ayame
 
 // Type を確認する用
 type message struct {

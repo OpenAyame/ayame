@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"bytes"
@@ -31,16 +31,16 @@ func (c *connection) postRequest(u string, body interface{}) (*http.Response, er
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	timeout := time.Duration(config.WebhookRequestTimeoutSec) * time.Second
+	timeout := time.Duration(c.config.WebhookRequestTimeoutSec) * time.Second
 
 	client := &http.Client{Timeout: timeout}
 	return client.Do(req)
 }
 
 func (c *connection) webhookLog(n string, v interface{}) {
-	webhookLogger.Log().
+	c.webhookLogger.Log().
 		Str("roomId", c.roomID).
 		Str("clientId", c.ID).
 		Interface(n, v).
-		Msg("")
+		Send()
 }

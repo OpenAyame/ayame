@@ -3,7 +3,7 @@ LDFLAGS = -ldflags '-w -s'
 .PHONY: ayame
 
 ayame:
-	go build $(LDFLAGS) -o $@
+	go build $(LDFLAGS) -o bin/$@ cmd/ayame/main.go
 
 .PHONY: darwin linux
 
@@ -11,7 +11,7 @@ GOOS = $@
 GOARCH = amd64
 
 linux darwin:
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ayame-$(GOOS)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o bin/ayame-$(GOOS) cmd/ayame/main.go
 
 check:
 	go test ./...
@@ -30,4 +30,4 @@ fmt:
 .PHONY: init
 
 init:
-	cp -n ayame.example.yaml ayame.yaml
+	cp -n ayame.example.ini ayame.ini
