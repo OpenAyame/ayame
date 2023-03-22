@@ -17,6 +17,10 @@
     - @Hexa
 - [ADD] ヘルスチェック用の URL を追加する
     - @Hexa
+- [CHANGE] 設定ファイルを yaml から ini に変更する
+    - @Hexa
+- [FIX] webhook log が出力されるように修正する
+    - @Hexa
 
 
 ## 2022.2.0
