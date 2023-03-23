@@ -1,11 +1,11 @@
 package ayame
 
 import (
-	"fmt"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
-func (s *Server) okHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "")
+func (s *Server) okHandler(c echo.Context) error {
+	return c.NoContent(http.StatusOK)
 }
