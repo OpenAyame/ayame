@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	zlog "github.com/rs/zerolog/log"
 )
@@ -30,11 +31,26 @@ func NewServer(config *Config) (*Server, error) {
 		return nil, err
 	}
 
+	e := echo.New()
+
+	// URL の生成
+	url := fmt.Sprintf("%s:%d", config.ListenIPv4Address, config.ListenPortNumber)
+
 	s := &Server{
 		config:          config,
 		signalingLogger: signalingLogger,
 		webhookLogger:   webhookLogger,
+		Server: http.Server{
+			Addr:              url,
+			ReadHeaderTimeout: readHeaderTimeout,
+			Handler:           e,
+		},
 	}
+
+	// websocket server
+	e.GET("/signaling", s.signalingHandler)
+	e.GET("/.ok", s.okHandler)
+
 	return s, nil
 }
 
@@ -42,18 +58,10 @@ const readHeaderTimeout = 10 * time.Second
 
 // TODO: echo 化したい
 func (s *Server) Start(ctx context.Context) error {
-	// URL の生成
-	url := fmt.Sprintf("%s:%d", s.config.ListenIPv4Address, s.config.ListenPortNumber)
-
-	// websocket server
-	http.HandleFunc("/signaling", s.signalingHandler)
-	http.HandleFunc("/.ok", s.okHandler)
-	server := &http.Server{Addr: url, Handler: nil, ReadHeaderTimeout: readHeaderTimeout}
-
 	ch := make(chan error)
 	go func() {
 		defer close(ch)
-		if err := server.ListenAndServe(); err != nil {
+		if err := s.ListenAndServe(); err != nil {
 			ch <- err
 		}
 	}()
