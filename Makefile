@@ -31,3 +31,6 @@ fmt:
 
 init:
 	cp -n ayame.example.ini ayame.ini
+
+test:
+	go test -race -v
