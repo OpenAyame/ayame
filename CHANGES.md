@@ -21,6 +21,8 @@
     - @Hexa
 - [FIX] webhook log が出力されるように修正する
     - @Hexa
+- [UPADTE] handler に echo を使用するように変更する
+    - @Hexa
 
 
 ## 2022.2.0
