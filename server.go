@@ -18,14 +18,10 @@ type Server struct {
 	signalingLogger *zerolog.Logger
 	webhookLogger   *zerolog.Logger
 
+	EchoPrometheus *echo.Echo
+
 	http.Server
 }
-
-var (
-	skipURLs = []string{
-		"/metrics",
-	}
-)
 
 func NewServer(config *Config) (*Server, error) {
 	signalingLogger, err := InitSignalingLogger(config)
@@ -58,25 +54,20 @@ func NewServer(config *Config) (*Server, error) {
 	e.GET("/signaling", s.signalingHandler)
 	e.GET("/.ok", s.okHandler)
 
-	// 該当する URL はスキップする
-	skipper := func(c echo.Context) bool {
-		for _, u := range skipURLs {
-			if c.Path() == u {
-				return true
-			}
-		}
-		return false
-	}
+	echoPrometheus := echo.New()
+	echoPrometheus.HideBanner = true
 
-	p := prometheus.NewPrometheus("ayame", skipper)
-	p.Use(e)
+	p := prometheus.NewPrometheus("ayame", nil)
+	e.Use(p.HandlerFunc)
+	p.SetMetricsPath(echoPrometheus)
+
+	s.EchoPrometheus = echoPrometheus
 
 	return s, nil
 }
 
 const readHeaderTimeout = 10 * time.Second
 
-// TODO: echo 化したい
 func (s *Server) Start(ctx context.Context) error {
 	ch := make(chan error)
 	go func() {

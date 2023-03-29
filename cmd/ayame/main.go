@@ -48,6 +48,11 @@ func main() {
 	g, ctx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
+		address := fmt.Sprintf("%s:%d", config.ListenPrometheusIPv4Address, config.ListenPrometheusPortNumber)
+		return server.EchoPrometheus.Start(address)
+	})
+
+	g.Go(func() error {
 		return server.Start(ctx)
 	})
 
