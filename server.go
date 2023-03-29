@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	zlog "github.com/rs/zerolog/log"
@@ -19,6 +20,12 @@ type Server struct {
 
 	http.Server
 }
+
+var (
+	skipURLs = []string{
+		"/metrics",
+	}
+)
 
 func NewServer(config *Config) (*Server, error) {
 	signalingLogger, err := InitSignalingLogger(config)
@@ -50,6 +57,19 @@ func NewServer(config *Config) (*Server, error) {
 	// websocket server
 	e.GET("/signaling", s.signalingHandler)
 	e.GET("/.ok", s.okHandler)
+
+	// 該当する URL はスキップする
+	skipper := func(c echo.Context) bool {
+		for _, u := range skipURLs {
+			if c.Path() == u {
+				return true
+			}
+		}
+		return false
+	}
+
+	p := prometheus.NewPrometheus("ayame", skipper)
+	p.Use(e)
 
 	return s, nil
 }
