@@ -19,6 +19,7 @@ type Server struct {
 	webhookLogger   *zerolog.Logger
 
 	EchoPrometheus *echo.Echo
+	Metrics        *Metrics
 
 	http.Server
 }
@@ -57,11 +58,16 @@ func NewServer(config *Config) (*Server, error) {
 	echoPrometheus := echo.New()
 	echoPrometheus.HideBanner = true
 
-	p := prometheus.NewPrometheus("ayame", nil)
+	p := prometheus.NewPrometheus("ayame", nil, metricsList)
 	e.Use(p.HandlerFunc)
 	p.SetMetricsPath(echoPrometheus)
 
 	s.EchoPrometheus = echoPrometheus
+
+	m := NewMetrics()
+	e.Use(m.AddMetricsMiddleware)
+
+	s.Metrics = m
 
 	return s, nil
 }

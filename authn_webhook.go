@@ -2,7 +2,10 @@ package ayame
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
+	"net/url"
+	"time"
 )
 
 type authnWebhookRequest struct {
@@ -41,6 +44,8 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 		Environment:   c.environment,
 	}
 
+	start := time.Now()
+
 	resp, err := c.postRequest(c.config.AuthnWebhookURL, req)
 	if err != nil {
 		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
@@ -50,6 +55,18 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 	defer resp.Body.Close()
 
 	c.webhookLog("authnReq", req)
+
+	u, err := url.Parse(c.config.AuthnWebhookURL)
+	if err != nil {
+		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
+		return nil, errAuthnWebhook
+	}
+	statusCode := fmt.Sprintf("%d", resp.StatusCode)
+	m := c.metrics
+	m.IncAuthnWebhookReqCnt(statusCode, "POST", u.Host, u.Path)
+	m.ObserveAuthnWebhookReqDur(statusCode, "POST", u.Host, u.Path, time.Since(start).Seconds())
+	// TODO: ヘッダーのサイズも計測する
+	m.ObserveAuthnWebhookResSz(statusCode, "POST", u.Host, u.Path, int(resp.ContentLength))
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
