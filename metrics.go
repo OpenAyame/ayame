@@ -18,98 +18,55 @@ var (
 )
 
 var (
-	authnWebhookReqCnt = &prometheus.Metric{
-		ID:          "authnWebhookReqCnt",
-		Name:        "authn_webhook_requests_total",
+	webhookReqCnt = &prometheus.Metric{
+		ID:          "webhookReqCnt",
+		Name:        "webhook_requests_total",
 		Description: "How many HTTP requests.",
 		Type:        "counter_vec",
 		Args:        []string{"code", "method", "host", "url"}}
-	authnWebhookReqDur = &prometheus.Metric{
-		ID:          "authnWebhookReqDur",
-		Name:        "authn_webhook_request_duration_seconds",
+	webhookReqDur = &prometheus.Metric{
+		ID:          "webhookReqDur",
+		Name:        "webhook_request_duration_seconds",
 		Description: "The HTTP request latencies in seconds.",
 		Args:        []string{"code", "method", "host", "url"},
 		Type:        "histogram_vec",
 		Buckets:     webhookReqDurBuckets}
-	authnWebhookReqSz = &prometheus.Metric{
-		ID:          "authnWebhookReqSz",
-		Name:        "authn_webhook_request_size_bytes",
+	webhookReqSz = &prometheus.Metric{
+		ID:          "webhookReqSz",
+		Name:        "webhook_request_size_bytes",
 		Description: "The HTTP request sizes in bytes.",
 		Args:        []string{"code", "method", "host", "url"},
 		Type:        "histogram_vec",
 		Buckets:     webhookReqSzBuckets}
-	authnWebhookResSz = &prometheus.Metric{
-		ID:          "authnWebhookResSz",
-		Name:        "authn_webhook_response_size_bytes",
-		Description: "The HTTP response sizes in bytes.",
-		Args:        []string{"code", "method", "host", "url"},
-		Type:        "histogram_vec",
-		Buckets:     webhookResSzBuckets}
-
-	disconnectWebhookReqCnt = &prometheus.Metric{
-		ID:          "disconnectWebhookReqCnt",
-		Name:        "disconnect_webhook_requests_total",
-		Description: "How many HTTP requests.",
-		Type:        "counter_vec",
-		Args:        []string{"code", "method", "host", "url"}}
-	disconnectWebhookReqDur = &prometheus.Metric{
-		ID:          "disconnectWebhookReqDur",
-		Name:        "disconnect_webhook_request_duration_seconds",
-		Description: "The HTTP request latencies in seconds.",
-		Args:        []string{"code", "method", "host", "url"},
-		Type:        "histogram_vec",
-		Buckets:     webhookReqDurBuckets}
-	disconnectWebhookReqSz = &prometheus.Metric{
-		ID:          "disconnectWebhookReqSz",
-		Name:        "disconnect_webhook_request_size_bytes",
-		Description: "The HTTP request sizes in bytes.",
-		Args:        []string{"code", "method", "host", "url"},
-		Type:        "histogram_vec",
-		Buckets:     webhookReqSzBuckets}
-	disconnectWebhookResSz = &prometheus.Metric{
-		ID:          "disconnectWebhookResSz",
-		Name:        "disconnect_webhook_response_size_bytes",
+	webhookResSz = &prometheus.Metric{
+		ID:          "webhookResSz",
+		Name:        "webhook_response_size_bytes",
 		Description: "The HTTP response sizes in bytes.",
 		Args:        []string{"code", "method", "host", "url"},
 		Type:        "histogram_vec",
 		Buckets:     webhookResSzBuckets}
 
 	metricsList = []*prometheus.Metric{
-		authnWebhookReqCnt,
-		authnWebhookReqDur,
-		authnWebhookResSz,
-		authnWebhookReqSz,
-
-		disconnectWebhookReqCnt,
-		disconnectWebhookReqDur,
-		disconnectWebhookResSz,
-		disconnectWebhookReqSz,
+		webhookReqCnt,
+		webhookReqDur,
+		webhookResSz,
+		webhookReqSz,
 	}
 )
 
 type Metrics struct {
-	AuthnWebhookReqCnt *prometheus.Metric
-	AuthnWebhookReqDur *prometheus.Metric
-	AuthnWebhookResSz  *prometheus.Metric
-	AuthnWebhookReqSz  *prometheus.Metric
-
-	DisconnectWebhookReqCnt *prometheus.Metric
-	DisconnectWebhookReqDur *prometheus.Metric
-	DisconnectWebhookResSz  *prometheus.Metric
-	DisconnectWebhookReqSz  *prometheus.Metric
+	WebhookReqCnt *prometheus.Metric
+	WebhookReqDur *prometheus.Metric
+	WebhookResSz  *prometheus.Metric
+	WebhookReqSz  *prometheus.Metric
 }
 
 func NewMetrics() *Metrics {
 	return &Metrics{
-		AuthnWebhookReqCnt: authnWebhookReqCnt,
-		AuthnWebhookReqDur: authnWebhookReqDur,
-		AuthnWebhookResSz:  authnWebhookResSz,
-		AuthnWebhookReqSz:  authnWebhookReqSz,
-
-		DisconnectWebhookReqCnt: disconnectWebhookReqCnt,
-		DisconnectWebhookReqDur: disconnectWebhookReqDur,
-		DisconnectWebhookResSz:  disconnectWebhookResSz,
-		DisconnectWebhookReqSz:  disconnectWebhookReqSz,
+		WebhookReqCnt: webhookReqCnt,
+		WebhookReqDur: webhookReqDur,
+		WebhookResSz:  webhookResSz,
+		WebhookReqSz:  webhookReqSz,
 	}
 }
 
@@ -122,82 +79,42 @@ func (m *Metrics) AddMetricsMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func (m *Metrics) IncAuthnWebhookReqCnt(code, method, host, url string) {
+func (m *Metrics) IncWebhookReqCnt(code, method, host, url string) {
 	labels := prom.Labels{
 		"code":   code,
 		"method": method,
 		"host":   host,
 		"url":    url,
 	}
-	m.AuthnWebhookReqCnt.MetricCollector.(*prom.CounterVec).With(labels).Inc()
+	m.WebhookReqCnt.MetricCollector.(*prom.CounterVec).With(labels).Inc()
 }
 
-func (m *Metrics) ObserveAuthnWebhookReqDur(code, method, host, url string, elapsed float64) {
+func (m *Metrics) ObserveWebhookReqDur(code, method, host, url string, elapsed float64) {
 	labels := prom.Labels{
 		"code":   code,
 		"method": method,
 		"host":   host,
 		"url":    url,
 	}
-	m.AuthnWebhookReqDur.MetricCollector.(*prom.HistogramVec).With(labels).Observe(elapsed)
+	m.WebhookReqDur.MetricCollector.(*prom.HistogramVec).With(labels).Observe(elapsed)
 }
 
-func (m *Metrics) ObserveAuthnWebhookResSz(code, method, host, url string, sz int) {
+func (m *Metrics) ObserveWebhookResSz(code, method, host, url string, sz int) {
 	labels := prom.Labels{
 		"code":   code,
 		"method": method,
 		"host":   host,
 		"url":    url,
 	}
-	m.AuthnWebhookResSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
+	m.WebhookResSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
 }
 
-func (m *Metrics) ObserveAuthnWebhookReqSz(code, method, host, url string, sz int) {
+func (m *Metrics) ObserveWebhookReqSz(code, method, host, url string, sz int) {
 	labels := prom.Labels{
 		"code":   code,
 		"method": method,
 		"host":   host,
 		"url":    url,
 	}
-	m.AuthnWebhookReqSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
-}
-
-func (m *Metrics) IncDisconnectWebhookReqCnt(code, method, host, url string) {
-	labels := prom.Labels{
-		"code":   code,
-		"method": method,
-		"host":   host,
-		"url":    url,
-	}
-	m.DisconnectWebhookReqCnt.MetricCollector.(*prom.CounterVec).With(labels).Inc()
-}
-
-func (m *Metrics) ObserveDisconnectWebhookReqDur(code, method, host, url string, elapsed float64) {
-	labels := prom.Labels{
-		"code":   code,
-		"method": method,
-		"host":   host,
-		"url":    url,
-	}
-	m.DisconnectWebhookReqDur.MetricCollector.(*prom.HistogramVec).With(labels).Observe(elapsed)
-}
-
-func (m *Metrics) ObserveDisconnectWebhookResSz(code, method, host, url string, sz int) {
-	labels := prom.Labels{
-		"code":   code,
-		"method": method,
-		"host":   host,
-		"url":    url,
-	}
-	m.DisconnectWebhookResSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
-}
-
-func (m *Metrics) ObserveDisconnectWebhookReqSz(code, method, host, url string, sz int) {
-	labels := prom.Labels{
-		"code":   code,
-		"method": method,
-		"host":   host,
-		"url":    url,
-	}
-	m.DisconnectWebhookReqSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
+	m.WebhookReqSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
 }

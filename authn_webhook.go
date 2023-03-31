@@ -63,10 +63,10 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 	}
 	statusCode := fmt.Sprintf("%d", resp.StatusCode)
 	m := c.metrics
-	m.IncAuthnWebhookReqCnt(statusCode, "POST", u.Host, u.Path)
-	m.ObserveAuthnWebhookReqDur(statusCode, "POST", u.Host, u.Path, time.Since(start).Seconds())
+	m.IncWebhookReqCnt(statusCode, "POST", u.Host, u.Path)
+	m.ObserveWebhookReqDur(statusCode, "POST", u.Host, u.Path, time.Since(start).Seconds())
 	// TODO: ヘッダーのサイズも計測する
-	m.ObserveAuthnWebhookResSz(statusCode, "POST", u.Host, u.Path, int(resp.ContentLength))
+	m.ObserveWebhookResSz(statusCode, "POST", u.Host, u.Path, int(resp.ContentLength))
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
