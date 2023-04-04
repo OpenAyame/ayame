@@ -2,13 +2,14 @@ package ayame
 
 import (
 	"github.com/labstack/echo-contrib/prometheus"
-	"github.com/labstack/echo/v4"
 	prom "github.com/prometheus/client_golang/prometheus"
 )
 
 const (
 	KB = prometheus.KB
 	MB = prometheus.MB
+
+	MetricsKey = "webhook_metrics"
 )
 
 var (
@@ -67,15 +68,6 @@ func NewMetrics() *Metrics {
 		WebhookReqDur: webhookReqDur,
 		WebhookResSz:  webhookResSz,
 		WebhookReqSz:  webhookReqSz,
-	}
-}
-
-var metricsKey = "webhook_metrics"
-
-func (m *Metrics) AddMetricsMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		c.Set(metricsKey, m)
-		return next(c)
 	}
 }
 

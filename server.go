@@ -64,10 +64,7 @@ func NewServer(config *Config) (*Server, error) {
 
 	s.EchoPrometheus = echoPrometheus
 
-	m := NewMetrics()
-	e.Use(m.AddMetricsMiddleware)
-
-	s.Metrics = m
+	s.Metrics = NewMetrics()
 
 	return s, nil
 }
