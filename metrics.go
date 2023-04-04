@@ -34,15 +34,15 @@ var (
 		Buckets:     webhookReqDurBuckets}
 	webhookReqSz = &prometheus.Metric{
 		ID:          "webhookReqSz",
-		Name:        "webhook_request_size_bytes",
-		Description: "The HTTP request sizes in bytes.",
+		Name:        "webhook_request_message_size_bytes",
+		Description: "The HTTP request message sizes in bytes.",
 		Args:        []string{"code", "method", "host", "url"},
 		Type:        "histogram_vec",
 		Buckets:     webhookReqSzBuckets}
 	webhookResSz = &prometheus.Metric{
 		ID:          "webhookResSz",
-		Name:        "webhook_response_size_bytes",
-		Description: "The HTTP response sizes in bytes.",
+		Name:        "webhook_response_message_size_bytes",
+		Description: "The HTTP response message sizes in bytes.",
 		Args:        []string{"code", "method", "host", "url"},
 		Type:        "histogram_vec",
 		Buckets:     webhookResSzBuckets}
@@ -91,7 +91,7 @@ func (m *Metrics) ObserveWebhookReqDur(code, method, host, url string, elapsed f
 	m.WebhookReqDur.MetricCollector.(*prom.HistogramVec).With(labels).Observe(elapsed)
 }
 
-func (m *Metrics) ObserveWebhookResSz(code, method, host, url string, sz int) {
+func (m *Metrics) ObserveWebhookResSz(code, method, host, url string, sz int64) {
 	labels := prom.Labels{
 		"code":   code,
 		"method": method,
@@ -101,7 +101,7 @@ func (m *Metrics) ObserveWebhookResSz(code, method, host, url string, sz int) {
 	m.WebhookResSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
 }
 
-func (m *Metrics) ObserveWebhookReqSz(code, method, host, url string, sz int) {
+func (m *Metrics) ObserveWebhookReqSz(code, method, host, url string, sz int64) {
 	labels := prom.Labels{
 		"code":   code,
 		"method": method,
