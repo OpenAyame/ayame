@@ -23,6 +23,8 @@
     - @Hexa
 - [UPADTE] handler に echo を使用するように変更する
     - @Hexa
+- [ADD] Prometheus に対応する
+    - @Hexa
 
 
 ## 2022.2.0
