@@ -45,6 +45,7 @@ func (c *connection) disconnectWebhook() error {
 	m.IncWebhookReqCnt(statusCode, "POST", u.Host, u.Path)
 	m.ObserveWebhookReqDur(statusCode, "POST", u.Host, u.Path, time.Since(start).Seconds())
 	// TODO: ヘッダーのサイズも計測する
+	m.ObserveWebhookReqSz(statusCode, "POST", u.Host, u.Path, resp.Request.ContentLength)
 	m.ObserveWebhookResSz(statusCode, "POST", u.Host, u.Path, resp.ContentLength)
 
 	body, err := io.ReadAll(resp.Body)
