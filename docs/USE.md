@@ -101,10 +101,10 @@ register で送信できるプロパティは以下になります。
 - `"environment"`(string): オプション
 - `"libwebrtc"`(string): オプション
 
-## 認証ウェブフックの `auth_webhook_url` オプションについて
+## 認証ウェブフックの `authn_webhook_url` オプションについて
 
-`ayame.ini` にて `auth_webhook_url` を指定している場合、
-ayame は client が `{"type": "register" }` メッセージを送信してきた際に `ayame.ini` に指定した `auth_webhook_url` に対して認証リクエストを JSON 形式で POST します。
+`ayame.ini` にて `authn_webhook_url` を指定している場合、
+ayame は client が `{"type": "register" }` メッセージを送信してきた際に `ayame.ini` に指定した `authn_webhook_url` に対して認証リクエストを JSON 形式で POST します。
 
 また、 認証リクエストの返り値は JSON 形式で、以下のように想定されています。
 
