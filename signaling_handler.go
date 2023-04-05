@@ -42,6 +42,7 @@ func (s *Server) signalingHandler(c echo.Context) error {
 		zlog.Debug().Err(err).Send()
 		return err
 	}
+
 	// ここで connectionId みたいなの作るべき
 	connection := connection{
 		wsConn: wsConn,
@@ -52,6 +53,7 @@ func (s *Server) signalingHandler(c echo.Context) error {
 		config:          *s.config,
 		signalingLogger: *s.signalingLogger,
 		webhookLogger:   *s.webhookLogger,
+		metrics:         s.Metrics,
 	}
 	// client.conn.SetCloseHandler(client.closeHandler)
 	ctx := context.Background()

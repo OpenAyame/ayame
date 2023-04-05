@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
+	"strconv"
 
 	"github.com/OpenAyame/ayame"
 	"golang.org/x/sync/errgroup"
@@ -46,6 +48,11 @@ func main() {
 	defer cancel()
 
 	g, ctx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		addressAndPort := net.JoinHostPort(config.ListenPrometheusIPv4Address, strconv.Itoa(int(config.ListenPrometheusPortNumber)))
+		return server.EchoPrometheus.Start(addressAndPort)
+	})
 
 	g.Go(func() error {
 		return server.Start(ctx)

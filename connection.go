@@ -43,6 +43,8 @@ type connection struct {
 
 	// standalone mode
 	standalone bool
+
+	metrics *Metrics
 }
 
 const (

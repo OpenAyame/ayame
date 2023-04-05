@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	zlog "github.com/rs/zerolog/log"
@@ -16,6 +17,9 @@ type Server struct {
 
 	signalingLogger *zerolog.Logger
 	webhookLogger   *zerolog.Logger
+
+	EchoPrometheus *echo.Echo
+	Metrics        *Metrics
 
 	http.Server
 }
@@ -51,12 +55,22 @@ func NewServer(config *Config) (*Server, error) {
 	e.GET("/signaling", s.signalingHandler)
 	e.GET("/.ok", s.okHandler)
 
+	echoPrometheus := echo.New()
+	echoPrometheus.HideBanner = true
+
+	p := prometheus.NewPrometheus("ayame", nil, metricsList)
+	e.Use(p.HandlerFunc)
+	p.SetMetricsPath(echoPrometheus)
+
+	s.EchoPrometheus = echoPrometheus
+
+	s.Metrics = NewMetrics()
+
 	return s, nil
 }
 
 const readHeaderTimeout = 10 * time.Second
 
-// TODO: echo 化したい
 func (s *Server) Start(ctx context.Context) error {
 	ch := make(chan error)
 	go func() {

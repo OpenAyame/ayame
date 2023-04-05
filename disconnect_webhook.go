@@ -1,7 +1,10 @@
 package ayame
 
 import (
+	"fmt"
 	"io"
+	"net/url"
+	"time"
 )
 
 type disconnectWebhookRequest struct {
@@ -21,6 +24,8 @@ func (c *connection) disconnectWebhook() error {
 		ConnectionID: c.ID,
 	}
 
+	start := time.Now()
+
 	resp, err := c.postRequest(c.config.DisconnectWebhookURL, req)
 	if err != nil {
 		c.errLog().Err(err).Caller().Msg("DiconnectWebhookError")
@@ -29,6 +34,19 @@ func (c *connection) disconnectWebhook() error {
 	defer resp.Body.Close()
 
 	c.webhookLog("disconnectReq", req)
+
+	u, err := url.Parse(c.config.DisconnectWebhookURL)
+	if err != nil {
+		c.errLog().Err(err).Caller().Msg("DisconnectWebhookError")
+		return errDisconnectWebhook
+	}
+	statusCode := fmt.Sprintf("%d", resp.StatusCode)
+	m := c.metrics
+	m.IncWebhookReqCnt(statusCode, "POST", u.Host, u.Path)
+	m.ObserveWebhookReqDur(statusCode, "POST", u.Host, u.Path, time.Since(start).Seconds())
+	// TODO: ヘッダーのサイズも計測する
+	m.ObserveWebhookReqSz(statusCode, "POST", u.Host, u.Path, resp.Request.ContentLength)
+	m.ObserveWebhookResSz(statusCode, "POST", u.Host, u.Path, resp.ContentLength)
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
