@@ -96,5 +96,11 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 		return nil, errAuthnWebhookResponse
 	}
 
+	if authnWebhookResponse.Reason == nil {
+		m.IncAuthnWebhookCnt(statusCode, "POST", u.Host, u.Path, *authnWebhookResponse.Allowed, "")
+	} else {
+		m.IncAuthnWebhookCnt(statusCode, "POST", u.Host, u.Path, *authnWebhookResponse.Allowed, *authnWebhookResponse.Reason)
+	}
+
 	return &authnWebhookResponse, nil
 }

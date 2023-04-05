@@ -1,6 +1,8 @@
 package ayame
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo-contrib/prometheus"
 	prom "github.com/prometheus/client_golang/prometheus"
 )
@@ -46,28 +48,37 @@ var (
 		Args:        []string{"code", "method", "host", "url"},
 		Type:        "histogram_vec",
 		Buckets:     webhookResSzBuckets}
+	authnWebhookCnt = &prometheus.Metric{
+		ID:          "authnWebhookRespCnt",
+		Name:        "authn_webhook_responses_total",
+		Description: "How many AuthnWebhook responses.",
+		Type:        "counter_vec",
+		Args:        []string{"code", "method", "host", "url", "allowed", "reason"}}
 
 	metricsList = []*prometheus.Metric{
 		webhookReqCnt,
 		webhookReqDur,
 		webhookResSz,
 		webhookReqSz,
+		authnWebhookCnt,
 	}
 )
 
 type Metrics struct {
-	WebhookReqCnt *prometheus.Metric
-	WebhookReqDur *prometheus.Metric
-	WebhookResSz  *prometheus.Metric
-	WebhookReqSz  *prometheus.Metric
+	WebhookReqCnt   *prometheus.Metric
+	WebhookReqDur   *prometheus.Metric
+	WebhookResSz    *prometheus.Metric
+	WebhookReqSz    *prometheus.Metric
+	AuthnWebhookCnt *prometheus.Metric
 }
 
 func NewMetrics() *Metrics {
 	return &Metrics{
-		WebhookReqCnt: webhookReqCnt,
-		WebhookReqDur: webhookReqDur,
-		WebhookResSz:  webhookResSz,
-		WebhookReqSz:  webhookReqSz,
+		WebhookReqCnt:   webhookReqCnt,
+		WebhookReqDur:   webhookReqDur,
+		WebhookResSz:    webhookResSz,
+		WebhookReqSz:    webhookReqSz,
+		AuthnWebhookCnt: authnWebhookCnt,
 	}
 }
 
@@ -109,4 +120,16 @@ func (m *Metrics) ObserveWebhookReqSz(code, method, host, url string, sz int64) 
 		"url":    url,
 	}
 	m.WebhookReqSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
+}
+
+func (m *Metrics) IncAuthnWebhookCnt(code, method, host, url string, allowed bool, reason string) {
+	labels := prom.Labels{
+		"code":    code,
+		"method":  method,
+		"host":    host,
+		"url":     url,
+		"allowed": fmt.Sprintf("%v", allowed),
+		"reason":  reason,
+	}
+	m.AuthnWebhookCnt.MetricCollector.(*prom.CounterVec).With(labels).Inc()
 }
