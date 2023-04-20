@@ -11,13 +11,15 @@
 
 ## develop
 
+- [ADD] staticcheck を導入する
+    - @voluntas
 - [ADD] standalone モードを追加する
     - standalone モード時に、type: connected を受信した場合は WebSocket を切断する
     - standalone モードでは WebSocket を切断するため、PING を送信しないようにする
     - @Hexa
 - [ADD] ヘルスチェック用の URL を追加する
     - @Hexa
-- [CHANGE] 設定ファイルを yaml から ini に変更する
+- [CHANGE] 設定ファイルを YAML から INI に変更する
     - @Hexa
 - [FIX] webhook log が出力されるように修正する
     - @Hexa

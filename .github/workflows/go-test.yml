@@ -2,18 +2,25 @@ name: Go Build & Format
 on:
   push:
     branches-ignore:
-      - 'master'
+      - "master"
     tags-ignore:
-      - '*'
+      - "*"
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v4
-      with:
-        go-version: '^1.18'
-    - run: go version
-    - uses: actions/checkout@v3
-    - run: go fmt .
-    - run: go build -v .
+      - name: setup go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: ./app/go.mod
+          cache: true
+          cache-dependency-path: ./app/go.sum
+      - uses: dominikh/staticcheck-action@v1.3.0
+        with:
+          version: "2023.1.2"
+          install-go: false
+      - run: go version
+      - uses: actions/checkout@v3
+      - run: go fmt .
+      - run: go build -v .
