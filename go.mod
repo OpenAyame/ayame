@@ -11,7 +11,7 @@ require (
 	github.com/shiguredo/lumberjack/v3 v3.0.0
 	github.com/shiguredo/websocket v1.6.0
 	github.com/stretchr/testify v1.8.2
-	golang.org/x/sync v0.1.0
+	golang.org/x/sync v0.2.0
 	gopkg.in/ini.v1 v1.67.0
 )
 
