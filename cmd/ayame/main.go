@@ -26,7 +26,7 @@ func main() {
 		}
 	}
 
-	configFilePath := flag.String("c", "./ayame.ini", "ayame の設定ファイルへのパス(ini)")
+	configFilePath := flag.String("c", "./config.ini", "ayame の設定ファイルへのパス(ini)")
 	flag.Parse()
 
 	config, err := ayame.NewConfig(*configFilePath)

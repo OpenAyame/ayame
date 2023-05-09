@@ -7,6 +7,7 @@
 ### Go のインストール
 
 推奨バージョンは以下のようになります。
+
 ```
 go 1.20
 ```
@@ -57,7 +58,6 @@ $ yarn serve
 
 http://127.0.0.1:5000/sendrecv.html をブラウザタブで２つ開いて接続を押してみてください。
 
-
 ## コマンド
 
 ```
@@ -84,7 +84,7 @@ $ ./bin/ayame
 $ ./bin/ayame -help
 Usage of ./bin/ayame:
   -c string
-       ayame の設定ファイルへのパス(ini) (default "./ayame.ini")
+       ayame の設定ファイルへのパス(ini) (default "./config.ini")
 ```
 
 ## `register` メッセージについて
@@ -104,7 +104,7 @@ register で送信できるプロパティは以下になります。
 ## 認証ウェブフックの `authn_webhook_url` オプションについて
 
 `ayame.ini` にて `authn_webhook_url` を指定している場合、
-ayame は client が `{"type": "register" }` メッセージを送信してきた際に `ayame.ini` に指定した `authn_webhook_url` に対して認証リクエストを JSON 形式で POST します。
+ayame は client が `{"type": "register" }` メッセージを送信してきた際に `config.ini` に指定した `authn_webhook_url` に対して認証リクエストを JSON 形式で POST します。
 
 また、 認証リクエストの返り値は JSON 形式で、以下のように想定されています。
 
@@ -120,7 +120,7 @@ ayame は client が `{"type": "register" }` メッセージを送信してき�
 - `"roomId"`: (string): 必須
 - `"signalingkey"`(string): オプション
 - `"authnMetadata"`: (object): オプション
-    - register 時に `authnMetadata` をプロパティとして指定していると、その値がそのまま付与されます
+  - register 時に `authnMetadata` をプロパティとして指定していると、その値がそのまま付与されます
 - `"ayameClient"`(string): オプション
 - `"environment"`(string): オプション
 - `"libwebrtc"`(string): オプション
@@ -130,8 +130,8 @@ ayame は client が `{"type": "register" }` メッセージを送信してき�
 - `"allowed"`: (boolean): 必須。認証の可否
 - `"reason"`: (string): 認証不可の際の理由 (`allowed` が false の場合のみ)
 - `"authzMetadata"`(object): オプション
-    - クライアントに対して任意に払い出せるメタデータ
-    -  client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる
+  - クライアントに対して任意に払い出せるメタデータ
+  - client はこの値を読み込むことで、例えば username を認証サーバから送ったりということも可能になる
 
 ```
 {"allowed": true, "authzMetadata": {"username": "ayame", "owner": "true"}}

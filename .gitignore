@@ -1,6 +1,6 @@
 # ayame binary
 bin/*
-ayame.yaml
+config.ini
 # log file
 *.log
 *.log.*

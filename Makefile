@@ -30,7 +30,7 @@ fmt:
 .PHONY: init
 
 init:
-	cp -n ayame.example.ini ayame.ini
+	cp -n config_example.ini config.ini
 
 test:
 	go test -race -v
