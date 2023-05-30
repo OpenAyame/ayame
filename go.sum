@@ -65,6 +65,8 @@ github.com/shiguredo/lumberjack/v3 v3.0.0 h1:IkhnjVTpg7Fl2fNAfsMn7R+No9SrnFdN5wE
 github.com/shiguredo/lumberjack/v3 v3.0.0/go.mod h1:zrQSStRcwpVudSkotZINDGYm8x03gnEQd7M+Y0OzPp0=
 github.com/shiguredo/websocket v1.6.0 h1:TDogwJfOEyMY/gV6vwckgy3VA7e9FP3YoK3j6i2zh+g=
 github.com/shiguredo/websocket v1.6.0/go.mod h1:1j84dsw/2bDlUCmtjASjZbEBNWn5GvVZLIUs9aS6Ntk=
+github.com/shiguredo/websocket v1.6.1 h1:xGZ5LmGjQLfGaCcxZrI2/z0en24eJ3VunnNK1RmJdzg=
+github.com/shiguredo/websocket v1.6.1/go.mod h1:qUnxxJOWcK8Q7Q+o31UucO9HJQuhcygUYMuLRa88XTw=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
