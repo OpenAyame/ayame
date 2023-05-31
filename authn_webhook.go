@@ -1,8 +1,11 @@
-package main
+package ayame
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
+	"net/url"
+	"time"
 )
 
 type authnWebhookRequest struct {
@@ -24,7 +27,7 @@ type authnWebhookResponse struct {
 }
 
 func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
-	if config.AuthnWebhookURL == "" {
+	if c.config.AuthnWebhookURL == "" {
 		var allowed = true
 		authnWebhookResponse := &authnWebhookResponse{Allowed: &allowed}
 		return authnWebhookResponse, nil
@@ -41,7 +44,9 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 		Environment:   c.environment,
 	}
 
-	resp, err := c.postRequest(config.AuthnWebhookURL, req)
+	start := time.Now()
+
+	resp, err := c.postRequest(c.config.AuthnWebhookURL, req)
 	if err != nil {
 		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
 		return nil, errAuthnWebhook
@@ -50,6 +55,19 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 	defer resp.Body.Close()
 
 	c.webhookLog("authnReq", req)
+
+	u, err := url.Parse(c.config.AuthnWebhookURL)
+	if err != nil {
+		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
+		return nil, errAuthnWebhook
+	}
+	statusCode := fmt.Sprintf("%d", resp.StatusCode)
+	m := c.metrics
+	m.IncWebhookReqCnt(statusCode, "POST", u.Host, u.Path)
+	m.ObserveWebhookReqDur(statusCode, "POST", u.Host, u.Path, time.Since(start).Seconds())
+	// TODO: ヘッダーのサイズも計測する
+	m.ObserveWebhookReqSz(statusCode, "POST", u.Host, u.Path, resp.Request.ContentLength)
+	m.ObserveWebhookResSz(statusCode, "POST", u.Host, u.Path, resp.ContentLength)
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -77,6 +95,12 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 	if err := json.Unmarshal(body, &authnWebhookResponse); err != nil {
 		c.errLog().Err(err).Caller().Msg("AuthnWebhookResponseError")
 		return nil, errAuthnWebhookResponse
+	}
+
+	if authnWebhookResponse.Reason == nil {
+		m.IncAuthnWebhookCnt(statusCode, "POST", u.Host, u.Path, *authnWebhookResponse.Allowed, "")
+	} else {
+		m.IncAuthnWebhookCnt(statusCode, "POST", u.Host, u.Path, *authnWebhookResponse.Allowed, *authnWebhookResponse.Reason)
 	}
 
 	return &authnWebhookResponse, nil

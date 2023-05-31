@@ -1,4 +1,4 @@
-package main
+package ayame
 
 const (
 	// 登録成功

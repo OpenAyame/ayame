@@ -1,4 +1,4 @@
-package main
+package ayame
 
 // Type を確認する用
 type message struct {
@@ -17,6 +17,7 @@ type registerMessage struct {
 	AyameClient *string `json:"ayameClient"`
 	Libwebrtc   *string `json:"libwebrtc"`
 	Environment *string `json:"environment"`
+	Standalone  bool    `json:"standalone"`
 }
 
 type pingMessage struct {

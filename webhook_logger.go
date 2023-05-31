@@ -1,4 +1,4 @@
-package main
+package ayame
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/shiguredo/lumberjack/v3"
 )
 
-func initWebhookLogger() (*zerolog.Logger, error) {
+func InitWebhookLogger(config *Config) (*zerolog.Logger, error) {
 
 	if f, err := os.Stat(config.LogDir); os.IsNotExist(err) || !f.IsDir() {
 		return nil, err
@@ -31,10 +31,10 @@ func initWebhookLogger() (*zerolog.Logger, error) {
 		Compress:   true,
 	}
 
-	var writers io.Writer
+	writers := io.MultiWriter(writer)
 	// デバッグが有効な時はコンソールにもだす
 	if config.Debug {
-		writers = io.MultiWriter(os.Stdout, writer)
+		writers = io.MultiWriter(writers, writer)
 	}
 
 	logger := zerolog.New(writers).With().Timestamp().Logger()

@@ -1,10 +1,9 @@
-GO111MODULE = on
 LDFLAGS = -ldflags '-w -s'
 
 .PHONY: ayame
 
 ayame:
-	GO111MODULE=$(GO111MODULE) go build $(LDFLAGS) -o $@
+	go build $(LDFLAGS) -o bin/$@ cmd/ayame/main.go
 
 .PHONY: darwin linux
 
@@ -12,10 +11,10 @@ GOOS = $@
 GOARCH = amd64
 
 linux darwin:
-	GO111MODULE=$(GO111MODULE) GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ayame-$(GOOS)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o bin/ayame-$(GOOS) cmd/ayame/main.go
 
 check:
-	GO111MODULE=$(GO111MODULE) go test ./...
+	go test ./...
 
 clean:
 	rm -rf ayame
@@ -31,4 +30,7 @@ fmt:
 .PHONY: init
 
 init:
-	cp -n ayame.example.yaml ayame.yaml
+	cp -n config_example.ini config.ini
+
+test:
+	go test -race -v
