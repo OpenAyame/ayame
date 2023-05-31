@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2023.1.0
+
 - [CHANGE] サンプル設定ファイルを ayame.example.ini から config_example.ini に変更する
   - @voluntas
 - [CHANGE] デフォルトの設定ファイル名を ayame.ini から config.ini へ変更する

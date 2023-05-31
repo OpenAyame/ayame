@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	ayameVersion = "2022.2.0"
+	ayameVersion = "2023.1.0"
 )
 
 func main() {
