@@ -49,7 +49,7 @@ func (c *connection) postRequest(u string, body interface{}) (*http.Response, er
 }
 
 func (c *connection) transport() (*http.Transport, error) {
-	// そもそも証明書のどちらかが設定されてなかったら、mTLS を利用しない
+	// そもそも証明書のどれかが設定されてなかったら、mTLS を利用しない
 	if c.config.WebhookTLSFullchainFile == "" ||
 		c.config.WebhookTLSPrivateKeyFile == "" ||
 		c.config.WebhookTLSVerifyCacertFile == "" {
