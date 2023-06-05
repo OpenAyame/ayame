@@ -34,6 +34,10 @@ type Config struct {
 	WebhookLogName           string `ini:"webhook_log_name"`
 	WebhookRequestTimeoutSec int32  `ini:"webhook_request_timeout_sec"`
 
+	WebhookTLSFullchainFile    string `ini:"webhook_tls_fullchain_file"`
+	WebhookTLSPrivateKeyFile   string `ini:"webhook_tls_private_key_file"`
+	WebhookTLSVerifyCacertFile string `ini:"webhook_tls_verify_cacert_file"`
+
 	ListenPrometheusIPv4Address string `ini:"listen_prometheus_ipv4_address"`
 	ListenPrometheusPortNumber  int32  `ini:"listen_prometheus_port_number"`
 }
