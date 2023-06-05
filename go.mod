@@ -8,11 +8,11 @@ require (
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/prometheus/client_golang v1.15.1
 	github.com/rs/zerolog v1.29.1
-	github.com/shiguredo/lumberjack/v3 v3.0.0
 	github.com/shiguredo/websocket v1.6.1
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/sync v0.2.0
 	gopkg.in/ini.v1 v1.67.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (

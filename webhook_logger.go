@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
-	"github.com/shiguredo/lumberjack/v3"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func InitWebhookLogger(config *Config) (*zerolog.Logger, error) {
