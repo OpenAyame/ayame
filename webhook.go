@@ -5,8 +5,8 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -64,7 +64,7 @@ func (c *connection) transport() (*http.Transport, error) {
 
 	// 証明書プール（CA）を設定
 	caCertPool := x509.NewCertPool()
-	caCert, err := ioutil.ReadFile(c.config.WebhookTLSVerifyCacertFile) // CA証明書のパスを設定する
+	caCert, err := os.ReadFile(c.config.WebhookTLSVerifyCacertFile) // CA証明書のパスを設定する
 	if err != nil {
 		return nil, err
 	}
