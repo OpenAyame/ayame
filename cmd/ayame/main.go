@@ -12,22 +12,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const (
-	ayameVersion = "2023.1.0"
-)
-
 func main() {
-	args := flag.Args()
-	// 引数の処理
-	if len(args) > 0 {
-		if args[0] == "version" {
-			fmt.Printf("WebRTC Signaling Server Ayame version %s", ayameVersion)
-			return
-		}
-	}
+	// bin/ayame -V
+	showVersion := flag.Bool("V", false, "バージョン")
 
-	configFilePath := flag.String("c", "./config.ini", "ayame の設定ファイルへのパス(ini)")
+	// bin/ayame -C config.ini
+	configFilePath := flag.String("C", "./config.ini", "設定ファイルへのパス")
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("WebRTC Signaling Server Ayame version %s\n", ayame.Version)
+		return
+	}
 
 	config, err := ayame.NewConfig(*configFilePath)
 	if err != nil {
