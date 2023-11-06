@@ -1,16 +1,16 @@
-name: Release Build
+name: release
 on:
   push:
-    tags: '*'
+    tags: "*"
 
 jobs:
-  build:
-    name: Build
+  release:
+    name: release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v4
         with:
-          go-version: '^1.18'
+          go-version: "^1.18"
       - uses: actions/checkout@v4
       - name: Set version
         id: version
@@ -21,6 +21,7 @@ jobs:
       - run: go install github.com/tcnksm/ghr@latest
       - run: |
           GOOS=linux GOARCH=amd64 go build -o dist/ayame_linux_amd64 cmd/ayame/main.go
+          GOOS=linux GOARCH=arm64 go build -o dist/ayame_linux_arm64 cmd/ayame/main.go
           GOOS=darwin GOARCH=amd64 go build -o dist/ayame_darwin_amd64 cmd/ayame/main.go
           GOOS=darwin GOARCH=arm64 go build -o dist/ayame_darwin_arm64 cmd/ayame/main.go
           gzip dist/*

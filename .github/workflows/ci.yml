@@ -1,4 +1,4 @@
-name: Go Build & Format
+name: ci
 on:
   push:
     branches-ignore:
@@ -6,8 +6,8 @@ on:
     tags-ignore:
       - "*"
 jobs:
-  build:
-    name: Build
+  ci:
+    name: ci
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

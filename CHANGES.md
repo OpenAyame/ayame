@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] リリースバイナリに linux arm64 を追加する
+
 ## 2023.2.0
 
 - [CHANGE] websocket を公式に戻す
