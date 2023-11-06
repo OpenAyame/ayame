@@ -39,7 +39,7 @@
 ## 利用ライブラリ
 
 - WS は gorilla/websocket
-  - https://github.com/shiguredo/websocket
+  - https://github.com/gorilla/websocket
 - ログは zerolog
   - https://github.com/rs/zerolog
 - ログローテは lumberjack

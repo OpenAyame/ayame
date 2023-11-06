@@ -1,11 +1,15 @@
 package ayame
 
 import (
+	_ "embed"
 	"net/url"
 
 	zlog "github.com/rs/zerolog/log"
 	"gopkg.in/ini.v1"
 )
+
+//go:embed VERSION
+var Version string
 
 const (
 	defaultLogDir                = "."

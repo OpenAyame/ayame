@@ -11,6 +11,13 @@
 
 ## develop
 
+## 2023.2.0
+
+- [CHANGE] websocket を公式に戻す
+  - @voluntas
+- [CHANGE] lumberjack を公式に戻す
+  - @voluntas
+
 ## 2023.1.0
 
 - [CHANGE] サンプル設定ファイルを ayame.example.ini から config_example.ini に変更する

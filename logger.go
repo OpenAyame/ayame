@@ -9,7 +9,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/shiguredo/lumberjack/v3"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 var (

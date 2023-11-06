@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	zlog "github.com/rs/zerolog/log"
-	"github.com/shiguredo/websocket"
 )
 
 const (

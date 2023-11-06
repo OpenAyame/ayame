@@ -7,9 +7,9 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/oklog/ulid/v2"
 	"github.com/rs/zerolog"
-	"github.com/shiguredo/websocket"
 )
 
 type connection struct {
