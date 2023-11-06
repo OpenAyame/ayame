@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2023.2.0
+
 - [CHANGE] websocket を公式に戻す
   - @voluntas
 - [CHANGE] lumberjack を公式に戻す
