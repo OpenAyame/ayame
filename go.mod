@@ -5,7 +5,7 @@ go 1.21.3
 require (
 	github.com/gorilla/websocket v1.5.1
 	github.com/labstack/echo-contrib v0.15.0
-	github.com/labstack/echo/v4 v4.11.2
+	github.com/labstack/echo/v4 v4.11.3
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/prometheus/client_golang v1.17.0
 	github.com/rs/zerolog v1.31.0
