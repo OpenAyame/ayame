@@ -1,6 +1,6 @@
 module github.com/OpenAyame/ayame
 
-go 1.21.5
+go 1.21.6
 
 require (
 	github.com/gorilla/websocket v1.5.1
