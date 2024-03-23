@@ -17,7 +17,7 @@ jobs:
           go-version-file: ./go.mod
           cache: true
           cache-dependency-path: ./go.sum
-      - uses: dominikh/staticcheck-action@v1.3.0
+      - uses: dominikh/staticcheck-action@v1.3.1
         with:
           version: "2023.1.6"
           install-go: false
