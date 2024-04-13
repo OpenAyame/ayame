@@ -46,7 +46,6 @@ Ayame Web SDK のサンプルを利用することで動作を確認できます
 $ git clone git@github.com:OpenAyame/ayame-web-sdk-samples.git
 $ cd ayame-web-sdk-samples
 $ npm install
-$ npm run dev
 ```
 
 main.js URL を `'ws://127.0.0.1:3000/signaling'` に変更
@@ -54,7 +53,7 @@ main.js URL を `'ws://127.0.0.1:3000/signaling'` に変更
 https://github.com/OpenAyame/ayame-web-sdk-samples/blob/master/main.js#L1
 
 ```
-$ yarn serve
+$ npm run dev
 ```
 
 http://127.0.0.1:5000/sendrecv.html をブラウザタブで２つ開いて接続を押してみてください。
