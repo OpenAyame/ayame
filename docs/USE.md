@@ -45,7 +45,8 @@ Ayame Web SDK のサンプルを利用することで動作を確認できます
 ```
 $ git clone git@github.com:OpenAyame/ayame-web-sdk-samples.git
 $ cd ayame-web-sdk-samples
-$ yarn install
+$ npm install
+$ npm run dev
 ```
 
 main.js URL を `'ws://127.0.0.1:3000/signaling'` に変更
