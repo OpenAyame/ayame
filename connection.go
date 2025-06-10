@@ -418,7 +418,6 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 		// TODO: c.standalone == false で type: connected を受信した場合はエラーにするか検討する
 		if c.standalone {
 			err := fmt.Errorf("WS-CONNECTED")
-			c.errLog().Err(err).Send()
 			return err
 		}
 		// ログ出力
