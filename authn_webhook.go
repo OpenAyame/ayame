@@ -48,7 +48,7 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 
 	resp, err := c.postRequest(c.config.AuthnWebhookURL, req)
 	if err != nil {
-		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
+		c.errLog().Error("AuthnWebhookError", "error", err)
 		return nil, errAuthnWebhook
 	}
 	// http://ikawaha.hateblo.jp/entry/2015/06/07/074155
@@ -58,7 +58,7 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 
 	u, err := url.Parse(c.config.AuthnWebhookURL)
 	if err != nil {
-		c.errLog().Err(err).Caller().Msg("AuthnWebhookError")
+		c.errLog().Error("AuthnWebhookError", "error", err)
 		return nil, errAuthnWebhook
 	}
 	statusCode := fmt.Sprintf("%d", resp.StatusCode)
@@ -71,7 +71,7 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		c.errLog().Bytes("body", body).Err(err).Caller().Msg("AuthnWebhookResponseError")
+		c.errLog().Error("AuthnWebhookResponseError", "error", err, "body", string(body))
 		return nil, err
 	}
 
@@ -85,7 +85,7 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 
 	// 200 以外で返ってきたときはエラーとする
 	if resp.StatusCode != 200 {
-		c.errLog().Interface("resp", httpResponse).Caller().Msg("AuthnWebhookUnexpectedStatusCode")
+		c.errLog().Error("AuthnWebhookUnexpectedStatusCode", "resp", httpResponse)
 		return nil, errAuthnWebhookUnexpectedStatusCode
 	}
 
@@ -93,7 +93,7 @@ func (c *connection) authnWebhook() (*authnWebhookResponse, error) {
 
 	authnWebhookResponse := authnWebhookResponse{}
 	if err := json.Unmarshal(body, &authnWebhookResponse); err != nil {
-		c.errLog().Err(err).Caller().Msg("AuthnWebhookResponseError")
+		c.errLog().Error("AuthnWebhookResponseError", "error", err)
 		return nil, errAuthnWebhookResponse
 	}
 

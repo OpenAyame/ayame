@@ -28,7 +28,7 @@ func (c *connection) disconnectWebhook() error {
 
 	resp, err := c.postRequest(c.config.DisconnectWebhookURL, req)
 	if err != nil {
-		c.errLog().Err(err).Caller().Msg("DisconnectWebhookError")
+		c.errLog().Error("DisconnectWebhookError", "error", err)
 		return errDisconnectWebhook
 	}
 	defer resp.Body.Close()
@@ -37,7 +37,7 @@ func (c *connection) disconnectWebhook() error {
 
 	u, err := url.Parse(c.config.DisconnectWebhookURL)
 	if err != nil {
-		c.errLog().Err(err).Caller().Msg("DisconnectWebhookError")
+		c.errLog().Error("DisconnectWebhookError", "error", err)
 		return errDisconnectWebhook
 	}
 	statusCode := fmt.Sprintf("%d", resp.StatusCode)
@@ -50,7 +50,7 @@ func (c *connection) disconnectWebhook() error {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		c.errLog().Bytes("body", body).Err(err).Caller().Msg("DiconnectWebhookResponseError")
+		c.errLog().Error("DiconnectWebhookResponseError", "error", err, "body", string(body))
 		return errDisconnectWebhookResponse
 	}
 
@@ -64,7 +64,7 @@ func (c *connection) disconnectWebhook() error {
 
 	// 200 以外で返ってきたときはエラーとする
 	if resp.StatusCode != 200 {
-		c.errLog().Interface("resp", httpResponse).Caller().Msg("DisconnectWebhookUnexpectedStatusCode")
+		c.errLog().Error("DisconnectWebhookUnexpectedStatusCode", "resp", httpResponse)
 		return errDisconnectWebhookUnexpectedStatusCode
 	}
 

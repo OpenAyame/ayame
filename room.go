@@ -45,7 +45,7 @@ func (s *Server) StartMatchServer(ctx context.Context) error {
 				m[c.roomID] = room{
 					connections: connections,
 				}
-				c.debugLog().Msg("CREATED-ROOM")
+				c.debugLog().Debug("CREATED-ROOM")
 				rch <- one
 			}
 		case unregister := <-unregisterChannel:
@@ -59,12 +59,12 @@ func (s *Server) StartMatchServer(ctx context.Context) error {
 					for _, connection := range r.connections {
 						// 両方の forwardChannel を閉じる
 						close(connection.forwardChannel)
-						connection.debugLog().Msg("CLOSED-FORWARD-CHANNEL")
-						connection.debugLog().Msg("REMOVED-CLIENT")
+						connection.debugLog().Debug("CLOSED-FORWARD-CHANNEL")
+						connection.debugLog().Debug("REMOVED-CLIENT")
 					}
 					// room を削除
 					delete(m, c.roomID)
-					c.debugLog().Msg("DELETED-ROOM")
+					c.debugLog().Debug("DELETED-ROOM")
 				}
 			}
 		case forward := <-forwardChannel:

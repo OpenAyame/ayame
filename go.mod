@@ -8,7 +8,6 @@ require (
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/oklog/ulid/v2 v2.1.1
 	github.com/prometheus/client_golang v1.22.0
-	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/sync v0.15.0
 	gopkg.in/ini.v1 v1.67.0

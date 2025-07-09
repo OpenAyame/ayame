@@ -7,7 +7,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
-	zlog "github.com/rs/zerolog/log"
+	"log/slog"
 )
 
 const (
@@ -33,7 +33,7 @@ func (s *Server) signalingHandler(c echo.Context) error {
 
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		zlog.Debug().Err(err).Send()
+		slog.Debug("Failed to upgrade websocket", "error", err)
 		return err
 	}
 
@@ -59,8 +59,8 @@ func (s *Server) signalingHandler(c echo.Context) error {
 
 		// config を connection でも触れるように渡しておく
 		config:          *s.config,
-		signalingLogger: *s.signalingLogger,
-		webhookLogger:   *s.webhookLogger,
+		signalingLogger: s.signalingLogger,
+		webhookLogger:   s.webhookLogger,
 		metrics:         s.Metrics,
 
 		copyHeaders: copyHeaders,

@@ -43,10 +43,10 @@ func (c *connection) postRequest(u string, body interface{}) (*http.Response, er
 }
 
 func (c *connection) webhookLog(n string, v interface{}) {
-	c.webhookLogger.Log().
-		Str("roomId", c.roomID).
-		Str("clientId", c.ID).
-		Interface("copyHeaders", c.copyHeaders).
-		Interface(n, v).
-		Send()
+	c.webhookLogger.Info("webhook",
+		"roomId", c.roomID,
+		"clientId", c.ID,
+		"copyHeaders", c.copyHeaders,
+		n, v,
+	)
 }

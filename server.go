@@ -8,15 +8,14 @@ import (
 
 	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog"
-	zlog "github.com/rs/zerolog/log"
+	"log/slog"
 )
 
 type Server struct {
 	config *Config
 
-	signalingLogger *zerolog.Logger
-	webhookLogger   *zerolog.Logger
+	signalingLogger *slog.Logger
+	webhookLogger   *slog.Logger
 
 	EchoPrometheus *echo.Echo
 	Metrics        *Metrics
@@ -85,7 +84,7 @@ func (s *Server) Start(ctx context.Context) error {
 
 	defer func() {
 		if err := s.Shutdown(ctx); err != nil {
-			zlog.Error().Err(err).Send()
+			slog.Error("Failed to shutdown server", "error", err)
 		}
 	}()
 

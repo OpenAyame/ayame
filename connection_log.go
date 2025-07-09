@@ -1,10 +1,8 @@
 package ayame
 
 import (
+	"log/slog"
 	"slices"
-
-	"github.com/rs/zerolog"
-	zlog "github.com/rs/zerolog/log"
 )
 
 func (c *connection) signalingLog(message message, rawMessage []byte) {
@@ -14,34 +12,36 @@ func (c *connection) signalingLog(message message, rawMessage []byte) {
 	}
 
 	if c.config.Debug {
-		c.signalingLogger.Debug().
-			Str("roomId", c.roomID).
-			Str("clientId", c.clientID).
-			Str("connectionId", c.ID).
-			Str("type", message.Type).
-			Str("rawMessage", string(rawMessage)).
-			Send()
+		c.signalingLogger.Debug("signaling",
+			"roomId", c.roomID,
+			"clientId", c.clientID,
+			"connectionId", c.ID,
+			"type", message.Type,
+			"rawMessage", string(rawMessage),
+		)
 		return
 	}
 
-	c.signalingLogger.Info().
-		Str("roomId", c.roomID).
-		Str("clientId", c.clientID).
-		Str("connectionId", c.ID).
-		Str("type", message.Type).
-		Send()
+	c.signalingLogger.Info("signaling",
+		"roomId", c.roomID,
+		"clientId", c.clientID,
+		"connectionId", c.ID,
+		"type", message.Type,
+	)
 }
 
-func (c *connection) errLog() *zerolog.Event {
-	return zlog.Error().
-		Str("roomId", c.roomID).
-		Str("clientID", c.clientID).
-		Str("connectionId", c.ID)
+func (c *connection) errLog() *slog.Logger {
+	return slog.Default().With(
+		"roomId", c.roomID,
+		"clientID", c.clientID,
+		"connectionId", c.ID,
+	)
 }
 
-func (c *connection) debugLog() *zerolog.Event {
-	return zlog.Debug().
-		Str("roomId", c.roomID).
-		Str("clientID", c.clientID).
-		Str("connectionId", c.ID)
+func (c *connection) debugLog() *slog.Logger {
+	return slog.Default().With(
+		"roomId", c.roomID,
+		"clientID", c.clientID,
+		"connectionId", c.ID,
+	)
 }

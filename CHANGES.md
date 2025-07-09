@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] ログライブラリを zerolog から Go 標準の slog に変更する
+  - @voluntas
+
 ## 2025.5.1
 
 - [UPDATE] go のバージョンを 1.24.4 に上げる

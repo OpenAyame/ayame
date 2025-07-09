@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/OpenAyame/ayame"
-	zlog "github.com/rs/zerolog/log"
+	"log/slog"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -43,7 +43,7 @@ func main() {
 		log.Fatal(err)
 	}
 	// ayame.jsonl は グローバルの logger に代入する
-	zlog.Logger = *logger
+	slog.SetDefault(logger)
 
 	config.PrintConfig()
 

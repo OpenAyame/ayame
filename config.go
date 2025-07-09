@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"net/url"
 
-	zlog "github.com/rs/zerolog/log"
+	"log/slog"
 	"gopkg.in/ini.v1"
 )
 
@@ -189,34 +189,34 @@ func setDefaultsConfig(config *Config) {
 }
 
 func (c *Config) PrintConfig() {
-	zlog.Info().Bool("debug", c.Debug).Msg("AyameConf")
+	slog.Info("AyameConf", "debug", c.Debug)
 
-	zlog.Info().Str("log_dir", c.LogDir).Msg("AyameConf")
-	zlog.Info().Str("log_name", c.LogName).Msg("AyameConf")
-	zlog.Info().Bool("log_stdout", c.LogStdout).Msg("AyameConf")
+	slog.Info("AyameConf", "log_dir", c.LogDir)
+	slog.Info("AyameConf", "log_name", c.LogName)
+	slog.Info("AyameConf", "log_stdout", c.LogStdout)
 
-	zlog.Info().Int("log_rotate_max_size", c.LogRotateMaxSize).Msg("AyameConf")
-	zlog.Info().Int("log_rotate_max_backups", c.LogRotateMaxBackups).Msg("AyameConf")
-	zlog.Info().Int("log_rotate_max_age", c.LogRotateMaxAge).Msg("AyameConf")
-	zlog.Info().Bool("log_rotate_compress", c.LogRotateCompress).Msg("AyameConf")
+	slog.Info("AyameConf", "log_rotate_max_size", c.LogRotateMaxSize)
+	slog.Info("AyameConf", "log_rotate_max_backups", c.LogRotateMaxBackups)
+	slog.Info("AyameConf", "log_rotate_max_age", c.LogRotateMaxAge)
+	slog.Info("AyameConf", "log_rotate_compress", c.LogRotateCompress)
 
-	zlog.Info().Str("signaling_log_name", c.SignalingLogName).Msg("AyameConf")
-	zlog.Info().Strs("signaling_log_filters", c.SignalingLogFilters).Msg("AyameConf")
+	slog.Info("AyameConf", "signaling_log_name", c.SignalingLogName)
+	slog.Info("AyameConf", "signaling_log_filters", c.SignalingLogFilters)
 
-	zlog.Info().Bool("debug_console_log", c.DebugConsoleLog).Msg("AyameConf")
-	zlog.Info().Bool("debug_console_log_json", c.DebugConsoleLogJSON).Msg("AyameConf")
+	slog.Info("AyameConf", "debug_console_log", c.DebugConsoleLog)
+	slog.Info("AyameConf", "debug_console_log_json", c.DebugConsoleLogJSON)
 
-	zlog.Info().Str("listen_ipv4_address", c.ListenIPv4Address).Msg("AyameConf")
-	zlog.Info().Int32("listen_port_number", c.ListenPortNumber).Msg("AyameConf")
+	slog.Info("AyameConf", "listen_ipv4_address", c.ListenIPv4Address)
+	slog.Info("AyameConf", "listen_port_number", c.ListenPortNumber)
 
-	zlog.Info().Strs("copy_websocket_header_names", c.CopyWebSocketHeaderNames).Msg("AyameConf")
+	slog.Info("AyameConf", "copy_websocket_header_names", c.CopyWebSocketHeaderNames)
 
-	zlog.Info().Str("authn_webhook_url", c.AuthnWebhookURL).Msg("AyameConf")
-	zlog.Info().Str("disconnect_webhook_url", c.DisconnectWebhookURL).Msg("AyameConf")
+	slog.Info("AyameConf", "authn_webhook_url", c.AuthnWebhookURL)
+	slog.Info("AyameConf", "disconnect_webhook_url", c.DisconnectWebhookURL)
 
-	zlog.Info().Str("webhook_log_name", c.WebhookLogName).Msg("AyameConf")
-	zlog.Info().Int32("webhook_request_timeout_sec", c.WebhookRequestTimeoutSec).Msg("AyameConf")
+	slog.Info("AyameConf", "webhook_log_name", c.WebhookLogName)
+	slog.Info("AyameConf", "webhook_request_timeout_sec", c.WebhookRequestTimeoutSec)
 
-	zlog.Info().Str("prometheus_ipv4_address", c.ListenPrometheusIPv4Address).Msg("AyameConf")
-	zlog.Info().Int32("prometheus_port", c.ListenPrometheusPortNumber).Msg("AyameConf")
+	slog.Info("AyameConf", "prometheus_ipv4_address", c.ListenPrometheusIPv4Address)
+	slog.Info("AyameConf", "prometheus_port", c.ListenPrometheusPortNumber)
 }
