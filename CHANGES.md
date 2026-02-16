@@ -11,6 +11,17 @@
 
 ## develop
 
+## 2026.1.0
+
+- [UPDATE] go のバージョンを 1.26.0 に上げる
+  - @voluntas
+- [UPDATE] actions/setup-go@v6 に上げる
+  - @voluntas
+- [UPDATE] actions/checkout@v6 に上げる
+  - @voluntas
+- [UPDATE] dominikh/staticcheck-action の staticcheck を 2026.1 に上げる
+  - @voluntas
+
 ## 2025.5.1
 
 - [UPDATE] go のバージョンを 1.24.4 に上げる
