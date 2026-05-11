@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] go のバージョンを 1.26.3 に上げる
+  - @voluntas
 - [UPDATE] github.com/labstack/echo/v4 を v4.15.2 に上げる
   - @voluntas
 - [UPDATE] github.com/rs/zerolog を v1.35.1 に上げる
