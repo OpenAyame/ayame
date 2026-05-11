@@ -1,7 +1,6 @@
 # 0006-refactor-remove-http-server-embedding
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Low
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/change-remove-http-server-embedding

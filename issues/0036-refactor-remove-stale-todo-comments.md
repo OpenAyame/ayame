@@ -1,7 +1,6 @@
 # 0036-refactor-remove-stale-todo-comments
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Low
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-remove-stale-todo-comments

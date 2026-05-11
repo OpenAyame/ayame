@@ -1,7 +1,6 @@
 # 0018-enhance-add-allowed-origins-config
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: High
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-allowed-origins

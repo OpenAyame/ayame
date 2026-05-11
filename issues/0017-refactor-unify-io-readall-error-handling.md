@@ -1,7 +1,6 @@
 # 0017-refactor-unify-io-readall-error-handling
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Medium
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-unify-io-readall-error

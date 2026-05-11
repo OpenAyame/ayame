@@ -1,7 +1,6 @@
 # 0001-bug-fix-authn-webhook-nil-dereference
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - 
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro / DeepSeek V4 Pro
 ## 概要

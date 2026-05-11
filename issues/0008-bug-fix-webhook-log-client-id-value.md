@@ -1,7 +1,6 @@
 # 0008-bug-fix-webhook-log-client-id-value
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Medium
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-webhook-log-client-id

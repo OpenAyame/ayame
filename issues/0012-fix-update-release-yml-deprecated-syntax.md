@@ -1,7 +1,6 @@
 # 0012-fix-update-release-yml-deprecated-syntax
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Medium
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-release-yml-set-output

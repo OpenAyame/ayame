@@ -1,7 +1,6 @@
 # 0021-doc-fix-version-display-in-use-md
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Low
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-version-display-in-use-md

@@ -1,7 +1,6 @@
 # 0023-doc-fix-ayame-ini-reference-in-use-md
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Medium
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-ayame-ini-reference-in-use-md

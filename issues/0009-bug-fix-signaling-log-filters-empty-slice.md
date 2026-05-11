@@ -1,7 +1,6 @@
 # 0009-bug-fix-signaling-log-filters-empty-slice
 
 - Created: 2026-05-11
-- Completed: 2026-05-11
 - Priority: Medium
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-signaling-log-filters-empty
