@@ -1,8 +1,10 @@
 # 0040-test-add-webhook-tests
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: High
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-webhook-tests
 
 ## 概要
 
@@ -79,10 +81,6 @@ func TestAuthnWebhookSuccess(t *testing.T) {
     assert.True(t, *resp.Allowed)
 }
 ```
-
-## 作業ブランチ
-
-`feature/add-webhook-tests`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0013-fix-pin-ghr-version-in-release-yml
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-pin-ghr-version
 
 ## 概要
 
@@ -29,10 +31,6 @@ Priority: Medium
 ```yaml
 - run: go install github.com/tcnksm/ghr@v0.16.2
 ```
-
-## 作業ブランチ
-
-`feature/fix-pin-ghr-version`
 
 ## 変更履歴
 

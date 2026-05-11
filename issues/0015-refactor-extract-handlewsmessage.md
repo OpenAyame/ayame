@@ -1,8 +1,10 @@
 # 0015-refactor-extract-handlewsmessage
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-extract-handlewsmessage
 
 ## 概要
 
@@ -82,10 +84,6 @@ func (c *connection) handleWsMessage(rawMessage []byte, pongTimeoutTimer *time.T
 
 - `TestHandleRegister`: register メッセージのパースとバリデーション
 - `TestHandleSignalingMessage`: シグナリングメッセージの転送
-
-## 作業ブランチ
-
-`feature/refactor-extract-handlewsmessage`
 
 ## 変更履歴
 

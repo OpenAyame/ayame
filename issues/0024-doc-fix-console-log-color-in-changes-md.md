@@ -1,8 +1,10 @@
 # 0024-doc-fix-console-log-color-in-changes-md
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-console-log-color-in-changes-md
 
 ## 概要
 
@@ -27,10 +29,6 @@ Priority: Medium
 ## 対応方針
 
 `CHANGES.md` の 2025.2.0 セクションから `console_log_color` の項目を削除し、当該バージョンに実装されていない事実を履歴に反映する。
-
-## 作業ブランチ
-
-`feature/fix-console-log-color-in-changes-md`
 
 ## 変更履歴
 

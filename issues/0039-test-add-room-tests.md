@@ -1,13 +1,16 @@
 # 0039-test-add-room-tests
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: High
-Depends: 0005-refactor-move-global-channels-to-server
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-room-tests
 
 ## 概要
 
 `room.go`（84 行）の `StartMatchServer` が未テスト。マッチングロジックの状態遷移が検証されていない。
+
+**依存**: 0005-refactor-move-global-channels-to-server（チャネルの Server 移動が完了していること）
 
 ## 問題
 
@@ -41,10 +44,6 @@ Depends: 0005-refactor-move-global-channels-to-server
 - `TestStartMatchServerRegisterFull`: 3 人目の登録で `full` が返る
 - `TestStartMatchServerUnregister`: 解除後に部屋が削除される
 - `TestStartMatchServerUnregisterNotRegistered`: 登録されていないコネクションの解除が安全に処理される
-
-## 作業ブランチ
-
-`feature/add-room-tests`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0026-doc-fix-upadte-typo-in-changes-md
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-upadte-typo-in-changes-md
 
 ## 概要
 
@@ -20,10 +22,6 @@ Priority: Low
 ## 対応方針
 
 `CHANGES.md:171` の `[UPADTE]` を `[UPDATE]` に修正する。
-
-## 作業ブランチ
-
-`feature/fix-upadte-typo-in-changes-md`
 
 ## 変更履歴
 

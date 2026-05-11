@@ -1,8 +1,10 @@
 # 0010-bug-fix-pong-timeout-timer-initialization
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-pong-timeout-timer
 
 ## 概要
 
@@ -52,10 +54,6 @@ pongTimeoutTimer := time.NewTimer(time.Duration(c.config.WebSocketPongTimeoutSec
 ```
 
 これで十分であり、register がタイムアウト内に完了すれば問題ない。ただし register + authn webhook の処理時間が `WebSocketPongTimeoutSec` を超えるとタイムアウトする。初期タイマーを停止する方法がより堅牢である。
-
-## 作業ブランチ
-
-`feature/fix-pong-timeout-timer`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0033-refactor-remove-kb-mb-reexports
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-remove-kb-mb-reexports
 
 ## 概要
 
@@ -35,10 +37,6 @@ Buckets: prometheus.LinearBuckets(1*prometheus.MB, 1*prometheus.MB, 5),
 ```
 
 `const` ブロック（11-13 行）を削除する。
-
-## 作業ブランチ
-
-`feature/refactor-remove-kb-mb-reexports`
 
 ## 変更履歴
 

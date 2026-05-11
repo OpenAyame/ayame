@@ -1,8 +1,10 @@
 # 0016-refactor-extract-webhook-common-logic
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-extract-webhook-common
 
 ## 概要
 
@@ -74,10 +76,6 @@ func (c *connection) doWebhook(url, logName string, reqBody interface{}) ([]byte
 ```
 
 `authnWebhook()` と `disconnectWebhook()` からはボイラープレートを削除し、`doWebhook()` の呼び出しに置き換える。
-
-## 作業ブランチ
-
-`feature/refactor-extract-webhook-common`
 
 ## 変更履歴
 

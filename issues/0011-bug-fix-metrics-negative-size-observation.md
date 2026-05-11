@@ -1,8 +1,10 @@
 # 0011-bug-fix-metrics-negative-size-observation
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-metrics-negative-size
 
 ## 概要
 
@@ -63,10 +65,6 @@ func (m *Metrics) ObserveWebhookReqSz(code, method, host, url string, sz int64) 
     m.WebhookReqSz.MetricCollector.(*prom.HistogramVec).With(labels).Observe(float64(sz))
 }
 ```
-
-## 作業ブランチ
-
-`feature/fix-metrics-negative-size`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0029-enhance-validate-url-scheme
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: High
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-validate-url-scheme
 
 ## 概要
 
@@ -47,10 +49,6 @@ func validateWebhookURL(rawURL string) error {
 ```
 
 各 webhook URL のバリデーションで `url.ParseRequestURI` の代わりにこの関数を使用する。
-
-## 作業ブランチ
-
-`feature/add-validate-url-scheme`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0030-refactor-replace-unprofessional-comments
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-replace-unprofessional-comments
 
 ## 概要
 
@@ -44,10 +46,6 @@ Priority: Low
 ```
 
 AGENTS.md に従い、コメントは日本語で記述する。ログメッセージ（`.Msg("...")`）は英語のまま変更しない。
-
-## 作業ブランチ
-
-`feature/refactor-replace-unprofessional-comments`
 
 ## 変更履歴
 

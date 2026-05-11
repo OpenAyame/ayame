@@ -1,8 +1,10 @@
 # 0021-doc-fix-version-display-in-use-md
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-version-display-in-use-md
 
 ## 概要
 
@@ -15,10 +17,6 @@ Priority: Low
 ## 対応方針
 
 `docs/USE.md:64` の `version 2025.2.0` を `version 2026.1.2` に更新する。
-
-## 作業ブランチ
-
-`feature/fix-version-display-in-use-md`
 
 ## 変更履歴
 

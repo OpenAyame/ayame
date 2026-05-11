@@ -1,8 +1,10 @@
 # 0028-bug-fix-logger-type-assertion-panic
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: High
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-logger-type-assertion-panic
 
 ## 概要
 
@@ -59,10 +61,6 @@ if !ok {
 }
 return fmt.Sprintf("[%s]", filepath.Base(s))
 ```
-
-## 作業ブランチ
-
-`feature/fix-logger-type-assertion-panic`
 
 ## 変更履歴
 

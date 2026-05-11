@@ -1,8 +1,10 @@
 # 0002-bug-fix-ulid-entropy-source
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-ulid-entropy-source
 
 ## 概要
 
@@ -114,10 +116,6 @@ func TestGetULIDConcurrency(t *testing.T) {
     }
 }
 ```
-
-## 作業ブランチ
-
-`feature/fix-ulid-entropy-source`
 
 ## 変更履歴
 

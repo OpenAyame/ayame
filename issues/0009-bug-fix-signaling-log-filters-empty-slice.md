@@ -1,8 +1,10 @@
 # 0009-bug-fix-signaling-log-filters-empty-slice
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-signaling-log-filters-empty
 
 ## 概要
 
@@ -42,10 +44,6 @@ if len(config.SignalingLogFilters) == 0 {
 ```
 
 `len(nil) == 0` は `true` のため、`nil` チェックと空スライスチェックの両方を 1 行でカバーできる。
-
-## 作業ブランチ
-
-`feature/fix-signaling-log-filters-empty`
 
 ## 変更履歴
 

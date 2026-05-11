@@ -1,8 +1,10 @@
 # 0035-enhance-add-websocket-config-to-printconfig
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-websocket-config-to-printconfig
 
 ## 概要
 
@@ -25,10 +27,6 @@ zlog.Info().Int32("websocket_read_timeout_sec", c.WebSocketReadTimeoutSec).Msg("
 zlog.Info().Int32("websocket_pong_timeout_sec", c.WebSocketPongTimeoutSec).Msg("AyameConf")
 zlog.Info().Int32("websocket_ping_interval_sec", c.WebSocketPingIntervalSec).Msg("AyameConf")
 ```
-
-## 作業ブランチ
-
-`feature/add-websocket-config-to-printconfig`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0007-bug-fix-disconnect-webhook-typo
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-disconnect-webhook-typo
 
 ## 概要
 
@@ -30,10 +32,6 @@ c.errLog().Bytes("body", body).Err(err).Caller().Msg("DiconnectWebhookResponseEr
 ```go
 c.errLog().Bytes("body", body).Err(err).Caller().Msg("DisconnectWebhookResponseError")
 ```
-
-## 作業ブランチ
-
-`feature/fix-disconnect-webhook-typo`
 
 ## 変更履歴
 

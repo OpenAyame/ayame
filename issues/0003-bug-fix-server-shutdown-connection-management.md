@@ -1,8 +1,10 @@
 # 0003-bug-fix-server-shutdown-connection-management
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: High
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-server-shutdown
 
 ## 概要
 
@@ -245,10 +247,6 @@ defer func() {
 - `connection.main` が ctx.Done() で select ループを抜けること
 - `connection.main` が defer で wsConn.Close() を呼ぶこと
 - シャットダウン時に wsRecv の ReadMessage がエラーを返しループを抜けること
-
-## 作業ブランチ
-
-`feature/fix-server-shutdown`
 
 ## 変更履歴
 

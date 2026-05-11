@@ -1,8 +1,10 @@
 # 0025-doc-add-echo-contrib-to-changes-md
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-echo-contrib-to-changes-md
 
 ## 概要
 
@@ -25,10 +27,6 @@ github.com/labstack/echo-contrib v0.50.1
 - [UPDATE] github.com/labstack/echo-contrib を v0.50.1 に上げる
   - @voluntas
 ```
-
-## 作業ブランチ
-
-`feature/add-echo-contrib-to-changes-md`
 
 ## 変更履歴
 

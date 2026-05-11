@@ -1,8 +1,10 @@
 # 0032-refactor-remove-unused-metricskey
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-remove-unused-metricskey
 
 ## 概要
 
@@ -21,10 +23,6 @@ MetricsKey = "webhook_metrics"
 ## 対応方針
 
 `metrics.go:14` の `MetricsKey` 定義を削除する。
-
-## 作業ブランチ
-
-`feature/refactor-remove-unused-metricskey`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0034-refactor-simplify-setdefaultsconfig
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-simplify-setdefaultsconfig
 
 ## 概要
 
@@ -65,10 +67,6 @@ if 文の羅列は冗長だが、コードの意図は明確である。また `
 ### 推奨
 
 方法1 を推奨する。`~string | ~int32` の型制約により、将来フィールドが `int64` などに変更された場合でもコンパイルエラーで検知可能。
-
-## 作業ブランチ
-
-`feature/refactor-simplify-setdefaultsconfig`
 
 ## 変更履歴
 

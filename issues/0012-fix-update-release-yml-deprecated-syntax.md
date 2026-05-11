@@ -1,8 +1,10 @@
 # 0012-fix-update-release-yml-deprecated-syntax
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-release-yml-set-output
 
 ## 概要
 
@@ -30,10 +32,6 @@ echo ::set-output name=version::$VERSION
 ```yaml
 echo "version=$VERSION" >> $GITHUB_OUTPUT
 ```
-
-## 作業ブランチ
-
-`feature/fix-release-yml-set-output`
 
 ## 変更履歴
 

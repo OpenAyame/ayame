@@ -1,8 +1,10 @@
 # 0036-refactor-remove-stale-todo-comments
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-remove-stale-todo-comments
 
 ## 概要
 
@@ -27,10 +29,6 @@ Priority: Low
 
 - ほとんどの TODO は実現可能性が低いか低優先度のため削除する
 - `connection.go:73` の `reason` 長さ対応のみ、別途 issue を立てる価値がある
-
-## 作業ブランチ
-
-`feature/refactor-remove-stale-todo-comments`
 
 ## 変更履歴
 

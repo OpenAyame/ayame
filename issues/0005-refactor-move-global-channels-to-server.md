@@ -1,9 +1,10 @@
 # 0005-refactor-move-global-channels-to-server
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
-Branch: feature/change-move-channels-to-server
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/change-move-channels-to-server
 
 ## 目的
 

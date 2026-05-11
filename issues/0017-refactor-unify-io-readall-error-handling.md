@@ -1,8 +1,10 @@
 # 0017-refactor-unify-io-readall-error-handling
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/refactor-unify-io-readall-error
 
 ## 概要
 
@@ -50,10 +52,6 @@ return errWebhookReadBody
 ```go
 var errWebhookReadBody = errors.New("failed to read webhook response body")
 ```
-
-## 作業ブランチ
-
-`feature/refactor-unify-io-readall-error`
 
 ## 変更履歴
 

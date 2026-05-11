@@ -1,8 +1,10 @@
 # 0020-doc-fix-command-line-flag-in-use-md
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-command-line-flag-in-use-md
 
 ## 概要
 
@@ -25,10 +27,6 @@ configFilePath := flag.String("C", "./config.ini", "設定ファイルへのパ�
 ## 対応方針
 
 `docs/USE.md:70` の `-c string` を `-C string` に修正する。
-
-## 作業ブランチ
-
-`feature/fix-command-line-flag-in-use-md`
 
 ## 変更履歴
 

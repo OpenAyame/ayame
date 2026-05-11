@@ -1,8 +1,9 @@
 # 0001-bug-fix-authn-webhook-nil-dereference
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus / DeepSeek V4 Pro
-
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- 
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro / DeepSeek V4 Pro
 ## 概要
 
 `authnWebhook()` 関数内で、認証 webhook レスポンスの `Allowed` フィールド（`*bool`）が nil の場合に panic する。`Reason` は nil チェックされているが、`Allowed` はチェックされていない。

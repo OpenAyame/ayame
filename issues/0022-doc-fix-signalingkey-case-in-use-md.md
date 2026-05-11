@@ -1,8 +1,10 @@
 # 0022-doc-fix-signalingkey-case-in-use-md
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-signalingkey-case-in-use-md
 
 ## 概要
 
@@ -21,10 +23,6 @@ Priority: Medium
 ## 対応方針
 
 `docs/USE.md:82` および `docs/USE.md:105` の `"signalingkey"` を `"signalingKey"` に修正する。
-
-## 作業ブランチ
-
-`feature/fix-signalingkey-case-in-use-md`
 
 ## 変更履歴
 

@@ -1,8 +1,10 @@
 # 0018-enhance-add-allowed-origins-config
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: High
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-allowed-origins
 
 ## 概要
 
@@ -71,10 +73,6 @@ func (s *Server) signalingHandler(c echo.Context) error {
 ```ini
 allowed_origins = https://example.com, https://app.example.com
 ```
-
-## 作業ブランチ
-
-`feature/add-allowed-origins`
 
 ## 変更履歴
 

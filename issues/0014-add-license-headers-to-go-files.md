@@ -1,8 +1,10 @@
 # 0014-add-license-headers-to-go-files
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-license-headers
 
 ## 概要
 
@@ -61,10 +63,6 @@ find . -name "*.go" -not -path "./vendor/*" | sort
 - `types.go`
 - `webhook.go`
 - `cmd/ayame/main.go`
-
-## 作業ブランチ
-
-`feature/add-license-headers`
 
 ## 変更履歴
 

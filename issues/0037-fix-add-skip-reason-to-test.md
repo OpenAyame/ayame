@@ -1,8 +1,10 @@
 # 0037-fix-add-skip-reason-to-test
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Low
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-add-skip-reason-to-test
 
 ## 概要
 
@@ -27,10 +29,6 @@ func TestSignalingHandler(t *testing.T) {
 ```go
 t.Skip("WebSocket upgrade requires real TCP connection; use integration test")
 ```
-
-## 作業ブランチ
-
-`feature/fix-add-skip-reason-to-test`
 
 ## 変更履歴
 

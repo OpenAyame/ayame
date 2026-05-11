@@ -1,8 +1,10 @@
 # 0019-doc-fix-go-version-in-use-md
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: Medium
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: Medium
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-go-version-in-use-md
 
 ## 概要
 
@@ -23,10 +25,6 @@ go 1.26.3
 ## 対応方針
 
 `docs/USE.md:11` の `go 1.24` を `go 1.26` に修正する。マイナーバージョンまでで十分であり、パッチバージョンは不要（Go 1.26.x であればどのパッチでも動作するため）。
-
-## 作業ブランチ
-
-`feature/fix-go-version-in-use-md`
 
 ## 変更履歴
 

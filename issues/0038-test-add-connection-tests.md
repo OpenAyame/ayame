@@ -1,8 +1,10 @@
 # 0038-test-add-connection-tests
 
-Created: 2026-05-11
-Model: Qwen 3.6-plus
-Priority: High
+- Created: 2026-05-11
+- Completed: 2026-05-11
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/add-connection-tests
 
 ## 概要
 
@@ -39,10 +41,6 @@ authnWebhook はインターフェース抽出または `connection` struct へ�
 - room full → reject message
 - authn webhook allowed → accept message
 - authn webhook denied → reject message
-
-## 作業ブランチ
-
-`feature/add-connection-tests`
 
 ## 変更履歴
 
