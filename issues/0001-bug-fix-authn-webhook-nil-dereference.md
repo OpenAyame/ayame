@@ -1,8 +1,10 @@
 # 0001-bug-fix-authn-webhook-nil-dereference
 
 - Created: 2026-05-11
-- 
-- Model: Qwen 3.6-plus / DeepSeek V4 Pro / DeepSeek V4 Pro
+- Priority: High
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-authn-webhook-nil-dereference
+
 ## 概要
 
 `authnWebhook()` 関数内で、認証 webhook レスポンスの `Allowed` フィールド（`*bool`）が nil の場合に panic する。`Reason` は nil チェックされているが、`Allowed` はチェックされていない。
@@ -45,6 +47,7 @@ if authnWebhookResponse.Reason == nil {
 ## 設計判断
 
 **採用案**: `authnWebhook()` 内で `Allowed == nil` をチェックし、nil なら `return nil, errAuthnWebhookResponse` とする。
+
 - `allowed` は認証 webhook レスポンスの必須フィールドであり、欠損は不正なレスポンスとみなすのが妥当
 - メトリクス（`IncAuthnWebhookCnt`）は記録しない。`allowed bool` がシグネチャのため nil を表現できず、不正確な値で記録するより未記録の方が誤解がない
 - この設計は `AuthnWebhookURL==""` 時の早期リターンパス（`authn_webhook.go:31`、`IncAuthnWebhookCnt` 未呼び出し）と挙動が整合する
@@ -53,17 +56,20 @@ if authnWebhookResponse.Reason == nil {
 ## 対応方針
 
 1. **`authn_webhook.go` の `if authnWebhookResponse.Reason == nil`（100 行目）の直前に nil チェックを追加**:
+
    ```go
    if authnWebhookResponse.Allowed == nil {
        c.errLog().Caller().Msg("AuthnWebhookAllowedMissing")
        return nil, errAuthnWebhookResponse
    }
    ```
+
    注: `AuthnWebhookAllowedMissing` は新規ログメッセージ。
 
 2. **`connection.go:333-341` を削除する**（コメント行 `// 認証サーバの戻り値がおかしい場合は全部 Error にする` を含む丸ごと 9 行）。`authnWebhook()` が nil `Allowed` を返さないため到達不能。
 
 3. **CHANGES.md の `## develop` セクションに以下を追記する**:
+
    ```
    - [FIX] 認証 webhook レスポンスの allowed フィールドが nil の場合に panic するのを修正する
    ```
@@ -83,6 +89,7 @@ if authnWebhookResponse.Reason == nil {
 ### `authn_webhook_test.go` を新規作成
 
 テスト用 `connection` 構造体の構築:
+
 - `Config` に `AuthnWebhookURL` と `WebhookRequestTimeoutSec` を設定
 - `Metrics` は `NewMetrics()` で生成する（`MetricCollector` が nil のため、本テストではメトリクス呼び出しのアサーションは行わない）
 - `postRequest` に `http.Client{Timeout: ...}` が使われるが、モックサーバーへのリクエストのためタイムアウトは問題にならない
