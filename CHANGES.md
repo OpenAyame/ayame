@@ -11,6 +11,21 @@
 
 ## develop
 
+**リリース日**: YYYY-MM-DD
+
+## 2026.1.3
+
+**リリース日**: 2026-05-11
+
+- [UPDATE] github.com/labstack/echo/v4 を v4.15.2 に上げる
+  - @voluntas
+- [UPDATE] github.com/rs/zerolog を v1.35.1 に上げる
+  - @voluntas
+- [UPDATE] gopkg.in/ini.v1 を v1.67.2 に上げる
+  - @voluntas
+- [FIX] go のバージョンを 1.26.4 に上げる
+  - @voluntas
+
 ## 2026.1.2
 
 - [FIX] go のバージョンを 1.26.2 に上げる
