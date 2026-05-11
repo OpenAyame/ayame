@@ -1,10 +1,13 @@
 # {タイトル}
 
-Priority: {優先度} (例: High / Medium / Low)
-Created: {YYYY-MM-DD} (例: 2024-06-01)
-Completed: {YYYY-MM-DD} (例: 2024-07-01)
-Model: {モデル名} {モデルバージョン} (例: Opus 4.7 / GPT 5.4 / Composer 2 Fast)
-Branch: {Git-Flow のブランチ名} (例: feature/xxx-yyy)
+- Created: {YYYY-MM-DD} (例: 2024-06-01)
+- Completed: {YYYY-MM-DD} (例: 2024-07-01)
+
+- Priority: {優先度} (例: High / Medium / Low)
+- Model: {モデル名} {モデルバージョン} (例: Opus 4.7 / GPT 5.4 / Composer 2 Fast)
+  - 利用モデル、複数モデルを使用している場合はすべて記載すること
+- Branch: {Git-Flow のブランチ名} (例: feature/xxx-yyy)
+  - 作業ブランチ
 
 ## 目的
 
