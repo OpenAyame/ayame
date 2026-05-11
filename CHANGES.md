@@ -11,6 +11,8 @@
 
 ## develop
 
+**リリース日**: YYYY-MM-DD
+
 - [UPDATE] go のバージョンを 1.26.3 に上げる
   - @voluntas
 - [UPDATE] github.com/labstack/echo/v4 を v4.15.2 に上げる
