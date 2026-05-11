@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-authn-webhook-nil-dereference
 
+## 優先度
+
+High。`connection.main()` ゴルーチン内で `*authnWebhookResponse.Allowed` の nil デリファレンスが発生すると、当該 goroutine に recover が存在しないためサーバープロセス全体が panic で停止する。認証 webhook サーバーが `allowed` フィールドを返さないことは、webhook サーバーのバグや API 変更により容易に発生しうる。1 接続の認証失敗が全接続の切断に繋がるため、早急な修正が必要。
+
 ## 概要
 
 `authnWebhook()` 関数内で、認証 webhook レスポンスの `Allowed` フィールド（`*bool`）が nil の場合に panic する。`Reason` は nil チェックされているが、`Allowed` はチェックされていない。

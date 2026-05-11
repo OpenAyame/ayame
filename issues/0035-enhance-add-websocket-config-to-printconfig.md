@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-websocket-config-to-printconfig
 
+## 優先度
+
+Low。`PrintConfig()` は起動時に全設定をログ出力するが、WebSocket のタイムアウト設定（`WebSocketReadTimeoutSec`、`WebSocketPongTimeoutSec`、`WebSocketPingIntervalSec`）が漏れている。起動時ログの情報充実であるが、これらの設定値は設定ファイルを見れば確認可能である。ログの完全性向上として他の修正と同時に対応すればよい。
+
 ## 概要
 
 `PrintConfig()` で WebSocket 設定（`WebSocketReadTimeoutSec`、`WebSocketPongTimeoutSec`、`WebSocketPingIntervalSec`）がログ出力されない。

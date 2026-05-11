@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-command-line-flag-in-use-md
 
+## 優先度
+
+Medium。`docs/USE.md` に `-c string` と記載されているが、`cmd/ayame/main.go` の実装は `-C string`（大文字）である。小文字フラグでは設定ファイルを指定できず、ユーザーが起動に失敗する。ドキュメントの 1 行修正で解決するが、誤った情報でユーザーを誘導することの影響は大きい。
+
 ## 概要
 
 `docs/USE.md` のコマンドラインフラグの記載が実際の実装と異なる。

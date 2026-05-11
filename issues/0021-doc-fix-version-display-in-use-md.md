@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-version-display-in-use-md
 
+## 優先度
+
+Low。`docs/USE.md` の `-V` 実行例が `version 2025.2.0` と古いが、ユーザーが実際にインストールするバージョンは `go install` の時点で決まる。バージョン表示例の古さはユーザー体験に実質的な影響を与えない。他のドキュメント修正とまとめて対応すればよい。
+
 ## 概要
 
 `docs/USE.md` のバージョン表示例が古い。

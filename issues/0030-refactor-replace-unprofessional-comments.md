@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-replace-unprofessional-comments
 
+## 優先度
+
+Low。`connection.go` の「ここはブロックする candidate とかを並列で来てるかもしれないが知らん」（131 行目）や「戻り値は手抜き」（362 行目）は、技術的な意図が伝わらずプロフェッショナルでない。機能や安全性に影響しないが、コードレビューやメンテナンス時の理解を妨げる。他のリファクタリングと同時に対応すればよい。
+
 ## 概要
 
 `connection.go` にカジュアルすぎる不適切なコメントが存在する。

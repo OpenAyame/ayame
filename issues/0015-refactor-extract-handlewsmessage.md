@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-extract-handlewsmessage
 
+## 優先度
+
+Medium。`handleWsMessage` が 169 行の monolithic 関数になっており、特に `case "register":` ブロックが約 100 行を占める。テスト容易性と可読性を著しく損なっているが、既存動作を変更しない内部リファクタリングである。0015 の分割は後続のテスト追加（0038）の前提となるため、テスト戦略全体の中で優先的に対応する。
+
 ## 概要
 
 `handleWsMessage` 関数（169 行）が肥大化しており、JSON パース・認証・登録・転送・ログが 1 関数に混在している。これを責務ごとに分割し、テスト可能にする。

@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/change-remove-http-server-embedding
 
+## 優先度
+
+Low。`http.Server` の埋め込みにより `Serve()` や `ListenAndServeTLS()` が `Server` の公開 API として露出しているが、実際に誤用された事例はない。`Start()` のみが使用されており、埋め込みによる実害は発生していない。API の整理として時間があるときに対応すればよい。
+
 ## 概要
 
 `Server` 構造体が `http.Server` を埋め込んでいるため、`Serve()`、`ListenAndServeTLS()`、`SetKeepAlivesEnabled()` などの `http.Server` のメソッドが `Server` を通じて外部に公開されている。利用者は `Server.Start()` メソッドのみを使用すべきであり、意図しないメソッドの公開は誤用のリスクになる。

@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-ayame-ini-reference-in-use-md
 
+## 優先度
+
+Medium。`docs/USE.md` に旧設定ファイル名 `ayame.ini` が残っている。2023.1.0 で `config.ini` に変更済みであり、`ayame.ini` というファイルを作成しても読み込まれない。ユーザーが設定ファイルの名前を間違えるとサーバーが起動しないため、ドキュメント修正の優先度は高い。
+
 ## 概要
 
 `docs/USE.md` で旧設定ファイル名 `ayame.ini` が使用されており、現在のデフォルト `config.ini` と矛盾している。

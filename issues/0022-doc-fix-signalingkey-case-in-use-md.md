@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-signalingkey-case-in-use-md
 
+## 優先度
+
+Medium。`docs/USE.md` に `"signalingkey"`（全小文字）と記載されているが、実際の JSON タグは `"signalingKey"`（camelCase）である。小文字で送信した場合、JSON タグのマッチングに失敗し signalingKey が認識されず、認証 webhook にシグナリングキーが送信されない。認証失敗に直結するためドキュメント修正の優先度は高い。
+
 ## 概要
 
 `docs/USE.md` で JSON キー `signalingKey` が `"signalingkey"`（全小文字）と誤って記載されている。

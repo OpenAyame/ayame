@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-room-tests
 
+## 優先度
+
+High。`StartMatchServer` がマッチングロジックの中核を担っているが、部屋作成（registerResultCreated）、相手待機中（registerResultPaired）、満員（registerResultFull）、解除（room 削除）の 4 状態遷移がいずれも未テストである。マッチングの誤動作はクライアントが誤った相手と接続される重大なバグに直結する。0005（チャネルの Server 移動）に依存するが、テストカバレッジの観点から優先度は高い。
+
 ## 概要
 
 `room.go`（84 行）の `StartMatchServer` が未テスト。マッチングロジックの状態遷移が検証されていない。

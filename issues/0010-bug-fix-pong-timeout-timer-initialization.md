@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-pong-timeout-timer
 
+## 優先度
+
+Medium。`pongTimeoutTimer` が接続確立直後からカウントダウンを開始するが、クライアントは register 完了後にはじめて ping を受信し pong を返す。register 処理には authn webhook 呼び出しが含まれ、`WebSocketPongTimeoutSec` のデフォルト値（60 秒）以内に収まることが期待される。ただし webhook サーバーの応答遅延によりタイムアウトしうるエッジケースであるため、堅牢性向上として対応する。
+
 ## 概要
 
 `connection.main()` で生成される `pongTimeoutTimer` が接続確立直後からカウントダウンを開始する。クライアントが register メッセージを送信する前にタイムアウトする可能性がある。

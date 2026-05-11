@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-remove-kb-mb-reexports
 
+## 優先度
+
+Low。`KB`/`MB` 定数は `prometheus.KB`/`prometheus.MB` を再エクスポートしているだけで、プロジェクト内の 2 箇所でのみ使用されている。再エクスポートは不要な間接参照を追加するだけで価値がない。使用箇所で直接 `prometheus.KB` を使用すればよい。他のリファクタリングと同時に対応すればよい。
+
 ## 概要
 
 `metrics.go` で `prometheus.KB` と `prometheus.MB` が不要に再エクスポートされている。

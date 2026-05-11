@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-allowed-origins
 
+## 優先度
+
+High。`CheckOrigin` が常に `true` を返しており、任意の Origin からの WebSocket 接続を許可している。これは Cross-Site WebSocket Hijacking のリスクがあり、ブラウザ上の悪意ある JavaScript がユーザーの Cookie を利用して WebSocket 接続を確立し、シグナリングを乗っ取る可能性がある。本番環境で回避する手段がなく、設定による制御が必須である。破壊的変更を伴うため慎重なリリースが必要だが、セキュリティ上の優先度は高い。
+
 ## 概要
 
 WebSocket アップグレーダーの `CheckOrigin` が常に `true` を返しており、任意の Origin からの WebSocket 接続を許可している。本番環境ではクロスオリジン WebSocket 接続（Cross-Site WebSocket Hijacking）のリスクがある。

@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-ci-test
 
+## 優先度
+
+High。CI でテストが一切実行されておらず、静的解析（staticcheck）のみでは動的なリグレッションが検知できない。`ok_handler_test.go` と `signaling_handler_test.go` の 2 つのテストファイルが存在するが実行されていない。connection、room、webhook のコアロジック変更時にバグが検知されず本番環境に到達するリスクがある。
+
 ## 概要
 
 CI パイプラインで `go test` が実行されていない。静的解析（staticcheck）のみが行われており、動的テストによるリグレッション検知の仕組みがない。

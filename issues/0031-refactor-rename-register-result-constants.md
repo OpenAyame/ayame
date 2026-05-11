@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-rename-register-result-constants
 
+## 優先度
+
+Low。定数名 `one`/`two`/`full` は数値そのものを表現しており、登録結果のセマンティクス（部屋作成/相手待機中/満員）が伝わらない。可読性の問題であり機能影響はない。広範囲のリネームが必要だが検索置換で安全に行える。他のリファクタリングと同時に対応すればよい。
+
 ## 概要
 
 登録結果定数 `one` / `two` / `full` の名前が意図を伝えず、可読性が低い。

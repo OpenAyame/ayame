@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-extract-webhook-common
 
+## 優先度
+
+Medium。`authn_webhook.go` と `disconnect_webhook.go` の 2 ファイルにわたって HTTP リクエスト送信・メトリクス記録・ステータスコードチェックのボイラープレートが重複している。修正時に両方を更新する必要があり保守コストが高いが、既存動作を変更しないリファクタリングである。0017 の error handling 統一と同時に対応するのが効率的。
+
 ## 概要
 
 `authn_webhook.go` と `disconnect_webhook.go` で、HTTP リクエスト送信・メトリクス記録・ステータスコードチェック・ログ出力のボイラープレートが重複している。共通処理を抽出して保守性を向上させる。

@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-upadte-typo-in-changes-md
 
+## 優先度
+
+Low。`CHANGES.md` 2023.1.0 の `[UPADTE]` は `[UPDATE]` の typo であり、3 年以上前のリリースノート内の表記ミスである。現在の開発や将来のリリースに影響しない。他の `CHANGES.md` 修正（0024、0025）とまとめて対応すればよい。
+
 ## 概要
 
 `CHANGES.md` に `[UPADTE]` というタイプミスがある。

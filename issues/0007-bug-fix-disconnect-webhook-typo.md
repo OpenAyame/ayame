@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-disconnect-webhook-typo
 
+## 優先度
+
+Low。`DiconnectWebhookResponseError` は `DisconnectWebhookResponseError` の 1 文字 typo であり、ログ検索時に正しいメッセージ名でヒットしない問題はあるが、機能やデータに影響しない。トラブルシューティングの効率を下げる程度の影響であるため、他の修正と同時に行う。
+
 ## 概要
 
 `disconnect_webhook.go` のログメッセージにタイプミスがある。

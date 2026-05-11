@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-validate-url-scheme
 
+## 優先度
+
+Medium。`url.ParseRequestURI` は `file://` 等の不正スキームを許可するが、設定ファイル経由での注入であるため攻撃難易度は高い（設定ファイルへの書き込み権限が必要）。ただし `http`/`https` 以外のスキームが設定された場合の予期しない動作を防ぐ防御的バリデーションとして実施する。設定ファイルのバリデーションはサーバー起動時の 1 回のみであり、パフォーマンス影響はない。
+
 ## 概要
 
 webhook URL のバリデーションが `http` / `https` 以外のスキーム（`file://`、`javascript:` 等）を許可している。

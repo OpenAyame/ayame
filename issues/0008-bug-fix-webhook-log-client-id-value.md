@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-webhook-log-client-id
 
+## 優先度
+
+Medium。`webhookLog` が接続 ID（ULID）を `clientId` フィールドに記録している一方、`signalingLog` はクライアント ID を記録している。さらにフィールドキーも `clientID` と `clientId` で揺れている。ログ集計時に別フィールドとして扱われ、接続 ID とクライアント ID が混同される。分析の正確性を損なうため優先的に対応する。
+
 ## 概要
 
 `webhookLog` で `clientId` フィールドに接続 ID（`c.ID`、ULID）を記録している。同じフィールド名で他のログはクライアント ID（`c.clientID`）を記録しており、値の意味が一貫していない。

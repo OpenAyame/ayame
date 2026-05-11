@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-simplify-setdefaultsconfig
 
+## 優先度
+
+Low。`setDefaultsConfig` の 15 個の同一パターン if 文は冗長だが、コードの意図は明確でありバグの温床にはなっていない。ジェネリックヘルパーの導入は可読性の主観的判断を含み、`gopkg.in/ini.v1` にデフォルト値タグ機能がない以上、現状維持も合理的な選択肢である。他の優先度の高い修正が完了した後に対応すればよい。
+
 ## 概要
 
 `setDefaultsConfig` で同一パターンの if 文が 15 回繰り返されており、保守性が低い。

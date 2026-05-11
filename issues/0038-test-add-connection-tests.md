@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-connection-tests
 
+## 優先度
+
+High。`connection.go`（447 行）はプロジェクト最大のファイルであり、`handleWsMessage`（169 行）には 15 以上の分岐と認証 webhook 連携が含まれる。テストファイルが存在せず、メッセージパースのバグ、認証失敗時の不適切なエラーハンドリング、register ロジックのリグレッションが検知できない。`handleWsMessage` のエラーパス（Invalid JSON、Missing RoomID、Authn webhook 失敗、Room full 等）はすべて手動テストに依存している状態であり、CI で自動検証できるようにする必要がある。
+
 ## 概要
 
 `connection.go`（447 行）に対応するテストファイルが存在せず、コアロジックのテストカバレッジがゼロ。

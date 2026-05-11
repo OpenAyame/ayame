@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-signaling-log-filters-empty
 
+## 優先度
+
+Medium。設定ファイルで `signaling_log_filters =` と空指定した場合、`nil` チェックのみのためデフォルトフィルターが適用されず、シグナリングログが全消失する。空指定は一般的なユースケースではないが、誤って設定した場合の影響が大きい（デバッグ不能になる）。`nil` チェックを `len() == 0` に変更する 1 行修正で解決する。
+
 ## 概要
 
 `SignalingLogFilters` が空スライス `[]string{}` の場合、デフォルトフィルターが適用されず、すべてのシグナリングログがフィルタリングされて何も出力されない。

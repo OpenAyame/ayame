@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-unify-io-readall-error
 
+## 優先度
+
+Medium。同一の `io.ReadAll` 失敗に対して `authn_webhook.go` が生の `err` を返し `disconnect_webhook.go` がセンチネルエラーを返すという不整合がある。呼び出し側でのエラー種別判定を統一できない問題があるが、実務上 `io.ReadAll` が失敗するケースは稀である。コードの一貫性向上として 0016 と同時に対応する。
+
 ## 概要
 
 `io.ReadAll` エラー発生時のエラー返却方法が `authn_webhook.go` と `disconnect_webhook.go` で一貫していない。

@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-console-log-color-in-changes-md
 
+## 優先度
+
+Low。`CHANGES.md` 2025.2.0 に `console_log_color` 設定の追加が記載されているが、実際には `config.go` に対応フィールドが存在せず一度も実装されていない。ドキュメントの誤記載を修正するものであり、設定機能自体への影響はない。`CHANGES.md` の整合性修正として対応する。
+
 ## 概要
 
 `CHANGES.md` で追加されたと記載されている `console_log_color` 設定が、実際には実装されていない。

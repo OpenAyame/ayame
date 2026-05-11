@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-logger-type-assertion-panic
 
+## 優先度
+
+High。`logger.go` の `FormatTimestamp`、`FormatFieldValue`、`FormatCaller` がすべて安全でない型アサーション `i.(string)` を使用している。zerolog の内部実装変更や予期しない型の値が渡された場合に panic し、サーバープロセス全体が停止する。ログ出力は全リクエストにわたって行われるため、発現確率が高く致命的な影響範囲を持つ。修正は `s, ok := i.(string)` への置き換えのみで安全に行える。
+
 ## 概要
 
 `logger.go` の型アサーションが安全でない。`i.(string)` が `string` 以外の型で呼ばれた場合に panic する。

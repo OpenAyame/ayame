@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-server-shutdown
 
+## 優先度
+
+High。サーバー停止時にプロセスがハングし、コンテナオーケストレーション（Kubernetes 等）では強制終了（SIGKILL）まで停止しない。7 つの相互依存バグが連鎖しており、graceful shutdown が完全に機能していない。本番環境でのローリングアップデートやスケールイン時に接続中のクライアントへ切断通知が送られず、クライアント側でタイムアウト待ちが発生するため、早急な対応が必要。
+
 ## 概要
 
 サーバーシャットダウン時に以下の複数の問題が連鎖し、graceful shutdown が完了しない:

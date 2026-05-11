@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/add-webhook-tests
 
+## 優先度
+
+High。認証 webhook（`authn_webhook.go`）と切断 webhook（`disconnect_webhook.go`）は外部の認証サーバーとの連携ポイントであり、不具合が発生した場合の影響範囲が大きい。特に 0001 の nil デリファレンス panic のような致命的バグがテストなしで見過ごされている。`httptest.NewServer` を用いたモックテストにより、allowed true/false、エラーレスポンス、JSON パースエラー等のケースを自動検証できるようにする必要がある。
+
 ## 概要
 
 Webhook 系（`authn_webhook.go`、`disconnect_webhook.go`、`webhook.go`）のテストが存在しない。

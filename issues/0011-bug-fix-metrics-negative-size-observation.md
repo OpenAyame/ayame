@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-metrics-negative-size
 
+## 優先度
+
+Medium。HTTP レスポンスの `ContentLength` が不明な場合に `-1` を返すのは HTTP 仕様上の正常な動作だが、実際の webhook レスポンスでは `Content-Length` ヘッダーが設定されることが一般的である。`-1` がヒストグラムに記録されるとアラート閾値や集計に影響する可能性があるが、実務上は稀なケースである。
+
 ## 概要
 
 メトリクスの `ObserveWebhookResSz` および `ObserveWebhookReqSz` で、HTTP レスポンスの `ContentLength` が `-1`（サイズ不明）の場合に負の値が Prometheus ヒストグラムに記録される。

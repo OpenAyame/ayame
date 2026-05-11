@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-pin-ghr-version
 
+## 優先度
+
+Medium。`ghr@latest` は実行時の最新バージョンを解決するため、`ghr` の破壊的変更が入った場合にリリースワークフローが突然失敗する。`ghr` は成熟したツールであり破壊的変更は稀だが、リリースパイプラインの再現性は重要である。0012 の `::set-output` 修正と同時に行うのが効率的。
+
 ## 概要
 
 `.github/workflows/release.yml` で `ghr` を `@latest` でインストールしており、ビルドの再現性がない。

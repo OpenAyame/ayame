@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-ulid-entropy-source
 
+## 優先度
+
+Medium。`math/rand` のシード衝突には同一ナノ秒での呼び出しが必要であり、通常の負荷では発生確率は極めて低い。また `ulid.Monotonic` が同一ミリ秒内のエントロピー単調増加を試みるため、完全な ULID 重複にはさらに厳しい条件が必要となる。ただし connectionId の重複はマッチングロジックの破綻に直結するため、暗号的に安全な `crypto/rand` への切り替えはセキュリティ上のベストプラクティスとして実施する。
+
 ## 概要
 
 `getULID()` 関数で ULID 生成に予測可能なエントロピー源（ `math/rand` ）を使用している。`math/rand` は `t.UnixNano()` でシード化されており、暗号的に安全ではない。同一ナノ秒に複数コネクションが来た場合に同一シードとなる可能性があり、ULID の一意性が損なわれる。

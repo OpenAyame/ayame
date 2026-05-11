@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-remove-meaningless-nil-check
 
+## 優先度
+
+Low。`message == nil` チェックは `message := &message{}` で非 nil に初期化されているため常に false であり、到達不能コードである。存在しても実行時影響はなく、削除はコードクリーンアップの一環として行う。他の修正と同時に対応すればよい。
+
 ## 概要
 
 `handleWsMessage` 内の `message == nil` チェックが常に `false` であり無意味。

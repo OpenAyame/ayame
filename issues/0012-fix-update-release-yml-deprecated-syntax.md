@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/fix-release-yml-set-output
 
+## 優先度
+
+Medium。GitHub Actions の `::set-output` 構文は 2023 年 5 月に非推奨化されているが、2026 年 5 月現在も後方互換で動作している。ただし GitHub は予告なく非推奨構文のサポートを終了する可能性があるため、リリースワークフローが突然壊れるリスクがある。リリースができなくなると修正パッチの配布が不可能になるため優先的に対応する。
+
 ## 概要
 
 `.github/workflows/release.yml` で deprecated な `::set-output` 構文を使用している。

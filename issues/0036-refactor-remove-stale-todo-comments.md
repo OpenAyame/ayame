@@ -5,6 +5,10 @@
 - Model: Qwen 3.6-plus / DeepSeek V4 Pro
 - Branch: feature/refactor-remove-stale-todo-comments
 
+## 優先度
+
+Low。8 個の TODO コメントがコード中に放置されているが、いずれも実現可能性が低いか低優先度である。多くの TODO は zerolog の制限に起因するものであり、実現不可能である。不要な TODO コメントを削除することで、将来的に対応が必要な項目の識別が容易になる。他のリファクタリングと同時に対応すればよい。
+
 ## 概要
 
 放置された TODO コメントが複数存在する。不要なものを削除し、必要なものを issue 化する。
