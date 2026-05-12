@@ -23,7 +23,7 @@
   - @voluntas
 - [UPDATE] gopkg.in/ini.v1 を v1.67.2 に上げる
   - @voluntas
-- [FIX] go のバージョンを 1.26.4 に上げる
+- [FIX] go のバージョンを 1.26.3 に上げる
   - @voluntas
 
 ## 2026.1.2
