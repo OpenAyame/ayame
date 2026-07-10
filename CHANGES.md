@@ -13,6 +13,13 @@
 
 **リリース日**: YYYY-MM-DD
 
+- [UPDATE] github.com/labstack/echo/v4 を v4.15.4 に上げる
+  - @voluntas
+- [UPDATE] golang.org/x/sync を v0.22.0 に上げる
+  - @voluntas
+- [UPDATE] gopkg.in/ini.v1 を v1.67.3 に上げる
+  - @voluntas
+
 ## 2026.1.4
 
 **リリース日**: 2026-06-04
