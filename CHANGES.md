@@ -17,7 +17,7 @@
 
 - [UPDATE] go のバージョンを 1.27.0 に上げる
   - @voluntas
-- [UPDATE] actions/setup-go@v7 に上げる
+- [UPDATE] actions/setup-go を v7.0.0 に上げる
   - @voluntas
 - [UPDATE] actions/checkout を v7.0.1 に上げる
   - @voluntas
