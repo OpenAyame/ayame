@@ -13,6 +13,31 @@
 
 **リリース日**: YYYY-MM-DD
 
+- [UPDATE] go のバージョンを 1.27.0 に上げる
+  - @voluntas
+- [UPDATE] github.com/oklog/ulid/v2 を v2.1.2 に上げる
+  - @voluntas
+- [UPDATE] github.com/prometheus/client_golang を v1.24.1 に上げる
+  - @voluntas
+- [UPDATE] github.com/stretchr/testify を v1.12.1 に上げる
+  - @voluntas
+- [UPDATE] golang.org/x/crypto を v0.55.0 に上げる
+  - @voluntas
+- [UPDATE] golang.org/x/net を v0.58.0 に上げる
+  - @voluntas
+- [UPDATE] golang.org/x/text を v0.41.0 に上げる
+  - @voluntas
+- [UPDATE] google.golang.org/protobuf を v1.36.12 に上げる
+  - @voluntas
+- [UPDATE] github.com/mattn/go-isatty を v0.0.24 に上げる
+  - @voluntas
+- [UPDATE] actions/setup-go@v7 に上げる
+  - @voluntas
+- [UPDATE] actions/checkout を v7.0.1 に上げる
+  - @voluntas
+- [UPDATE] dominikh/staticcheck-action の staticcheck を 2026.2rc1 に上げる
+  - @voluntas
+
 ## 2026.1.5
 
 **リリース日**: 2026-06-10
