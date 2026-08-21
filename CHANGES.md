@@ -13,15 +13,9 @@
 
 ## 2026.2.0
 
-**リリース日**: 2026-08-20
+**リリース日**: 2026-08-21
 
 - [UPDATE] go のバージョンを 1.27.0 に上げる
-  - @voluntas
-- [UPDATE] actions/setup-go を v7.0.0 に上げる
-  - @voluntas
-- [UPDATE] actions/checkout を v7.0.1 に上げる
-  - @voluntas
-- [UPDATE] dominikh/staticcheck-action の staticcheck を 2026.2rc1 に上げる
   - @voluntas
 
 ## 2026.1.5
