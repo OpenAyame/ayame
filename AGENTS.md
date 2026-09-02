@@ -37,6 +37,7 @@
 
 ## issues について
 
+- `0000-template` を参考にすること
 - 番号が小さい issues から順番に対応すること
 - `{seqnum}-{category}-{short-description}.md` という命名規則を守ること
   - seqnum は `issues/SEQUENCE` ファイルの値を使うこと（9999 を超えたら 5 桁にする）
@@ -45,12 +46,17 @@
   - 例: `0002-fmt-enhance-support-for-joins.md`
 - 仕様的に対応が難しい場合は issues/pending/ へ移動すること
 - issue を作成したらコミットすること
+  - 複数 issue をまとめてコミットしてよい
 - issue をコミットするときはコミットメッセージに issue の番号とタイトルを記載すること
+  - `issues: {seq} {title}`
 - 1 issue 完了ごとに 1 コミットすること
 - Issue の作成日はファイルのタイトルの後に `Created: YYYY-MM-DD` として記載すること
 - Issue の完了日はファイルのタイトルの後に `Completed: YYYY-MM-DD` として記載すること
+- Issue の優先度はファイルのタイトルの後に `Priority: <優先度>` という形で記載すること
+  - 優先度は High / Medium / Low のいずれかをつけること
+  - High は最優先で対応する issue、Medium は優先的に対応する issue、Low は時間があれば対応する issue という意味合いで使うこと
 - Issue を作成した LLM の Model と Version をファイルのタイトルの後に `Model: <model-name> <version>` として記載すること
-  - Opus 4.7 や GPT-5.5 など
+  - Opus 4.7 や GPT-5.4 など
   - モデルが複数ある場合は GPT-5.5 / Opus 4.7 のように両方記載すること
 - Issue はなぜこの対応が必要なのかの根拠を明確にすること
 
