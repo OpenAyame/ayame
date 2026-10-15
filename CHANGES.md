@@ -11,6 +11,9 @@
 
 ## develop
 
+- [UPDATE] dominikh/staticcheck-action の version を 2026.2.2 に上げる
+  - @miosakuma
+
 ## 2026.2.1
 
 **リリース日**: 2026-09-02
