@@ -11,6 +11,19 @@
 
 ## develop
 
+## 2026.2.2
+
+**リリース日**: 2026-10-15
+
+- [UPDATE] github.com/labstack/echo/v4 を v4.16.0 に上げる
+  - @miosakuma
+- [UPDATE] github.com/prometheus/client_golang を v1.25.0 に上げる
+  - @miosakuma
+- [UPDATE] golang.org/x/sync を v0.24.0 に上げる
+  - @miosakuma
+- [FIX] go のバージョンを 1.27.2 に上げる
+  - @miosakuma
+
 ## 2026.2.1
 
 **リリース日**: 2026-09-02
