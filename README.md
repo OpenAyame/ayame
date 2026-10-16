@@ -50,7 +50,7 @@ Ayame を使ってみたい人は [USE.md](docs/USE.md) をお読みください
 
 ## Web SDK サンプルを使ってみる
 
-[Ayame Web SDK サンプル](https://github.com/OpenAyame/ayame-web-sdk-samples)
+[Ayame Web SDK サンプル](https://github.com/OpenAyame/ayame-web-sdk-examples)
 
 ## 仕組みの詳細を知りたい
 

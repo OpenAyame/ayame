@@ -8,7 +8,7 @@
 
 推奨バージョンは以下のようになります。
 
-`go 1.24`
+`go 1.27.2`
 
 ### パッケージのインストール
 
@@ -41,34 +41,53 @@ make init
 
 Ayame Web SDK のサンプルを利用することで動作を確認できます。
 
+サンプルは <https://github.com/OpenAyame/ayame-web-sdk-examples> で公開されています。
+実行には Node.js 20 以上と npm を利用します。
+
 ```bash
-git clone git@github.com:OpenAyame/ayame-web-sdk-samples.git
-cd ayame-web-sdk-samples
+git clone https://github.com/OpenAyame/ayame-web-sdk-examples.git
+cd ayame-web-sdk-examples
 npm install
 ```
 
-main.js URL を `'ws://127.0.0.1:3000/signaling'` に変更
+`.env.template` を `.env.local` にコピーし、起動した Ayame に合わせて設定します。
 
-<https://github.com/OpenAyame/ayame-web-sdk-samples/blob/master/main.js#L1>
+```bash
+cp .env.template .env.local
+```
+
+```bash
+VITE_AYAME_SIGNALING_URL=ws://127.0.0.1:3000/signaling
+VITE_AYAME_ROOM_ID_PREFIX=ayame@
+VITE_AYAME_ROOM_NAME=examples
+VITE_AYAME_SIGNALING_KEY=
+```
+
+- `VITE_AYAME_SIGNALING_URL`: Ayame のシグナリング URL
+- `VITE_AYAME_ROOM_ID_PREFIX` / `VITE_AYAME_ROOM_NAME`: ルーム ID はこの 2 つを連結した値
+- `VITE_AYAME_SIGNALING_KEY`: 認証ウェブフックを設定していない場合には使われないため空
 
 ```bash
 npm run dev
 ```
 
-<http://127.0.0.1:5000/sendrecv.html> をブラウザタブで２つ開いて接続を押してみてください。
+`npm run dev` を実行すると <http://localhost:5173/> で起動します。
+<http://localhost:5173/sendrecv> をブラウザのタブで 2 つ開き、それぞれ Connect を押してください。
+ルーム名を変更する場合は、2 つのタブで同じルーム名を指定します。
 
 ## コマンド
 
 ```bash
 $ ./bin/ayame -V
-WebRTC Signaling Server Ayame version 2025.2.0
+WebRTC Signaling Server Ayame version 2026.2.2
 ```
 
 ```bash
 $ ./bin/ayame -help
 Usage of ./bin/ayame:
-  -c string
-       ayame の設定ファイルへのパス(ini) (default "./config.ini")
+  -C string
+    	設定ファイルへのパス (default "./config.ini")
+  -V	バージョン
 ```
 
 ## `register` メッセージについて
