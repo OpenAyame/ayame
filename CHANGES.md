@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2026.2.4
+
+**リリース日**: 2026-11-11
+
 - [UPDATE] github.com/labstack/echo/v4 を v4.16.3 に更新する
   - @miosakuma
 - [UPDATE] golang.org/x/sync を v0.25.0 に更新する
