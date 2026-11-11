@@ -19,7 +19,7 @@ jobs:
           cache-dependency-path: ./go.sum
       - uses: dominikh/staticcheck-action@672a31696676d1592844bf0164b3bbfd855a4d50 # v1.4.1
         with:
-          version: "2026.2rc1"
+          version: "2026.2.2"
           install-go: false
       - run: go version
       - run: go fmt .
