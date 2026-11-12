@@ -1,0 +1,37 @@
+# 0021-doc-fix-version-display-in-use-md
+
+- Created: 2026-05-11
+- Priority: Low
+- Model: Qwen 3.6-plus / DeepSeek V4 Pro
+- Branch: feature/fix-version-display-in-use-md
+
+## 優先度
+
+Low。`docs/USE.md` の `-V` 実行例が `version 2025.2.0` と古いが、ユーザーが実際にインストールするバージョンは `go install` の時点で決まる。バージョン表示例の古さはユーザー体験に実質的な影響を与えない。他のドキュメント修正とまとめて対応すればよい。
+
+## 概要
+
+`docs/USE.md` のバージョン表示例が古い。
+
+## 問題
+
+`docs/USE.md:64` に `version 2025.2.0` と記載されている。現在のバージョンは `VERSION` ファイルの値 `2026.1.2` である。
+
+## 対応方針
+
+`docs/USE.md:64` の `version 2025.2.0` を `version 2026.1.2` に更新する。
+
+## 変更履歴
+
+CHANGES.md の `## develop` セクションに以下を追記する:
+
+```
+### misc
+- [FIX] docs/USE.md のバージョン表示例を 2026.1.2 に更新する
+  - @voluntas
+```
+
+## 関連ファイル
+
+- `docs/USE.md:64`
+- `VERSION:1`（参照用）
