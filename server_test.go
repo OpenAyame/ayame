@@ -52,7 +52,7 @@ func TestServerRoutesAndMetrics(t *testing.T) {
 	assert.Equal(t, "127.0.0.1:3000", s.Addr)
 	assert.Equal(t, "127.0.0.1:4000", s.metricsServer.Addr)
 	assert.Equal(t, readHeaderTimeout, s.ReadHeaderTimeout)
-	assert.Equal(t, readHeaderTimeout, s.metricsServer.ReadHeaderTimeout)
+	assert.Equal(t, time.Duration(0), s.metricsServer.ReadHeaderTimeout)
 
 	req := httptest.NewRequest(http.MethodGet, "/.ok", nil)
 	req.Host = "ayame.local"
@@ -66,12 +66,27 @@ func TestServerRoutesAndMetrics(t *testing.T) {
 	rec = httptest.NewRecorder()
 	s.Handler.ServeHTTP(rec, req)
 	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
+	assert.Equal(t, allowOptionsGet, rec.Header().Get("Allow"))
+	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+	assert.Equal(t, "{\"message\":\"Method Not Allowed\"}\n", rec.Body.String())
+
+	req = httptest.NewRequest(http.MethodHead, "/.ok", nil)
+	req.Host = "ayame.local"
+	rec = httptest.NewRecorder()
+	s.Handler.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
+	assert.Equal(t, allowOptionsGet, rec.Header().Get("Allow"))
+	assert.Empty(t, rec.Header().Get("Content-Type"))
+	assert.Empty(t, rec.Body.String())
 
 	req = httptest.NewRequest(http.MethodGet, "/missing", nil)
 	req.Host = "ayame.local"
 	rec = httptest.NewRecorder()
 	s.Handler.ServeHTTP(rec, req)
 	assert.Equal(t, http.StatusNotFound, rec.Code)
+	assert.Empty(t, rec.Header().Get("Allow"))
+	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+	assert.Equal(t, "{\"message\":\"Not Found\"}\n", rec.Body.String())
 
 	req = httptest.NewRequest(http.MethodGet, "/signaling", nil)
 	req.Host = "ayame.local"
@@ -94,6 +109,42 @@ func TestServerRoutesAndMetrics(t *testing.T) {
 	rec = httptest.NewRecorder()
 	s.metricsServer.Handler.ServeHTTP(rec, req)
 	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
+	assert.Equal(t, allowOptionsGet, rec.Header().Get("Allow"))
+	assert.Equal(t, "{\"message\":\"Method Not Allowed\"}\n", rec.Body.String())
+
+	req = httptest.NewRequest(http.MethodHead, "/metrics", nil)
+	rec = httptest.NewRecorder()
+	s.metricsServer.Handler.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
+	assert.Empty(t, rec.Body.String())
+
+	req = httptest.NewRequest(http.MethodOptions, "/.ok", nil)
+	req.Host = "ayame.local"
+	rec = httptest.NewRecorder()
+	s.Handler.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusNoContent, rec.Code)
+	assert.Equal(t, "OPTIONS, GET", rec.Header().Get("Allow"))
+	assert.Empty(t, rec.Body.String())
+
+	req = httptest.NewRequest(http.MethodOptions, "/signaling", nil)
+	req.Host = "ayame.local"
+	rec = httptest.NewRecorder()
+	s.Handler.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusNoContent, rec.Code)
+	assert.Equal(t, "OPTIONS, GET", rec.Header().Get("Allow"))
+
+	req = httptest.NewRequest(http.MethodOptions, "/missing", nil)
+	rec = httptest.NewRecorder()
+	s.Handler.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusNotFound, rec.Code)
+	assert.Equal(t, "{\"message\":\"Not Found\"}\n", rec.Body.String())
+
+	req = httptest.NewRequest(http.MethodOptions, "/metrics", nil)
+	rec = httptest.NewRecorder()
+	s.metricsServer.Handler.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusNoContent, rec.Code)
+	assert.Equal(t, "OPTIONS, GET", rec.Header().Get("Allow"))
+	assert.Empty(t, rec.Body.String())
 
 	s.Metrics.IncWebhookReqCnt("204", "POST", "hook.example", "/disconnect")
 	s.Metrics.ObserveWebhookReqDur("204", "POST", "hook.example", "/disconnect", 0.01)
@@ -104,7 +155,10 @@ func TestServerRoutesAndMetrics(t *testing.T) {
 	body := scrapeMetrics(t, s)
 	assert.Contains(t, body, "go_goroutines")
 	assert.Contains(t, body, `ayame_requests_total{code="200",host="ayame.local",method="GET",url="/.ok"} 1`)
+	assert.Contains(t, body, `ayame_requests_total{code="204",host="ayame.local",method="OPTIONS",url="/.ok"} 1`)
+	assert.Contains(t, body, `ayame_requests_total{code="204",host="ayame.local",method="OPTIONS",url="/signaling"} 1`)
 	assert.Contains(t, body, `ayame_requests_total{code="405",host="ayame.local",method="POST",url="/.ok"} 1`)
+	assert.Contains(t, body, `ayame_requests_total{code="405",host="ayame.local",method="HEAD",url="/.ok"} 1`)
 	assert.Contains(t, body, `ayame_requests_total{code="404",host="ayame.local",method="GET",url="/missing"} 1`)
 	assert.Contains(t, body, `ayame_requests_total{code="400",host="ayame.local",method="GET",url="/signaling"} 1`)
 	assert.Contains(t, body, `ayame_request_duration_seconds_count{code="200",host="ayame.local",method="GET",url="/.ok"} 1`)
