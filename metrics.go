@@ -12,6 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+// KB は 1024 で、 MB は 1048576 である。サイズ系ヒストグラムの境界なので値を変えない。
 const (
 	KB = 1 << 10
 	MB = 1 << 20

@@ -56,7 +56,7 @@ func NewServer(config *Config) (*Server, error) {
 		Handler:           metrics.middleware(router),
 	}
 
-	// メトリクス用サーバは echo と同様、ReadHeaderTimeout を付けない。
+	// メトリクス用サーバには ReadHeaderTimeout を付けない。
 	s.metricsServer = &http.Server{
 		Addr: net.JoinHostPort(config.ListenPrometheusIPv4Address, strconv.Itoa(int(config.ListenPrometheusPortNumber))),
 		Handler: newMethodRouter(map[string]http.Handler{
@@ -70,13 +70,12 @@ func NewServer(config *Config) (*Server, error) {
 const (
 	readHeaderTimeout = 10 * time.Second
 
-	// echo が GET ルートに出す Allow。HEAD は含めない。
+	// GET ルートの Allow。HEAD は含めない。
 	allowOptionsGet = "OPTIONS, GET"
 )
 
-// methodRouter は echo と同じメソッド扱いをする。
-// 登録パスの GET だけを処理し、OPTIONS は 204、それ以外は 405 を返す。
-// 未登録パスは 404 を返す。
+// methodRouter は登録パスの GET だけを処理する。
+// OPTIONS は 204 で、それ以外は 405 である。未登録パスは 404 である。
 type methodRouter struct {
 	gets map[string]http.Handler
 }
@@ -88,7 +87,7 @@ func newMethodRouter(gets map[string]http.Handler) http.Handler {
 func (m methodRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	handler, ok := m.gets[requestPath(r)]
 	if !ok {
-		writeEchoStatus(w, r, http.StatusNotFound)
+		writeStatusJSON(w, r, http.StatusNotFound)
 		return
 	}
 	switch r.Method {
@@ -99,11 +98,11 @@ func (m methodRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	default:
 		w.Header().Set("Allow", allowOptionsGet)
-		writeEchoStatus(w, r, http.StatusMethodNotAllowed)
+		writeStatusJSON(w, r, http.StatusMethodNotAllowed)
 	}
 }
 
-// requestPath は echo の GetPath と同じく、RawPath があればそれを使う。
+// requestPath は RawPath があればそれを、無ければ Path を返す。
 func requestPath(r *http.Request) string {
 	if r.URL == nil {
 		return ""
@@ -114,9 +113,8 @@ func requestPath(r *http.Request) string {
 	return r.URL.Path
 }
 
-// writeEchoStatus は echo の DefaultHTTPErrorHandler と同じ JSON を返す。
-// HEAD はボディを書かない。
-func writeEchoStatus(w http.ResponseWriter, r *http.Request, code int) {
+// writeStatusJSON はステータスを JSON で返す。HEAD はボディを書かない。
+func writeStatusJSON(w http.ResponseWriter, r *http.Request, code int) {
 	if r.Method == http.MethodHead {
 		w.WriteHeader(code)
 		return
