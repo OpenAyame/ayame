@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] HTTP サーバを echo から net/http に切り替える
+  - @voluntas
 - [UPDATE] dominikh/staticcheck-action の version を 2026.2.2 に上げる
 
 ## 2026.2.4

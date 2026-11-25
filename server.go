@@ -2,12 +2,11 @@ package ayame
 
 import (
 	"context"
-	"fmt"
+	"net"
 	"net/http"
+	"strconv"
 	"time"
 
-	"github.com/labstack/echo-contrib/prometheus"
-	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	zlog "github.com/rs/zerolog/log"
 )
@@ -18,10 +17,10 @@ type Server struct {
 	signalingLogger *zerolog.Logger
 	webhookLogger   *zerolog.Logger
 
-	EchoPrometheus *echo.Echo
-	Metrics        *Metrics
+	Metrics *Metrics
 
 	http.Server
+	metricsServer *http.Server
 }
 
 func NewServer(config *Config) (*Server, error) {
@@ -37,37 +36,32 @@ func NewServer(config *Config) (*Server, error) {
 		return nil, err
 	}
 
-	e := echo.New()
-
-	// URL の生成
-	url := fmt.Sprintf("%s:%d", config.ListenIPv4Address, config.ListenPortNumber)
+	metrics := NewMetrics()
 
 	s := &Server{
 		config:          config,
 		signalingLogger: signalingLogger,
 		webhookLogger:   webhookLogger,
-		Server: http.Server{
-			Addr:              url,
-			ReadHeaderTimeout: readHeaderTimeout,
-			Handler:           e,
-		},
+		Metrics:         metrics,
 	}
 
-	// websocket server
-	e.GET("/signaling", s.signalingHandler)
-	e.GET("/.ok", s.okHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /signaling", s.signalingHandler)
+	mux.HandleFunc("GET /.ok", s.okHandler)
 
-	echoPrometheus := echo.New()
-	echoPrometheus.HideBanner = true
-	echoPrometheus.HidePort = true
+	s.Server = http.Server{
+		Addr:              net.JoinHostPort(config.ListenIPv4Address, strconv.Itoa(int(config.ListenPortNumber))),
+		ReadHeaderTimeout: readHeaderTimeout,
+		Handler:           metrics.middleware(mux),
+	}
 
-	p := prometheus.NewPrometheus("ayame", nil, metricsList)
-	e.Use(p.HandlerFunc)
-	p.SetMetricsPath(echoPrometheus)
-
-	s.EchoPrometheus = echoPrometheus
-
-	s.Metrics = NewMetrics()
+	metricsMux := http.NewServeMux()
+	metricsMux.Handle("GET /metrics", metrics.metricsHandler())
+	s.metricsServer = &http.Server{
+		Addr:              net.JoinHostPort(config.ListenPrometheusIPv4Address, strconv.Itoa(int(config.ListenPrometheusPortNumber))),
+		ReadHeaderTimeout: readHeaderTimeout,
+		Handler:           metricsMux,
+	}
 
 	return s, nil
 }
@@ -95,4 +89,9 @@ func (s *Server) Start(ctx context.Context) error {
 	case err := <-ch:
 		return err
 	}
+}
+
+// StartMetrics は Prometheus の /metrics を配信する HTTP サーバを起動する。
+func (s *Server) StartMetrics() error {
+	return s.metricsServer.ListenAndServe()
 }

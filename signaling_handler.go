@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/labstack/echo/v4"
 	zlog "github.com/rs/zerolog/log"
 )
 
@@ -27,14 +26,11 @@ var (
 	}
 )
 
-func (s *Server) signalingHandler(c echo.Context) error {
-	r := c.Request()
-	w := c.Response()
-
+func (s *Server) signalingHandler(w http.ResponseWriter, r *http.Request) {
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		zlog.Debug().Err(err).Send()
-		return err
+		return
 	}
 
 	wsConn.SetReadLimit(readLimit)
@@ -74,6 +70,4 @@ func (s *Server) signalingHandler(c echo.Context) error {
 	messageChannel := make(chan []byte, 100)
 	go connection.wsRecv(ctx, messageChannel)
 	go connection.main(cancel, messageChannel)
-
-	return nil
 }

@@ -1,11 +1,7 @@
 package ayame
 
-import (
-	"net/http"
+import "net/http"
 
-	"github.com/labstack/echo/v4"
-)
-
-func (s *Server) okHandler(c echo.Context) error {
-	return c.NoContent(http.StatusOK)
+func (s *Server) okHandler(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
