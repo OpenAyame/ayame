@@ -13,7 +13,11 @@
 
 - [CHANGE] HTTP サーバを echo から net/http に切り替える
   - @voluntas
-- [UPDATE] dominikh/staticcheck-action の version を 2026.2.2 に上げる
+
+### misc
+
+- [UPDATE] CI の staticcheck を go install で導入するように切り替える
+  - @voluntas
 
 ## 2026.2.4
 

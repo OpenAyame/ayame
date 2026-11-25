@@ -17,10 +17,8 @@ jobs:
           go-version-file: ./go.mod
           cache: true
           cache-dependency-path: ./go.sum
-      - uses: dominikh/staticcheck-action@672a31696676d1592844bf0164b3bbfd855a4d50 # v1.4.1
-        with:
-          version: "2026.2.2"
-          install-go: false
+      - run: go install honnef.co/go/tools/cmd/staticcheck@2026.2.2
+      - run: staticcheck ./...
       - run: go version
       - run: go fmt .
       - run: go build -v .
