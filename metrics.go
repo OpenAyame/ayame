@@ -205,7 +205,8 @@ func approximateRequestSize(r *http.Request) int {
 }
 
 // statusRecorder は応答ステータスとボディサイズを計測する。
-// ステータス未設定は 200 とする。WebSocket の Upgrade は Hijack してから 101 を書くため、計測上の code は 200 になる。
+// ステータス未設定は 200 とする。WebSocket の Upgrade は Hijack してから 101 を書くため、成功時の code は 200 になる。
+// Hijack した後に Upgrade が失敗したときは markHandlerError で 500 にする。
 type statusRecorder struct {
 	http.ResponseWriter
 	status      int
@@ -248,4 +249,17 @@ func (w *statusRecorder) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 
 func (w *statusRecorder) Unwrap() http.ResponseWriter {
 	return w.ResponseWriter
+}
+
+// markHandlerError は、ステータスを書かずに失敗したハンドラを 500 として計測させる。
+// WebSocket の Upgrade は Hijack した後でもステータスを書かずに失敗するため、何もしないと成功と同じ 200 で計測される。
+// Hijack 済みの接続には書き込めないので WriteHeader は呼ばない。
+func markHandlerError(w http.ResponseWriter) {
+	rec, ok := w.(*statusRecorder)
+	if !ok {
+		return
+	}
+	if !rec.wroteHeader {
+		rec.status = http.StatusInternalServerError
+	}
 }

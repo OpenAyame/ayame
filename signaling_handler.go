@@ -29,6 +29,7 @@ var (
 func (s *Server) signalingHandler(w http.ResponseWriter, r *http.Request) {
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
+		markHandlerError(w)
 		zlog.Debug().Err(err).Send()
 		return
 	}
