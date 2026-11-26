@@ -12,15 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: setup go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version-file: ./go.mod
           cache: true
           cache-dependency-path: ./go.sum
-      - uses: dominikh/staticcheck-action@672a31696676d1592844bf0164b3bbfd855a4d50 # v1.4.1
-        with:
-          version: "2026.2.2"
-          install-go: false
+      - run: go install honnef.co/go/tools/cmd/staticcheck@2026.2.2
+      - run: staticcheck ./...
       - run: go version
       - run: go fmt .
       - run: go build -v .

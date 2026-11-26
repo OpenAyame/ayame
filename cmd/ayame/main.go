@@ -5,8 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net"
-	"strconv"
 
 	"github.com/OpenAyame/ayame"
 	zlog "github.com/rs/zerolog/log"
@@ -58,8 +56,7 @@ func main() {
 	g, ctx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
-		addressAndPort := net.JoinHostPort(config.ListenPrometheusIPv4Address, strconv.Itoa(int(config.ListenPrometheusPortNumber)))
-		return server.EchoPrometheus.Start(addressAndPort)
+		return server.StartMetrics()
 	})
 
 	g.Go(func() error {

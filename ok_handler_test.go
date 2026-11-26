@@ -5,24 +5,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestOkHandler(t *testing.T) {
-	e := echo.New()
-
-	s := &Server{
-		Server: http.Server{
-			Handler: e,
-		},
-	}
+	s := &Server{}
 
 	req := httptest.NewRequest(http.MethodGet, "/.ok", nil)
 	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
+	s.okHandler(rec, req)
 
-	if assert.NoError(t, s.okHandler(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
-	}
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Empty(t, rec.Body.String())
 }
