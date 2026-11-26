@@ -12,6 +12,11 @@
 ## develop
 
 - [CHANGE] HTTP サーバを echo から net/http に切り替える
+  - 404 と 405 の `ayame_response_size_bytes` に JSON ボディのサイズを含める
+  - `Server.EchoPrometheus` を削除して `Server.StartMetrics` を追加する
+  - `Metrics` の公開フィールドを削除する
+  - `KB` と `MB` を float64 の定数から型なしの整数定数に変更する
+  - メトリクスを `prometheus.DefaultRegisterer` に登録しないようにする
   - @voluntas
 
 ### misc
